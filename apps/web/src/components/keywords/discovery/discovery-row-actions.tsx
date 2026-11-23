@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText } from "@/components/language/UiLanguage";
 import { createContext, useContext, type RefObject } from "react";
 import type { KeywordDiscoveryItem } from "@asobeast/shared";
 import { Button } from "@/components/ui/button";
@@ -57,7 +58,7 @@ export function DiscoveryRowActions({ item }: { item: KeywordDiscoveryItem }) {
           actions.trackOnce({ request: { keywordIds: ids }, removes: ids });
         }}
       >
-        Track
+        <UiText message={"Track"} />
       </Button>
       <Button
         size="sm"
@@ -72,7 +73,7 @@ export function DiscoveryRowActions({ item }: { item: KeywordDiscoveryItem }) {
           actions.dismissOnce(ids);
         }}
       >
-        Dismiss
+        <UiText message={"Dismiss"} />
       </Button>
     </span>
   );

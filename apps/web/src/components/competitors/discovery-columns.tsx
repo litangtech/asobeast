@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText } from "@/components/language/UiLanguage";
 import { createColumnHelper } from "@tanstack/react-table";
 import type { CompetitorDiscoveryItem } from "@asobeast/shared";
 import { SortableHeader } from "@/components/data-table/SortableHeader";
@@ -111,7 +112,11 @@ export function discoveryColumns(appId: string) {
     columnHelper.display({
       id: "track",
       enableHiding: false,
-      header: () => <span className="sr-only">Track</span>,
+      header: () => (
+        <span className="sr-only">
+          <UiText message={"Track"} />
+        </span>
+      ),
       cell: ({ row }) => (
         <div className="flex justify-end">
           <TrackButton

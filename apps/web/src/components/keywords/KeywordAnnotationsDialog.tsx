@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText } from "@/components/language/UiLanguage";
 import { useId, useState } from "react";
 import type { FormEvent, KeyboardEvent } from "react";
 import { X } from "lucide-react";
@@ -115,7 +116,9 @@ function AnnotationsForm({
     <form onSubmit={submit} className="flex min-h-0 flex-col gap-4">
       <DialogBody className="flex flex-col gap-4">
         <div className="flex flex-col gap-2">
-          <Label htmlFor={tagsId}>Tags</Label>
+          <Label htmlFor={tagsId}>
+            <UiText message={"Tags"} />
+          </Label>
           {tags.length > 0 ? (
             <ul className="flex flex-wrap gap-1" aria-label="Current tags">
               {tags.map((tag) => (
@@ -192,11 +195,11 @@ function AnnotationsForm({
       <DialogFooter>
         <DialogClose asChild>
           <Button type="button" variant="outline">
-            Cancel
+            <UiText message={"Cancel"} />
           </Button>
         </DialogClose>
         <Button type="submit" disabled={update.isPending || noteLimit.over > 0}>
-          Save
+          <UiText message={"Save"} />
         </Button>
       </DialogFooter>
     </form>

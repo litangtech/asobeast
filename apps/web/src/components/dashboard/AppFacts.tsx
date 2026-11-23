@@ -1,3 +1,4 @@
+import { UiText } from "@/components/language/UiLanguage";
 import Link from "next/link";
 import { Star } from "lucide-react";
 import type { PortfolioApp, PortfolioAppInsight } from "@asobeast/shared";
@@ -30,7 +31,9 @@ function AuditFact({ audit }: { audit: PortfolioAppInsight["audit"] }) {
   if (audit?.current == null) return null;
   return (
     <span className="inline-flex items-center gap-1">
-      <span aria-hidden>Audit</span>
+      <span aria-hidden>
+        <UiText message={"Audit"} />
+      </span>
       <GradedNumber
         value={String(audit.current)}
         grade={grade("audit", audit.current)}

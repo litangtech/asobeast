@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText } from "@/components/language/UiLanguage";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { ChartScatter, Plus, TableProperties, X } from "lucide-react";
 import { useQueryState } from "nuqs";
@@ -59,7 +60,9 @@ export function KeywordsToolbar({
         >
           <span>{`Market: ${market.toUpperCase()}`}</span>
           <X className="size-3 opacity-60" aria-hidden />
-          <span className="sr-only">Clear the market filter</span>
+          <span className="sr-only">
+            <UiText message={"Clear the market filter"} />
+          </span>
         </button>
       ) : null}
 

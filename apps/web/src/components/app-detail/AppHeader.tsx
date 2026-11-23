@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText, useUiLanguage } from "@/components/language/UiLanguage";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { ExternalLink } from "lucide-react";
 import type { AppDetail } from "@asobeast/shared";
@@ -18,8 +19,9 @@ function storeUrl(detail: AppDetail): string {
 }
 
 export function AppHeader({ id }: { id: string }) {
+  const { text } = useUiLanguage();
   const { data: detail } = useSuspenseQuery(appDetailOptions(id));
-  const name = detail.name ?? "Untitled app";
+  const name = detail.name ?? text("Untitled app");
 
   return (
     <>
@@ -45,7 +47,7 @@ export function AppHeader({ id }: { id: string }) {
               rel="noreferrer"
               className="inline-flex min-h-6 items-center gap-1 rounded-sm hover:text-foreground print:hidden"
             >
-              Store page
+              <UiText message="Store page" />
               <ExternalLink className="size-3.5" />
             </a>
           </div>

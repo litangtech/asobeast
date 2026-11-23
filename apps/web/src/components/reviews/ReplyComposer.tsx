@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText } from "@/components/language/UiLanguage";
 import { useId, useRef, useState, type RefObject } from "react";
 import { Copy, ExternalLink } from "lucide-react";
 import { toast } from "sonner";
@@ -328,7 +329,7 @@ export function ReplyComposer({
           />
         ) : null}
         <Button variant="ghost" size="sm" className="ml-auto" onClick={onClose}>
-          Close
+          <UiText message={"Close"} />
         </Button>
       </div>
       <ReplyFooter access={access} store={store} posted={posted} />

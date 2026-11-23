@@ -1,5 +1,7 @@
 "use client";
 
+import { useUiLanguage } from "@/components/language/UiLanguage";
+
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { INTEGRATIONS_PATH, PLAY_SIGN_IN_PATH } from "@asobeast/shared";
@@ -38,9 +40,10 @@ function sectionLabel(segment: string): string {
 }
 
 function AppCrumbs({ id, segment }: { id: string; segment: string }) {
+  const { text } = useUiLanguage();
   const data = useCachedQueryData(appDetailOptions(id).queryKey);
 
-  const name = data?.name ?? "Untitled app";
+  const name = data?.name ?? text("Untitled app");
 
   return (
     <>
@@ -65,7 +68,7 @@ function AppCrumbs({ id, segment }: { id: string; segment: string }) {
           <BreadcrumbSeparator className="hidden sm:block" />
           <BreadcrumbItem className="min-w-0">
             <BreadcrumbPage className="truncate">
-              {sectionLabel(segment)}
+              {text(sectionLabel(segment))}
             </BreadcrumbPage>
           </BreadcrumbItem>
         </>
@@ -75,22 +78,26 @@ function AppCrumbs({ id, segment }: { id: string; segment: string }) {
 }
 
 function AdminCrumbs({ label }: { label: string }) {
+  const { text } = useUiLanguage();
   return (
     <>
       <BreadcrumbItem className="hidden sm:inline-flex">
         <BreadcrumbLink asChild>
-          <Link href={ADMIN_ROOT}>Admin</Link>
+          <Link href={ADMIN_ROOT}>
+            <span>{text("Admin")}</span>
+          </Link>
         </BreadcrumbLink>
       </BreadcrumbItem>
       <BreadcrumbSeparator className="hidden sm:block" />
       <BreadcrumbItem className="min-w-0">
-        <BreadcrumbPage className="truncate">{label}</BreadcrumbPage>
+        <BreadcrumbPage className="truncate">{text(label)}</BreadcrumbPage>
       </BreadcrumbItem>
     </>
   );
 }
 
 export function Breadcrumbs() {
+  const { text } = useUiLanguage();
   const pathname = usePathname();
   const app = appRouteFrom(pathname);
   const { isOperator } = useAuth();
@@ -110,11 +117,13 @@ export function Breadcrumbs() {
             >
               {app ? (
                 <BreadcrumbLink asChild>
-                  <Link href="/">Apps</Link>
+                  <Link href="/">
+                    <span>{text("Apps")}</span>
+                  </Link>
                 </BreadcrumbLink>
               ) : (
                 <BreadcrumbPage>
-                  {WORKSPACE_LABELS[pathname] ?? "Dashboard"}
+                  {text(WORKSPACE_LABELS[pathname] ?? "Dashboard")}
                 </BreadcrumbPage>
               )}
             </BreadcrumbItem>

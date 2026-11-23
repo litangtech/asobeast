@@ -1,5 +1,8 @@
 "use client";
 
+import { UiText } from "@/components/language/UiLanguage";
+import { useUiLanguage } from "@/components/language/UiLanguage";
+
 import Link from "next/link";
 import { LogOut, Settings, User } from "lucide-react";
 import type { AuthUser } from "@asobeast/shared";
@@ -28,6 +31,7 @@ function PlanInForceBadge({ user }: { user: AuthUser }) {
 }
 
 export function UserMenu() {
+  const { text } = useUiLanguage();
   const { user } = useAuth();
   const signOut = useSignOut();
 
@@ -36,7 +40,11 @@ export function UserMenu() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" size="icon-sm" aria-label="Account menu">
+        <Button
+          variant="ghost"
+          size="icon-sm"
+          aria-label={text("Account menu")}
+        >
           <User />
         </Button>
       </DropdownMenuTrigger>
@@ -63,7 +71,7 @@ export function UserMenu() {
           <>
             <DropdownMenuSeparator />
             <DropdownMenuLabel className="text-xs text-muted-foreground">
-              Admin
+              <UiText message={"Admin"} />
             </DropdownMenuLabel>
             <DropdownMenuItem asChild>
               <Link href={ADMIN_ENTRY.href}>
@@ -75,7 +83,7 @@ export function UserMenu() {
               <DropdownMenuItem key={href} asChild>
                 <a href={href} target="_blank" rel="noreferrer">
                   <Icon />
-                  {label}
+                  <span>{text(label)}</span>
                 </a>
               </DropdownMenuItem>
             ))}

@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText } from "@/components/language/UiLanguage";
 import { Suspense, startTransition, useDeferredValue, useState } from "react";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { useQueryState } from "nuqs";
@@ -67,7 +68,7 @@ function ShowAll({
         </p>
       ) : (
         <Button variant="outline" size="sm" onClick={onShowAll}>
-          Show all
+          <UiText message={"Show all"} />
         </Button>
       )}
     </div>

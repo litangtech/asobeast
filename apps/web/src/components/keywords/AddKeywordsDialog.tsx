@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText } from "@/components/language/UiLanguage";
 import { useMemo, useState, type ReactNode } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Loader2 } from "lucide-react";
@@ -118,7 +119,9 @@ export function AddKeywordsDialog({
       <DialogTrigger asChild>{children}</DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Add keywords</DialogTitle>
+          <DialogTitle>
+            <UiText message={"Add keywords"} />
+          </DialogTitle>
           <DialogDescription>
             Separate phrases with commas or new lines. Each is normalized to
             lowercase and de-duplicated before tracking.
@@ -127,7 +130,9 @@ export function AddKeywordsDialog({
 
         <DialogBody className="gap-3">
           <div className="flex flex-col gap-2">
-            <Label htmlFor="add-keywords-market">Market</Label>
+            <Label htmlFor="add-keywords-market">
+              <UiText message={"Market"} />
+            </Label>
             <CountrySelect
               id="add-keywords-market"
               store={store}

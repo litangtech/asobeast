@@ -1,5 +1,7 @@
+import { UiText } from "@/components/language/UiLanguage";
 import { Suspense } from "react";
 import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
+import { LanguageSetting } from "@/components/language/LanguageSetting";
 import { PlanSection } from "@/components/settings/PlanSection";
 import { TeamCard } from "@/components/settings/TeamCard";
 import { ChecklistSettingsCard } from "@/components/checklist/ChecklistSettingsCard";
@@ -50,11 +52,15 @@ export default async function SettingsPage({
     <HydrationBoundary state={dehydrate(queryClient)}>
       <div className="page-reading flex flex-col gap-8">
         <div className="flex flex-col gap-1">
-          <h1 className="text-display tracking-tight text-balance">Settings</h1>
+          <h1 className="text-display tracking-tight text-balance">
+            <UiText message={"Settings"} />
+          </h1>
           <p className="text-body text-muted-foreground">
-            Your plan, alerts, team and workspace.
+            <UiText message={"Your plan, alerts, team and workspace."} />
           </p>
         </div>
+
+        <LanguageSetting />
 
         <PlanSection />
 

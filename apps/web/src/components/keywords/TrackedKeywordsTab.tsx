@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText } from "@/components/language/UiLanguage";
 import { Suspense, useRef, type RefObject } from "react";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { Info, Plus, Upload } from "lucide-react";
@@ -47,23 +48,27 @@ export function TrackedKeywordsTab({
       <div className="flex flex-wrap items-center justify-between gap-4">
         <div>
           <h2 className="text-lg font-semibold text-balance">
-            Tracked keywords
+            <UiText message={"Tracked keywords"} />
           </h2>
           <p className="text-sm text-muted-foreground">
-            The phrases you want this app to rank for, tracked per market.
+            <UiText
+              message={
+                "The phrases you want this app to rank for, tracked per market."
+              }
+            />
           </p>
         </div>
         <div className="flex items-center gap-2">
           <ImportKeywordsDialog appId={id} store={store} country={market}>
             <Button variant="outline">
               <Upload />
-              Import CSV
+              <UiText message="Import CSV" />
             </Button>
           </ImportKeywordsDialog>
           <AddKeywordsDialog appId={id} store={store} country={market}>
             <Button ref={clearFocus}>
               <Plus />
-              Add keywords
+              <UiText message="Add keywords" />
             </Button>
           </AddKeywordsDialog>
         </div>
@@ -79,8 +84,11 @@ export function TrackedKeywordsTab({
       <Alert role="note">
         <Info />
         <AlertDescription>
-          Apple App Store and Google Play popularity and volume scores use
-          different public signals and are not directly comparable.
+          <UiText
+            message={
+              "Apple App Store and Google Play popularity and volume scores use different public signals and are not directly comparable."
+            }
+          />
         </AlertDescription>
       </Alert>
       <Suspense

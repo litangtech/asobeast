@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText } from "@/components/language/UiLanguage";
 import { useState, type ReactNode } from "react";
 import { Loader2 } from "lucide-react";
 import type { Store } from "@asobeast/shared";
@@ -143,7 +144,7 @@ export function ImportKeywordsDialog({
             disabled={flow.importing}
             onClick={() => onOpenChange(false)}
           >
-            Cancel
+            <UiText message={"Cancel"} />
           </Button>
           <Button
             aria-disabled={flow.action === null}

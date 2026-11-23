@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText } from "@/components/language/UiLanguage";
 import { Suspense, useDeferredValue } from "react";
 import { useQueryState } from "nuqs";
 import {
@@ -45,8 +46,12 @@ export function VisibilityChart({ id }: { id: string }) {
             onValueChange={(next) => void setView(next as VisibilityView)}
           >
             <TabsList aria-label="Chart view" className="print:hidden">
-              <TabsOption value="visibility">Visibility</TabsOption>
-              <TabsOption value="share">Share of voice</TabsOption>
+              <TabsOption value="visibility">
+                <UiText message={"Visibility"} />
+              </TabsOption>
+              <TabsOption value="share">
+                <UiText message={"Share of voice"} />
+              </TabsOption>
             </TabsList>
           </Tabs>
           <RangePicker

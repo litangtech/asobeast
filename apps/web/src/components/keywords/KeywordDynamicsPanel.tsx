@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText } from "@/components/language/UiLanguage";
 import {
   Suspense,
   useCallback,
@@ -91,7 +92,7 @@ export function KeywordDynamicsPanel({
           label="Chart date range"
         />
         <Button variant="ghost" size="sm" className="ml-auto" onClick={clear}>
-          Clear
+          <UiText message={"Clear"} />
         </Button>
       </div>
       <Suspense fallback={<KeywordDynamicsSkeleton />}>

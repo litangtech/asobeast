@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText } from "@/components/language/UiLanguage";
 import type { FilterFn } from "@tanstack/react-table";
 import { ListOrdered } from "lucide-react";
 import type {
@@ -383,7 +384,11 @@ function actionsColumn({
   return columnHelper.display({
     id: "actions",
     enableHiding: false,
-    header: () => <span className="sr-only">Actions</span>,
+    header: () => (
+      <span className="sr-only">
+        <UiText message={"Actions"} />
+      </span>
+    ),
     cell: ({ row, table }) => (
       <div className="flex items-center justify-end gap-1 transition-opacity group-hover/row:opacity-100 group-focus-within/row:opacity-100 has-data-[state=open]:opacity-100 pointer-fine:opacity-0">
         <Button

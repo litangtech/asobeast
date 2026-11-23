@@ -1,3 +1,4 @@
+import { UiText } from "@/components/language/UiLanguage";
 import type { ReactNode } from "react";
 import { TriangleAlert } from "lucide-react";
 import type { ChangeImpactWindow, Store } from "@asobeast/shared";
@@ -91,7 +92,9 @@ export function FunnelFacts({ impact, store }: WindowProps) {
               />
             </dd>
             <dd className="flex flex-wrap items-center gap-2">
-              <span>Conversion</span>
+              <span>
+                <UiText message={"Conversion"} />
+              </span>
               <span className="numeric font-mono">{ranges.conversion}</span>
             </dd>
           </>

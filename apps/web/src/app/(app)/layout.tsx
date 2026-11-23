@@ -4,6 +4,7 @@ import { cookies, headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { AuthGate } from "@/components/auth/AuthGate";
 import { ChecklistPill } from "@/components/checklist/ChecklistPill";
+import { UiLanguageProvider } from "@/components/language/UiLanguage";
 import { AlertsSeenProvider } from "@/components/layout/AlertsSeen";
 import { AppSidebar } from "@/components/layout/AppSidebar";
 import { InsetHeader } from "@/components/layout/InsetHeader";
@@ -18,12 +19,16 @@ import {
   SIDEBAR_COOKIE_NAME,
   sidebarOpenFromCookie,
 } from "@/lib/sidebar-cookie";
+import { UI_LANGUAGE_COOKIE, uiLanguageFromCookie } from "@/lib/ui-language";
 import { viewerWhenAnswered } from "@/lib/viewer";
 
 export default async function AppLayout({
   children,
 }: Readonly<{ children: ReactNode }>) {
   const cookieStore = await cookies();
+  const language = uiLanguageFromCookie(
+    cookieStore.get(UI_LANGUAGE_COOKIE)?.value,
+  );
   const sidebarOpen = sidebarOpenFromCookie(
     cookieStore.get(SIDEBAR_COOKIE_NAME)?.value,
   );
@@ -40,25 +45,27 @@ export default async function AppLayout({
 
   return (
     <HydrationBoundary state={dehydrate(shellClient)}>
-      <AlertsSeenProvider initial={alertsSeenAt}>
-        <SidebarProvider defaultOpen={sidebarOpen}>
-          <AppSidebar />
-          <SidebarInset>
-            <InsetHeader />
-            <AuthGate>
-              <main
-                id="main-content"
-                tabIndex={-1}
-                className="page-gutter flex-1 py-6 outline-none sm:[--gutter:1.5rem]"
-              >
-                <SystemBanner />
-                {children}
-                <ChecklistPill />
-              </main>
-            </AuthGate>
-          </SidebarInset>
-        </SidebarProvider>
-      </AlertsSeenProvider>
+      <UiLanguageProvider initialLanguage={language}>
+        <AlertsSeenProvider initial={alertsSeenAt}>
+          <SidebarProvider defaultOpen={sidebarOpen}>
+            <AppSidebar />
+            <SidebarInset>
+              <InsetHeader />
+              <AuthGate>
+                <main
+                  id="main-content"
+                  tabIndex={-1}
+                  className="page-gutter flex-1 py-6 outline-none sm:[--gutter:1.5rem]"
+                >
+                  <SystemBanner />
+                  {children}
+                  <ChecklistPill />
+                </main>
+              </AuthGate>
+            </SidebarInset>
+          </SidebarProvider>
+        </AlertsSeenProvider>
+      </UiLanguageProvider>
     </HydrationBoundary>
   );
 }

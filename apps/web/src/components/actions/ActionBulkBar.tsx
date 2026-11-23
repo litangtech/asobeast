@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText } from "@/components/language/UiLanguage";
 import { Check, Clock } from "lucide-react";
 import type { ActionUpdateRequest } from "@asobeast/shared";
 import { Button } from "@/components/ui/button";
@@ -96,7 +97,7 @@ export function ActionBulkBar({
         className={BAR_BUTTON}
         onClick={onClear}
       >
-        Clear selection
+        <UiText message={"Clear selection"} />
       </Button>
     </div>
   );

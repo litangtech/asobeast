@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText } from "@/components/language/UiLanguage";
 import { Suspense, useMemo, useRef, useState, type RefObject } from "react";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import type { OnChangeFn, RowSelectionState } from "@tanstack/react-table";
@@ -127,7 +128,7 @@ function DiscoveredList({
                     setState("all");
                   }}
                 >
-                  Show all
+                  <UiText message={"Show all"} />
                 </Button>
               )
             }

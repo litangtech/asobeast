@@ -1,3 +1,4 @@
+import { UiText } from "@/components/language/UiLanguage";
 import { Suspense } from "react";
 import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 import { ApiTokensCard } from "@/components/integrations/ApiTokensCard";
@@ -22,10 +23,14 @@ export default async function IntegrationsPage() {
       <div className="page-reading flex flex-col gap-8">
         <div className="flex flex-col gap-1">
           <h1 className="text-display tracking-tight text-balance">
-            Integrations
+            <UiText message={"Integrations"} />
           </h1>
           <p className="text-body text-muted-foreground">
-            Your store consoles, personal API tokens and the MCP server.
+            <UiText
+              message={
+                "Your store consoles, personal API tokens and the MCP server."
+              }
+            />
           </p>
         </div>
 

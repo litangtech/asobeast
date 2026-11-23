@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText } from "@/components/language/UiLanguage";
 import { useState } from "react";
 import type { FormEvent } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -113,7 +114,9 @@ function InviteDialog() {
           <form onSubmit={submit} className="flex min-h-0 flex-col gap-4">
             <DialogBody>
               <div className="flex flex-col gap-2">
-                <Label htmlFor="invite-email">Email</Label>
+                <Label htmlFor="invite-email">
+                  <UiText message={"Email"} />
+                </Label>
                 <Input
                   id="invite-email"
                   type="email"
@@ -179,7 +182,9 @@ export function TeamCard() {
     <Card>
       <CardHeader className="flex-row items-start justify-between gap-4">
         <div className="flex flex-col gap-1">
-          <CardTitle>Team</CardTitle>
+          <CardTitle>
+            <UiText message={"Team"} />
+          </CardTitle>
           <CardDescription>
             Everyone who can sign in to this workspace.
           </CardDescription>
@@ -191,12 +196,16 @@ export function TeamCard() {
           <TableCaption>Members of this workspace</TableCaption>
           <TableHeader>
             <TableRow>
-              <TableHead>Email</TableHead>
+              <TableHead>
+                <UiText message={"Email"} />
+              </TableHead>
               <TableHead>Role</TableHead>
               <TableHead className="hidden sm:table-cell">Joined</TableHead>
               {isOwner ? (
                 <TableHead className="w-10">
-                  <span className="sr-only">Actions</span>
+                  <span className="sr-only">
+                    <UiText message={"Actions"} />
+                  </span>
                 </TableHead>
               ) : null}
             </TableRow>
@@ -236,11 +245,15 @@ export function TeamCard() {
             <TableCaption>Invitations waiting to be accepted</TableCaption>
             <TableHeader>
               <TableRow>
-                <TableHead>Email</TableHead>
+                <TableHead>
+                  <UiText message={"Email"} />
+                </TableHead>
                 <TableHead>Expires</TableHead>
                 {isOwner ? (
                   <TableHead className="w-10">
-                    <span className="sr-only">Actions</span>
+                    <span className="sr-only">
+                      <UiText message={"Actions"} />
+                    </span>
                   </TableHead>
                 ) : null}
               </TableRow>

@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText } from "@/components/language/UiLanguage";
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useQueryState } from "nuqs";
@@ -84,7 +85,7 @@ function BreakdownBody({
       <div className="flex flex-col items-start gap-3 text-sm">
         <p>This keyword is not tracked any more.</p>
         <Button variant="outline" size="sm" onClick={onClose}>
-          Close
+          <UiText message={"Close"} />
         </Button>
       </div>
     );

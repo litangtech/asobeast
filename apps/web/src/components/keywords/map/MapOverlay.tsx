@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText } from "@/components/language/UiLanguage";
 import { useLayoutEffect, useRef, type RefObject } from "react";
 import { ArrowDownToLine } from "lucide-react";
 import { ZONE_LABELS } from "@/lib/keyword-zones";
@@ -90,7 +91,11 @@ export function MapOverlay({
       ) : null}
       <p className="flex flex-wrap gap-x-2 text-muted-foreground">
         <span>{ZONE_LABELS[point.zone]}</span>
-        {point.active ? null : <span>Paused</span>}
+        {point.active ? null : (
+          <span>
+            <UiText message={"Paused"} />
+          </span>
+        )}
       </p>
     </div>
   );

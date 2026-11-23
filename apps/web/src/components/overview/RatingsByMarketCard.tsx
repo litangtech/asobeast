@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText } from "@/components/language/UiLanguage";
 import { Suspense } from "react";
 import Link from "next/link";
 import type { ListingMarket } from "@asobeast/shared";
@@ -46,12 +47,14 @@ function RatingsTable({
       </TableCaption>
       <TableHeader>
         <TableRow>
-          <TableHead scope="col">Market</TableHead>
+          <TableHead scope="col">
+            <UiText message={"Market"} />
+          </TableHead>
           <TableHead scope="col" className="text-right">
             Average
           </TableHead>
           <TableHead scope="col" className="text-right">
-            Ratings
+            <UiText message={"Ratings"} />
           </TableHead>
           <TableHead scope="col" className="text-right">
             Captured

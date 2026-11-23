@@ -1,5 +1,7 @@
 "use client";
 
+import { UiText } from "@/components/language/UiLanguage";
+import { useUiLanguage } from "@/components/language/UiLanguage";
 import { useState } from "react";
 import type { FormEvent, RefObject } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -50,9 +52,10 @@ function StoreTabs({
   store: Store;
   onChange: (store: Store) => void;
 }) {
+  const { text } = useUiLanguage();
   return (
     <Tabs value={store} onValueChange={(next) => onChange(next as Store)}>
-      <TabsList aria-label="Store">
+      <TabsList aria-label={text("Store")}>
         {STORES.map((option) => (
           <TabsOption key={option} value={option}>
             {storeLabel(option)}
@@ -72,21 +75,45 @@ function StorefrontField({
   country: string;
   onChange: (country: string) => void;
 }) {
+  const { text } = useUiLanguage();
   return (
     <div className="flex flex-col gap-2">
-      <Label htmlFor="import-country">Home storefront</Label>
+      <Label htmlFor="import-country">
+        <UiText message={"Home storefront"} />
+      </Label>
       <p className="text-xs text-muted-foreground">
-        Where this app’s metadata and category ranks are read. Add other markets
-        later from the keyword monitor.
+        <UiText
+          message={
+            "Where this app’s metadata and category ranks are read. Add other markets later from the keyword monitor."
+          }
+        />
       </p>
       <CountrySelect
         id="import-country"
         store={store}
         value={country}
         onChange={onChange}
-        ariaLabel="Home storefront"
+        ariaLabel={text("Home storefront")}
       />
     </div>
+  );
+}
+
+function ImportSubmit({
+  pending,
+  hasValue,
+}: {
+  pending: boolean;
+  hasValue: boolean;
+}) {
+  const { text } = useUiLanguage();
+  return (
+    <DialogFooter>
+      <Button type="submit" disabled={pending || !hasValue}>
+        {pending ? <Loader2 className="animate-spin" /> : null}
+        <span>{text(pending ? "Importing…" : "Import")}</span>
+      </Button>
+    </DialogFooter>
   );
 }
 
@@ -101,6 +128,7 @@ export function ImportAppDialog({
   onOpenChange?: (open: boolean) => void;
   returnFocus?: RefObject<HTMLElement | null>;
 }) {
+  const { text } = useUiLanguage();
   const router = useRouter();
   const queryClient = useQueryClient();
   const [uncontrolledOpen, setUncontrolledOpen] = useState(false);
@@ -207,10 +235,15 @@ export function ImportAppDialog({
       {children ? <DialogTrigger asChild>{children}</DialogTrigger> : null}
       <DialogContent onCloseAutoFocus={returnFocusTo(returnFocus)}>
         <DialogHeader>
-          <DialogTitle>Import an app</DialogTitle>
+          <DialogTitle>
+            <UiText message={"Import an app"} />
+          </DialogTitle>
           <DialogDescription>
-            Search the App Store or Google Play by name, or paste a store URL,
-            to import the app and start tracking its keywords.
+            <UiText
+              message={
+                "Search the App Store or Google Play by name, or paste a store URL, to import the app and start tracking its keywords."
+              }
+            />
           </DialogDescription>
         </DialogHeader>
 
@@ -220,8 +253,8 @@ export function ImportAppDialog({
 
             <StoreSearchField
               id="import-url"
-              label="App name or store URL"
-              hint="Type a name to search, or paste a store URL."
+              label={text("App name or store URL")}
+              hint={text("Type a name to search, or paste a store URL.")}
               placeholder={PLACEHOLDERS[store]}
               store={store}
               country={country}
@@ -241,15 +274,10 @@ export function ImportAppDialog({
             />
           </DialogBody>
 
-          <DialogFooter>
-            <Button
-              type="submit"
-              disabled={mutation.isPending || value.trim() === ""}
-            >
-              {mutation.isPending ? <Loader2 className="animate-spin" /> : null}
-              {mutation.isPending ? "Importing…" : "Import"}
-            </Button>
-          </DialogFooter>
+          <ImportSubmit
+            pending={mutation.isPending}
+            hasValue={value.trim() !== ""}
+          />
         </form>
       </DialogContent>
     </Dialog>

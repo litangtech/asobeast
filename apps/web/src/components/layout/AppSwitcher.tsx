@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText, useUiLanguage } from "@/components/language/UiLanguage";
 import { useRef, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { usePathname, useRouter } from "next/navigation";
@@ -37,10 +38,6 @@ import { storeLabel } from "@/lib/format";
 import { appsOptions } from "@/lib/queries";
 import { switcherSubtitle } from "./app-switcher-label";
 
-function appLabel(app: AppListItem): string {
-  return app.name ?? "Untitled app";
-}
-
 function appMarket(app: AppListItem): string {
   return `${storeLabel(app.store)} · ${app.country.toUpperCase()}`;
 }
@@ -52,6 +49,7 @@ function TriggerLabel({
   current: AppListItem | undefined;
   subtitle: string;
 }) {
+  const { text } = useUiLanguage();
   return (
     <>
       {current ? (
@@ -66,7 +64,7 @@ function TriggerLabel({
       )}
       <span className="grid min-w-0 flex-1 text-left leading-tight">
         <span className="truncate font-medium">
-          {current ? appLabel(current) : "All apps"}
+          {current ? (current.name ?? text("Untitled app")) : text("All apps")}
         </span>
         <span className="truncate text-caption text-muted-foreground">
           {current ? appMarket(current) : subtitle}
@@ -78,13 +76,16 @@ function TriggerLabel({
 }
 
 function ImportEntry() {
+  const { text } = useUiLanguage();
   return (
     <SidebarMenu>
       <SidebarMenuItem>
         <ImportAppDialog>
-          <SidebarMenuButton size="lg" tooltip="Import app">
+          <SidebarMenuButton size="lg" tooltip={text("Import app")}>
             <Plus />
-            <span className="font-medium">Import app</span>
+            <span className="font-medium">
+              <UiText message={"Import app"} />
+            </span>
           </SidebarMenuButton>
         </ImportAppDialog>
       </SidebarMenuItem>
@@ -93,6 +94,8 @@ function ImportEntry() {
 }
 
 export function AppSwitcher() {
+  const { language, text } = useUiLanguage();
+  const appLabel = (app: AppListItem) => app.name ?? text("Untitled app");
   const [open, setOpen] = useState(false);
   const [importing, setImporting] = useState(false);
   const trigger = useRef<HTMLButtonElement>(null);
@@ -122,10 +125,16 @@ export function AppSwitcher() {
               size="lg"
               aria-label={
                 current
-                  ? `Switch app, currently ${appLabel(current)}`
-                  : "Choose an app"
+                  ? language === "zh-CN"
+                    ? `切换应用，当前为 ${appLabel(current)}`
+                    : `Switch app, currently ${appLabel(current)}`
+                  : text("Choose an app")
               }
-              tooltip={current ? appLabel(current) : "All apps"}
+              tooltip={
+                current
+                  ? (current.name ?? text("Untitled app"))
+                  : text("All apps")
+              }
               className="data-[state=open]:bg-sidebar-accent"
             >
               <TriggerLabel
@@ -136,15 +145,17 @@ export function AppSwitcher() {
           </PopoverTrigger>
           <PopoverContent
             align="start"
-            aria-label="Switch app"
+            aria-label={text("Switch app")}
             side={isMobile ? "bottom" : "right"}
             className="w-72 p-0"
           >
             <Command>
-              <CommandInput placeholder="Search apps…" />
+              <CommandInput placeholder={text("Search apps…")} />
               <CommandList>
-                <CommandEmpty>No apps match.</CommandEmpty>
-                <CommandGroup heading="Apps">
+                <CommandEmpty>
+                  <UiText message={"No apps match."} />
+                </CommandEmpty>
+                <CommandGroup heading={text("Apps")}>
                   {(apps ?? []).map((app) => (
                     <CommandItem
                       key={app.id}
@@ -172,7 +183,7 @@ export function AppSwitcher() {
                     }}
                   >
                     <Plus />
-                    Import app
+                    <UiText message="Import app" />
                   </CommandItem>
                 </CommandGroup>
               </CommandList>

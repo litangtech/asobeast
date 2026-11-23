@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText } from "@/components/language/UiLanguage";
 import { useId, type ReactNode, type Ref } from "react";
 import { Info } from "lucide-react";
 import type { Store, StoreSearchResult } from "@asobeast/shared";
@@ -92,7 +93,7 @@ function StoreSearchResults({
             size="sm"
             onClick={search.retry}
           >
-            Retry
+            <UiText message={"Retry"} />
           </Button>
         ) : null}
       </div>

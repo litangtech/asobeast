@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText } from "@/components/language/UiLanguage";
 import { Suspense } from "react";
 import {
   useQuery,
@@ -127,7 +128,9 @@ export function MetadataAuditView({
       ) : null}
 
       <section className="flex flex-col gap-3">
-        <h2 className="text-lg font-medium">Keyword coverage</h2>
+        <h2 className="text-lg font-medium">
+          <UiText message={"Keyword coverage"} />
+        </h2>
         {result.coverage.length === 0 ? (
           <div className="rounded-xl border border-dashed p-8 text-center text-sm text-muted-foreground">
             Track keywords to see how your metadata covers them.

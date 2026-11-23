@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText } from "@/components/language/UiLanguage";
 import { useEffect, useState, type ReactNode } from "react";
 import {
   useMutation,
@@ -327,7 +328,9 @@ export function StoreConnectionsCard() {
       <Card>
         <CardHeader>
           <CardDescription>Store console</CardDescription>
-          <CardTitle>Store connections</CardTitle>
+          <CardTitle>
+            <UiText message={"Store connections"} />
+          </CardTitle>
         </CardHeader>
         <CardContent className="flex flex-col gap-3">
           <p className="text-body text-muted-foreground">{STORE_CONNECT_OFF}</p>

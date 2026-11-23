@@ -1,3 +1,4 @@
+import { UiText } from "@/components/language/UiLanguage";
 import { CheckCircle2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ImportAppDialog } from "./ImportAppDialog";
@@ -13,7 +14,7 @@ export function FirstRun() {
     <div className="page-reading flex flex-col items-center gap-4 rounded-xl border border-dashed px-6 py-20 text-center">
       <div className="flex flex-col gap-2">
         <h1 className="text-display tracking-tight text-balance">
-          Track your first app
+          <UiText message={"Track your first app"} />
         </h1>
         <p className="text-body text-muted-foreground">
           Type your app&apos;s name or paste its store URL.
@@ -37,7 +38,9 @@ export function FirstRun() {
         ))}
       </ul>
       <ImportAppDialog>
-        <Button size="lg">Import app</Button>
+        <Button size="lg">
+          <UiText message={"Import app"} />
+        </Button>
       </ImportAppDialog>
     </div>
   );

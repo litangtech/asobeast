@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText } from "@/components/language/UiLanguage";
 import Link from "next/link";
 import { CheckCircle2, Circle } from "lucide-react";
 import type {
@@ -35,7 +36,9 @@ function DoneRow({ item }: { item: WorkspaceChecklistItem }) {
     <li className="flex items-center gap-2" title={ITEM_COPY[item.id].doneText}>
       <CheckCircle2 className="size-4 shrink-0 text-success" aria-hidden />
       <span className="flex-1">{item.title}</span>
-      <span className="text-caption text-muted-foreground">Done</span>
+      <span className="text-caption text-muted-foreground">
+        <UiText message={"Done"} />
+      </span>
     </li>
   );
 }

@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText } from "@/components/language/UiLanguage";
 import { createColumnHelper } from "@tanstack/react-table";
 import type {
   DiscoverySource,
@@ -221,7 +222,11 @@ const actionsColumn = columnHelper.display({
   id: "actions",
   enableHiding: false,
   meta: { label: "Actions" },
-  header: () => <span className="sr-only">Actions</span>,
+  header: () => (
+    <span className="sr-only">
+      <UiText message={"Actions"} />
+    </span>
+  ),
   cell: ({ row }) => <DiscoveryRowActions item={row.original} />,
 });
 

@@ -1,5 +1,6 @@
 "use client";
 
+import { useUiLanguage } from "@/components/language/UiLanguage";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Megaphone } from "lucide-react";
@@ -17,11 +18,13 @@ export const WHATS_NEW_LABEL = "What's New";
 const UNREAD_SUFFIX = ", new updates";
 
 export function WhatsNewMenuItem({ latest }: { latest: string | null }) {
+  const { text } = useUiLanguage();
+  const label = text(WHATS_NEW_LABEL);
   const pathname = usePathname();
   const [seen] = useSeenRelease();
   const { isMobile, setOpenMobile } = useSidebar();
   const unread = hasUnseenRelease(latest, seen);
-  const name = unread ? `${WHATS_NEW_LABEL}${UNREAD_SUFFIX}` : WHATS_NEW_LABEL;
+  const name = unread ? `${label}${text(UNREAD_SUFFIX)}` : label;
 
   return (
     <SidebarMenuItem>
@@ -48,7 +51,7 @@ export function WhatsNewMenuItem({ latest }: { latest: string | null }) {
             )}
           />
           <Megaphone />
-          <span>{WHATS_NEW_LABEL}</span>
+          <span>{label}</span>
         </Link>
       </SidebarMenuButton>
     </SidebarMenuItem>

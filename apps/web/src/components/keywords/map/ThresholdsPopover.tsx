@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText } from "@/components/language/UiLanguage";
 import { useId, useState } from "react";
 import { SlidersHorizontal } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -103,7 +104,7 @@ export function ThresholdsPopover() {
               if (!isDefault) resetThresholds();
             }}
           >
-            Reset
+            <UiText message={"Reset"} />
           </Button>
         </div>
         <ThresholdField

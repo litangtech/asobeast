@@ -1,5 +1,7 @@
 "use client";
 
+import { useUiLanguage } from "@/components/language/UiLanguage";
+
 import type { ReactNode } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -123,6 +125,7 @@ function NavLink({
 }
 
 export function SidebarNav() {
+  const { text } = useUiLanguage();
   const pathname = usePathname();
   const { setOpenMobile, isMobile } = useSidebar();
   const { isOperator } = useAuth();
@@ -135,14 +138,16 @@ export function SidebarNav() {
   return (
     <>
       <SidebarGroup>
-        <SidebarGroupLabel>Workspace</SidebarGroupLabel>
+        <SidebarGroupLabel>
+          <span>{text("Workspace")}</span>
+        </SidebarGroupLabel>
         <SidebarGroupContent>
           <SidebarMenu>
             {WORKSPACE.map(({ href, label, icon }) => (
               <NavLink
                 key={href}
                 href={href}
-                label={label}
+                label={text(label)}
                 icon={icon}
                 active={pathname === href}
                 onNavigate={close}
@@ -154,6 +159,7 @@ export function SidebarNav() {
             {isOperator ? (
               <NavLink
                 {...ADMIN_ENTRY}
+                label={text(ADMIN_ENTRY.label)}
                 active={adminSectionFrom(pathname) !== null}
                 onNavigate={close}
               />
@@ -163,9 +169,11 @@ export function SidebarNav() {
       </SidebarGroup>
 
       {app ? (
-        <nav aria-label="App sections">
+        <nav aria-label={text("App sections")}>
           <SidebarGroup>
-            <SidebarGroupLabel>App</SidebarGroupLabel>
+            <SidebarGroupLabel>
+              <span>{text("App")}</span>
+            </SidebarGroupLabel>
             <SidebarGroupContent>
               <SidebarMenu>
                 {APP_SECTIONS.map(({ segment, label }) => {
@@ -175,7 +183,7 @@ export function SidebarNav() {
                     <SidebarMenuItem key={segment || "overview"}>
                       <SidebarMenuButton
                         asChild
-                        tooltip={label}
+                        tooltip={text(label)}
                         isActive={active}
                       >
                         <Link
@@ -184,7 +192,7 @@ export function SidebarNav() {
                           aria-current={active ? "page" : undefined}
                         >
                           <Icon />
-                          <span>{label}</span>
+                          <span>{text(label)}</span>
                         </Link>
                       </SidebarMenuButton>
                     </SidebarMenuItem>

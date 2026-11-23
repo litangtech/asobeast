@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText } from "@/components/language/UiLanguage";
 import { Suspense, useId } from "react";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { useQueryState } from "nuqs";
@@ -155,7 +156,9 @@ function ImpactMarketSelect({
 
   return (
     <div className="flex flex-wrap items-center gap-2">
-      <Label htmlFor={selectId}>Market</Label>
+      <Label htmlFor={selectId}>
+        <UiText message={"Market"} />
+      </Label>
       <Select value={market} onValueChange={onChange}>
         <SelectTrigger id={selectId} className="w-[220px]">
           <SelectValue />

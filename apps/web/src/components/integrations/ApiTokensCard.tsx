@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText } from "@/components/language/UiLanguage";
 import { useState } from "react";
 import type { FormEvent } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -121,7 +122,7 @@ function TokenSecret({
       </DialogBody>
       <DialogFooter>
         <Button type="button" onClick={onDone}>
-          Done
+          <UiText message={"Done"} />
         </Button>
       </DialogFooter>
     </>
@@ -302,7 +303,9 @@ export function ApiTokensCard() {
                   <TableHead className="numeric text-right">Requests</TableHead>
                   <TableHead>Created</TableHead>
                   <TableHead className="w-0">
-                    <span className="sr-only">Actions</span>
+                    <span className="sr-only">
+                      <UiText message={"Actions"} />
+                    </span>
                   </TableHead>
                 </TableRow>
               </TableHeader>

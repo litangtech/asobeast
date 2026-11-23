@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText } from "@/components/language/UiLanguage";
 import Link from "next/link";
 import { useAuth } from "@/components/auth/use-auth";
 import { Button } from "@/components/ui/button";
@@ -61,10 +62,10 @@ export function TrackCombinationsDialog({
             disabled={pending}
             onClick={() => onOpenChange(false)}
           >
-            Cancel
+            <UiText message={"Cancel"} />
           </Button>
           <Button disabled={pending} onClick={onConfirm}>
-            Track
+            <UiText message={"Track"} />
           </Button>
         </DialogFooter>
       </DialogContent>

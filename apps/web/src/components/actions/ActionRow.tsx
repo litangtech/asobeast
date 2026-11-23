@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText } from "@/components/language/UiLanguage";
 import type { MouseEvent } from "react";
 import { Check, RotateCcw, StickyNote } from "lucide-react";
 import type { ActionItem } from "@asobeast/shared";
@@ -112,7 +113,9 @@ function RowControls({
         onClick={() => update({ status: "DONE" })}
       >
         <Check aria-hidden />
-        <span className="hidden @2xl/queue:inline">Done</span>
+        <span className="hidden @2xl/queue:inline">
+          <UiText message={"Done"} />
+        </span>
       </Button>
       <div className="hidden items-center gap-2 @2xl/queue:flex">
         <ActionSnoozeMenu

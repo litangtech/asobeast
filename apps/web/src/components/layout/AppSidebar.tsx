@@ -1,3 +1,4 @@
+import { UiText } from "@/components/language/UiLanguage";
 import Image from "next/image";
 import Link from "next/link";
 import { BookOpen } from "lucide-react";
@@ -66,13 +67,21 @@ export function AppSidebar() {
                   target="_blank"
                 >
                   <BookOpen />
-                  <span>Documentation</span>
+                  <span>
+                    <UiText message={"Documentation"} />
+                  </span>
                 </a>
               </SidebarMenuButton>
             </SidebarMenuItem>
           </SidebarMenu>
           <div className="px-2 pb-1 text-caption text-muted-foreground group-data-[collapsible=icon]:hidden">
-            <p>Open source ASO toolkit for the App Store and Google Play.</p>
+            <p>
+              <UiText
+                message={
+                  "Open source ASO toolkit for the App Store and Google Play."
+                }
+              />
+            </p>
             {version ? (
               <p>
                 <a

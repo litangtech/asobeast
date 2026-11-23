@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText } from "@/components/language/UiLanguage";
 import { useCallback, useState } from "react";
 import {
   useMutation,
@@ -95,7 +96,9 @@ export function SuggestionsPanel({
           className="flex w-full items-start justify-between gap-4 text-left"
         >
           <div className="flex flex-col gap-1">
-            <CardTitle>Suggestions</CardTitle>
+            <CardTitle>
+              <UiText message={"Suggestions"} />
+            </CardTitle>
             <CardDescription>
               {formatList(storeLookupLabels())} run a live {storeLabel(store)}{" "}
               lookup, so results can take a few seconds.

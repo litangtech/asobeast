@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText } from "@/components/language/UiLanguage";
 import { Suspense, useState } from "react";
 import {
   useMutation,
@@ -77,13 +78,15 @@ function GuidelinesForm({ id, onSaved }: { id: string; onSaved: () => void }) {
       </DialogBody>
       <DialogFooter>
         <DialogClose asChild>
-          <Button variant="outline">Cancel</Button>
+          <Button variant="outline">
+            <UiText message={"Cancel"} />
+          </Button>
         </DialogClose>
         <Button
           disabled={saving.isPending || limit.over > 0}
           onClick={() => saveOnce()}
         >
-          Save
+          <UiText message={"Save"} />
         </Button>
       </DialogFooter>
     </>

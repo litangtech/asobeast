@@ -2,6 +2,19 @@ import type { Release } from "./release-notes";
 
 export const LATER_RELEASES: readonly Release[] = [
   {
+    version: "1.17.0",
+    date: "2026-11-23",
+    title: "Dashboard language preference",
+    summary: "Choose English or Simplified Chinese in Settings.",
+    changes: [
+      {
+        kind: "new",
+        title: "Simplified Chinese dashboard",
+        text: "Settings remembers the display language for this browser. Switch between English and Simplified Chinese for the main navigation and common controls.",
+      },
+    ],
+  },
+  {
     version: "1.16.0",
     date: "2026-11-03",
     title: "Find new keywords and know what changed",

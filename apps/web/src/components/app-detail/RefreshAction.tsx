@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText } from "@/components/language/UiLanguage";
 import { useId, useRef, useState } from "react";
 import {
   useIsMutating,
@@ -70,7 +71,9 @@ export function RefreshAction({ appId }: { appId: string }) {
         ) : (
           <RefreshCw />
         )}
-        <span className="hidden lg:inline">Refresh</span>
+        <span className="hidden lg:inline">
+          <UiText message={"Refresh"} />
+        </span>
       </Button>
       {refreshable ? null : (
         <span id={reasonId} className="sr-only">

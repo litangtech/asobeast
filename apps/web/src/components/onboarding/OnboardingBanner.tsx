@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText } from "@/components/language/UiLanguage";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { ListChecks } from "lucide-react";
 import Link from "next/link";
@@ -64,7 +65,7 @@ function SetupBanner({ app, more }: { app: AppInSetup; more: number }) {
           disabled={dismiss.isPending}
           onClick={() => dismiss.mutate()}
         >
-          Dismiss
+          <UiText message={"Dismiss"} />
         </Button>
       </div>
     </Alert>

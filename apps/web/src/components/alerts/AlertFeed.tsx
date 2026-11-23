@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText } from "@/components/language/UiLanguage";
 import { useDeferredValue, useEffect, useMemo, useRef, useState } from "react";
 import { useQuery, useSuspenseInfiniteQuery } from "@tanstack/react-query";
 import { isAlertFeedEvent } from "@asobeast/shared";
@@ -29,7 +30,9 @@ const WHAT_THE_PAGE_LISTS =
 function AlertFeedHeader() {
   return (
     <header className="flex items-center gap-2">
-      <h1 className="text-display tracking-tight text-balance">Alerts</h1>
+      <h1 className="text-display tracking-tight text-balance">
+        <UiText message={"Alerts"} />
+      </h1>
       <InfoTip
         label="About the alerts page"
         title="What the alerts page lists"

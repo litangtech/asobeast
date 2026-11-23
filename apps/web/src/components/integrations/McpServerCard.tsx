@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText } from "@/components/language/UiLanguage";
 import { useState } from "react";
 import type { FormEvent } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -232,7 +233,7 @@ function ConnectDialog() {
             </DialogBody>
             <DialogFooter>
               <Button type="button" onClick={() => reset(false)}>
-                Done
+                <UiText message={"Done"} />
               </Button>
             </DialogFooter>
           </>
