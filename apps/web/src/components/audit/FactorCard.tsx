@@ -58,7 +58,7 @@ export function FactorCard({
           />
           <span className="flex items-center gap-2 text-sm">
             <Icon aria-hidden className="size-4" />
-            {STATUS_LABEL[status]}
+            <UiText message={STATUS_LABEL[status]} />
           </span>
           {waiting && unlock ? (
             <Link

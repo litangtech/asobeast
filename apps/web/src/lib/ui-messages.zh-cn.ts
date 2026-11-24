@@ -3,6 +3,7 @@ import { APPS } from "./ui-copy/apps.zh-cn";
 import { CHARTS } from "./ui-copy/charts.zh-cn";
 import { COMMON_1 } from "./ui-copy/common-1.zh-cn";
 import { COMMON_2 } from "./ui-copy/common-2.zh-cn";
+import { DETAIL_COPY } from "./ui-copy/detail-copy.zh-cn";
 import { KEYWORDS_1 } from "./ui-copy/keywords-1.zh-cn";
 import { KEYWORDS_2 } from "./ui-copy/keywords-2.zh-cn";
 import { LISTING } from "./ui-copy/listing.zh-cn";
@@ -24,6 +25,7 @@ export const SIMPLIFIED_CHINESE: Readonly<Record<string, string>> = {
   ...WORKSPACE_1,
   ...WORKSPACE_2,
   ...CHARTS,
+  ...DETAIL_COPY,
 
   "Add a high-opportunity keyword to your metadata":
     "将高机会关键词添加到元数据",

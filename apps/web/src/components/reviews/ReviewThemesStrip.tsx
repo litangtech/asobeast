@@ -43,6 +43,7 @@ function ThemeChip({
   selected: boolean;
   onSelect: (phrase: string) => void;
 }) {
+  const { language } = useUiLanguage();
   return (
     <Button
       size="sm"
@@ -57,7 +58,20 @@ function ThemeChip({
       >
         {formatNumber(theme.mentions)}
       </span>
-      <span className="sr-only">{themeDetail(theme, negativeScoreMax)}</span>
+      <span className="sr-only">
+        {language === "zh-CN" ? (
+          <UiText
+            message="Mentioned in {0} reviews, {1} at {2} stars or less"
+            values={[
+              formatNumber(theme.mentions),
+              formatNumber(theme.negative),
+              negativeScoreMax,
+            ]}
+          />
+        ) : (
+          themeDetail(theme, negativeScoreMax)
+        )}
+      </span>
     </Button>
   );
 }
@@ -125,7 +139,7 @@ export function ReviewThemesStrip({
               id={`${headingId}-${kind}`}
               className="w-20 shrink-0 text-caption text-muted-foreground"
             >
-              {KIND_LABELS[kind]}
+              <UiText message={KIND_LABELS[kind]} />
             </span>
             <ul
               aria-labelledby={`${headingId}-${kind}`}

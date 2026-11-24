@@ -1,4 +1,6 @@
-import { UiText } from "@/components/language/UiLanguage";
+"use client";
+
+import { UiText, useUiLanguage } from "@/components/language/UiLanguage";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import type { AuditRecommendation } from "@asobeast/shared";
@@ -8,6 +10,7 @@ import {
   EFFORT_LABEL,
   IMPACT_LABEL,
   liftLabel,
+  recommendationLabel,
   TARGET_LABEL,
 } from "./audit-copy";
 import { targetHref } from "./audit-links";
@@ -19,6 +22,7 @@ export function RecommendationCard({
   appId: string;
   item: AuditRecommendation;
 }) {
+  const { language } = useUiLanguage();
   const href = item.target ? targetHref(appId, item.target) : null;
   const label = item.target ? TARGET_LABEL[item.target] : null;
 
@@ -27,26 +31,32 @@ export function RecommendationCard({
       <CardContent className="flex flex-col gap-2">
         <div className="flex items-start justify-between gap-3">
           <h4 className="text-body font-medium">
-            <UiText message={item.label} />
+            {recommendationLabel(item.label, language)}
           </h4>
           <span className="numeric shrink-0 font-mono text-body font-semibold">
-            {liftLabel(item.lift)}
+            {liftLabel(item.lift, language)}
           </span>
         </div>
         <div className="flex flex-wrap items-center gap-2">
           {item.impact ? (
             <Badge variant={item.impact === "high" ? "success" : "secondary"}>
-              {IMPACT_LABEL[item.impact]}
+              <UiText message={IMPACT_LABEL[item.impact]} />
             </Badge>
           ) : null}
           {item.effort ? (
-            <Badge variant="outline">{EFFORT_LABEL[item.effort]}</Badge>
+            <Badge variant="outline">
+              <UiText message={EFFORT_LABEL[item.effort]} />
+            </Badge>
           ) : null}
         </div>
         <p className="text-sm text-muted-foreground">
           <UiText message={item.detail} />
         </p>
-        {item.fix ? <p className="text-sm">{item.fix}</p> : null}
+        {item.fix ? (
+          <p className="text-sm">
+            <UiText message={item.fix} />
+          </p>
+        ) : null}
         {label ? (
           href ? (
             <Link

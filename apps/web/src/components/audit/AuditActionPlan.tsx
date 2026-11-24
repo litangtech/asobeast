@@ -1,6 +1,6 @@
 "use client";
 
-import { UiText } from "@/components/language/UiLanguage";
+import { UiText, useUiLanguage } from "@/components/language/UiLanguage";
 import { useState } from "react";
 import type {
   AppAuditResult,
@@ -39,7 +39,9 @@ function BucketPanel({
 
   return (
     <TabsContent value={bucket} className="flex flex-col gap-3">
-      <h3 className="sr-only">{BUCKET_LABEL[bucket]}</h3>
+      <h3 className="sr-only">
+        <UiText message={BUCKET_LABEL[bucket]} />
+      </h3>
       {items.length === 0 ? (
         <p className="text-sm text-muted-foreground">
           {emptyBucketLine(unanswered)}
@@ -76,6 +78,7 @@ export function AuditActionPlan({
   appId: string;
   audit: AppAuditResult;
 }) {
+  const { text: uiLabel } = useUiLanguage();
   const unanswered = unansweredCount(audit.unlocks);
 
   return (
@@ -91,7 +94,13 @@ export function AuditActionPlan({
         <TabsList scrollable>
           {BUCKETS.map((bucket) => (
             <TabsTrigger key={bucket} value={bucket}>
-              {`${BUCKET_TAB_LABEL[bucket]}, ${audit.recommendations[bucket].length}`}
+              <UiText
+                message="{0}, {1}"
+                values={[
+                  uiLabel(BUCKET_TAB_LABEL[bucket]),
+                  audit.recommendations[bucket].length,
+                ]}
+              />
             </TabsTrigger>
           ))}
         </TabsList>

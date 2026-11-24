@@ -27,14 +27,18 @@ const WARNING_COPY =
   "Daily jobs may not finish within store rate limits; remove keywords or countries, or raise SCRAPE_ITUNES_RPM at your own risk.";
 
 export function BudgetCard() {
-  const { text: uiLabel } = useUiLanguage();
+  const { language, text: uiLabel } = useUiLanguage();
   const { data: budget } = useSuspenseQuery(budgetOptions);
   const level = utilizationLevel(budget.utilization);
-  const completion = budgetCompletionSentence(budget.completion, budget.total);
+  const completion = budgetCompletionSentence(
+    budget.completion,
+    budget.total,
+    language,
+  );
   const notes = [
     marketListingsNote(budget.marketListings),
     localizationsNote(budget.localizations),
-    discoveryNote(budget.discovery),
+    discoveryNote(budget.discovery, language),
   ].filter((note): note is string => note !== null);
 
   const rows = [
@@ -105,7 +109,7 @@ export function BudgetCard() {
               <UiText message="requests/day" />
             </span>
             <span className="font-medium tabular-nums">
-              {utilizationStatus(budget.utilization)} ·{" "}
+              <UiText message={utilizationStatus(budget.utilization)} /> ·{" "}
               {utilizationPercent(budget.utilization)}%
             </span>
           </div>

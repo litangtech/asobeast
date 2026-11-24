@@ -79,7 +79,9 @@ function LocalizationsPanel({
               <ExternalLink className="size-3.5" aria-hidden />
             </a>
           </p>
-          <p className="text-body text-foreground">{LOCALIZED_FIELDS_NOTE}</p>
+          <p className="text-body text-foreground">
+            <UiText message={LOCALIZED_FIELDS_NOTE} />
+          </p>
         </div>
         {grid ? (
           <LocalizationMatrix

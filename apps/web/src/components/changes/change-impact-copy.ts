@@ -4,45 +4,72 @@ import type {
   ChangeImpactWindow,
 } from "@asobeast/shared";
 import { formatConversion, formatCount } from "@/lib/funnel";
-import { formatDate, formatMeasure } from "@/lib/format";
+import { formatMeasure } from "@/lib/format";
+import { uiDate } from "@/lib/ui-formats";
+import { uiText, type UiLanguage } from "@/lib/ui-language";
 
 const dateList = new Intl.ListFormat("en-US", { type: "conjunction" });
 
 const plural = (count: number, noun: string): string =>
   `${count} ${noun}${count === 1 ? "" : "s"}`;
 
-export function windowTitle(days: number): string {
-  return `After ${days} days`;
+export function windowTitle(days: number, language: UiLanguage = "en"): string {
+  return uiText(language, "After {0} days", [days]);
 }
 
 export function windowStatusLine(
   impact: Pick<ChangeImpactWindow, "status" | "targetDate" | "measuredOn">,
+  language: UiLanguage = "en",
 ): string {
   if (impact.status === "pending") {
-    return `Measurable on ${formatDate(impact.targetDate)}`;
+    return uiText(language, "Measurable on {0}", [
+      uiDate(language, impact.targetDate, "date"),
+    ]);
   }
   if (impact.status === "measured") {
-    return `Measured on ${formatDate(impact.measuredOn)}`;
+    return uiText(language, "Measured on {0}", [
+      uiDate(language, impact.measuredOn, "date"),
+    ]);
   }
-  return `No rank check near ${formatDate(impact.targetDate)}`;
+  return uiText(language, "No rank check near {0}", [
+    uiDate(language, impact.targetDate, "date"),
+  ]);
 }
 
-export function movementLine(movement: ChangeImpactMovement): string {
-  return `${movement.improved} improved, ${movement.declined} declined`;
+export function movementLine(
+  movement: ChangeImpactMovement,
+  language: UiLanguage = "en",
+): string {
+  return uiText(language, "{0} improved, {1} declined", [
+    movement.improved,
+    movement.declined,
+  ]);
 }
 
 export function rankingShiftLine(
   movement: ChangeImpactMovement,
+  language: UiLanguage = "en",
 ): string | null {
   const parts = [
-    movement.entered > 0 ? `${movement.entered} started ranking` : null,
-    movement.exited > 0 ? `${movement.exited} stopped ranking` : null,
+    movement.entered > 0
+      ? uiText(language, "{0} started ranking", [movement.entered])
+      : null,
+    movement.exited > 0
+      ? uiText(language, "{0} stopped ranking", [movement.exited])
+      : null,
   ].filter((part): part is string => part !== null);
-  return parts.length === 0 ? null : parts.join(", ");
+  return parts.length === 0
+    ? null
+    : parts.join(language === "zh-CN" ? "，" : ", ");
 }
 
-export function measuredLine(movement: ChangeImpactMovement): string {
-  return `${plural(movement.measured, "keyword")} checked on both days`;
+export function measuredLine(
+  movement: ChangeImpactMovement,
+  language: UiLanguage = "en",
+): string {
+  return language === "zh-CN"
+    ? uiText(language, "{0} keywords checked on both days", [movement.measured])
+    : `${plural(movement.measured, "keyword")} checked on both days`;
 }
 
 export function visibilityRange(
@@ -53,26 +80,46 @@ export function visibilityRange(
   return `${formatMeasure(before)} → ${formatMeasure(after)}`;
 }
 
-export function overlapNotice(dates: readonly string[]): string | null {
+export function overlapNotice(
+  dates: readonly string[],
+  language: UiLanguage = "en",
+): string | null {
   if (dates.length === 0) return null;
-  const list = dateList.format(dates.map((date) => formatDate(date)));
+  const formatted = dates.map((date) => uiDate(language, date, "date"));
+  const list =
+    language === "zh-CN" ? formatted.join("、") : dateList.format(formatted);
   return dates.length === 1
-    ? `Another change on ${list} falls inside this window.`
-    : `Other changes on ${list} fall inside this window.`;
+    ? uiText(language, "Another change on {0} falls inside this window.", [
+        list,
+      ])
+    : uiText(language, "Other changes on {0} fall inside this window.", [list]);
 }
 
-export function impactScopeLine({
-  days,
-  totalChanges,
-  shown,
-}: {
-  days: number;
-  totalChanges: number;
-  shown: number;
-}): string {
+export function impactScopeLine(
+  {
+    days,
+    totalChanges,
+    shown,
+  }: {
+    days: number;
+    totalChanges: number;
+    shown: number;
+  },
+  language: UiLanguage = "en",
+): string {
+  if (language === "zh-CN" && shown === totalChanges)
+    return uiText(
+      language,
+      "{0} changes to your listing in the last {1} days",
+      [shown, days],
+    );
   return shown === totalChanges
     ? `${plural(shown, "change")} to your listing in the last ${days} days`
-    : `The ${shown} newest of ${totalChanges} changes to your listing in the last ${days} days`;
+    : uiText(
+        language,
+        "The {0} newest of {1} changes to your listing in the last {2} days",
+        [shown, totalChanges, days],
+      );
 }
 
 export interface FunnelRanges {
@@ -95,13 +142,25 @@ export function funnelRanges(
 export function funnelNote(
   funnel: ChangeImpactFunnel | null | undefined,
   days: number,
+  language: UiLanguage = "en",
 ): string | null {
   if (!funnel || funnel.status === "measured") return null;
   if (funnel.status === "unmeasured") {
-    return "No console data before this change";
+    return uiText(language, "No console data before this change");
   }
   if (funnel.finalOn) {
-    return `The console's numbers for this window are final by ${formatDate(funnel.finalOn)}`;
+    return uiText(
+      language,
+      "The console's numbers for this window are final by {0}",
+      [uiDate(language, funnel.finalOn, "date")],
+    );
   }
-  return `The console's numbers for this window are final in ${plural(days - funnel.completeDays, "day")}`;
+  const remaining = days - funnel.completeDays;
+  return language === "zh-CN"
+    ? uiText(
+        language,
+        "The console's numbers for this window are final in {0} days",
+        [remaining],
+      )
+    : `The console's numbers for this window are final in ${plural(remaining, "day")}`;
 }

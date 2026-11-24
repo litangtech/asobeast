@@ -1,4 +1,6 @@
-import { UiText } from "@/components/language/UiLanguage";
+"use client";
+
+import { UiText, useUiLanguage } from "@/components/language/UiLanguage";
 import type { ReactNode } from "react";
 import { TriangleAlert } from "lucide-react";
 import type { ChangeImpactWindow, Store } from "@asobeast/shared";
@@ -28,9 +30,10 @@ function Fact({ label, children }: { label: string; children: ReactNode }) {
 }
 
 function MeasuredFacts({ impact }: { impact: ChangeImpactWindow }) {
+  const { language } = useUiLanguage();
   const range = visibilityRange(impact);
   if (impact.movement === null || range === null) return null;
-  const shift = rankingShiftLine(impact.movement);
+  const shift = rankingShiftLine(impact.movement, language);
 
   return (
     <dl className="flex flex-col gap-2 text-body">
@@ -45,10 +48,10 @@ function MeasuredFacts({ impact }: { impact: ChangeImpactWindow }) {
         </dd>
       </Fact>
       <Fact label="Keywords">
-        <dd>{movementLine(impact.movement)}</dd>
+        <dd>{movementLine(impact.movement, language)}</dd>
         {shift ? <dd>{shift}</dd> : null}
         <dd className="text-caption text-muted-foreground">
-          {measuredLine(impact.movement)}
+          {measuredLine(impact.movement, language)}
         </dd>
       </Fact>
       <Fact label="Median position">
@@ -72,8 +75,9 @@ interface WindowProps {
 }
 
 export function FunnelFacts({ impact, store }: WindowProps) {
+  const { language } = useUiLanguage();
   const ranges = funnelRanges(impact.funnel);
-  const note = funnelNote(impact.funnel, impact.days);
+  const note = funnelNote(impact.funnel, impact.days, language);
   if (!ranges && !note) return null;
   const gets = impact.funnel?.change?.gets ?? null;
   const getsLabel = FUNNEL_GETS_LABEL[store];
@@ -84,7 +88,7 @@ export function FunnelFacts({ impact, store }: WindowProps) {
         {ranges ? (
           <>
             <dd className="flex flex-wrap items-center gap-2">
-              <span>{getsLabel}</span>
+              <UiText message={getsLabel} />
               <span className="numeric font-mono">{ranges.gets}</span>
               <DeltaChip
                 value={gets === null ? null : Math.round(gets * 100)}
@@ -109,13 +113,16 @@ export function FunnelFacts({ impact, store }: WindowProps) {
 }
 
 export function ChangeImpactWindowTile({ impact, store }: WindowProps) {
-  const notice = overlapNotice(impact.overlappingChanges);
+  const { language } = useUiLanguage();
+  const notice = overlapNotice(impact.overlappingChanges, language);
 
   return (
     <li className="flex flex-col gap-2 rounded-lg border p-3">
-      <h4 className="text-body font-medium">{windowTitle(impact.days)}</h4>
+      <h4 className="text-body font-medium">
+        {windowTitle(impact.days, language)}
+      </h4>
       <p className="text-caption text-muted-foreground">
-        {windowStatusLine(impact)}
+        {windowStatusLine(impact, language)}
       </p>
       <MeasuredFacts impact={impact} />
       <FunnelFacts impact={impact} store={store} />

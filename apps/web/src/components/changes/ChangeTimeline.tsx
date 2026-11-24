@@ -92,8 +92,10 @@ function ChangeValue({
         <TooltipTrigger asChild>
           <span className="break-words">
             <span className="text-muted-foreground">
-              {CHANGE_FIELD_LABELS.whatsNew}
-              <UiText message="updated:" />{" "}
+              <UiText
+                message={`${CHANGE_FIELD_LABELS.whatsNew} updated:`}
+                trailing
+              />
             </span>
             <span
               className={cn(
@@ -193,9 +195,13 @@ export function ChangeRow({
             )}
           </Badge>
           <Badge variant="outline">
-            {localizedLabel(
-              CHANGE_FIELD_LABELS[event.field],
-              event.localization,
+            {event.localization ? (
+              localizedLabel(
+                CHANGE_FIELD_LABELS[event.field],
+                event.localization,
+              )
+            ) : (
+              <UiText message={CHANGE_FIELD_LABELS[event.field]} />
             )}
           </Badge>
         </div>

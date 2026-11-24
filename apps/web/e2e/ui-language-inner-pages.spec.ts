@@ -44,6 +44,9 @@ for (const route of routes) {
     if (route.endsWith("/keywords")) {
       await expect(main.getByText("导出 CSV").first()).toBeVisible();
       await expect(
+        main.getByRole("tab", { name: /已发现 9 个/ }),
+      ).toBeVisible();
+      await expect(
         main.getByText("focus timer", { exact: true }).first(),
       ).toBeVisible();
     }
@@ -51,7 +54,16 @@ for (const route of routes) {
       await expect(main).toContainText(/排名从/);
     }
     if (route === "/apps/app-1/actions") {
-      await expect(main).toContainText("habit tracker");
+      await expect(main).toContainText("将「habit tracker」添加到元数据");
+    }
+    if (route.endsWith("/audit")) {
+      await expect(main).toContainText("已评估 82% 的审计项目");
+    }
+    if (route.endsWith("/changes")) {
+      await expect(main).toContainText("最近 90 天，商店详情页有 4 次变更");
+    }
+    if (route.endsWith("/metadata")) {
+      await expect(main).toContainText("4 张截图中有 2 张含文案。");
     }
   });
 }

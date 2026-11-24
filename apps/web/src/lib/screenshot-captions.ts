@@ -1,3 +1,4 @@
+import { uiText, type UiLanguage } from "./ui-language";
 import type { AppScreenshots, ScreenshotCaptionStatus } from "@asobeast/shared";
 import { PRODUCT_NAME } from "./brand";
 
@@ -17,23 +18,43 @@ export function hasPendingScreenshots(
   return data?.screenshots.some((item) => item.status === "pending") ?? false;
 }
 
-export function screenshotSummary(data: AppScreenshots): string {
+export function screenshotSummary(
+  data: AppScreenshots,
+  language: UiLanguage = "en",
+): string {
   if (data.reading === "unsupported") {
-    return `Google Play does not index screenshot text, so ${PRODUCT_NAME} does not read it.`;
+    return uiText(
+      language,
+      "Google Play does not index screenshot text, so {0} does not read it.",
+      [PRODUCT_NAME],
+    );
   }
   if (data.reading === "off") {
-    return "Reading screenshot text is switched off on this instance.";
+    return uiText(
+      language,
+      "Reading screenshot text is switched off on this instance.",
+    );
   }
   const total = data.screenshots.length;
   if (total === 0) {
-    return "No screenshots recorded yet. Refresh the app to capture them.";
+    return uiText(
+      language,
+      "No screenshots recorded yet. Refresh the app to capture them.",
+    );
   }
   const settled = data.screenshots.filter(
     (item) => item.status !== "pending",
   ).length;
   if (settled < total) {
-    return `Reading ${settled} of ${total} screenshots. This page updates when they are done.`;
+    return uiText(
+      language,
+      "Reading {0} of {1} screenshots. This page updates when they are done.",
+      [settled, total],
+    );
   }
   const read = data.screenshots.filter((item) => item.caption !== null).length;
-  return `${read} of ${total} screenshots carry a caption.`;
+  return uiText(language, "{0} of {1} screenshots carry a caption.", [
+    read,
+    total,
+  ]);
 }

@@ -25,7 +25,7 @@ export function FactorChecks({
               />
               <UiText message={check.label} />
               <span className="text-caption text-muted-foreground">
-                {STATUS_LABEL[check.status]}
+                <UiText message={STATUS_LABEL[check.status]} />
               </span>
             </span>
             <span className="text-muted-foreground">

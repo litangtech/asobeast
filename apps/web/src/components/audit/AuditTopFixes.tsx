@@ -1,8 +1,10 @@
-import { UiText } from "@/components/language/UiLanguage";
+"use client";
+
+import { UiText, useUiLanguage } from "@/components/language/UiLanguage";
 import Link from "next/link";
 import type { AuditRecommendations } from "@asobeast/shared";
 import { Card, CardContent } from "@/components/ui/card";
-import { liftLabel } from "./audit-copy";
+import { liftLabel, recommendationLabel } from "./audit-copy";
 import { topFixes } from "./top-fixes";
 
 export function AuditTopFixes({
@@ -10,6 +12,7 @@ export function AuditTopFixes({
 }: {
   recommendations: AuditRecommendations;
 }) {
+  const { language } = useUiLanguage();
   const fixes = topFixes(recommendations);
 
   return (
@@ -37,10 +40,10 @@ export function AuditTopFixes({
                     <span className="numeric font-mono text-muted-foreground">
                       {index + 1}.{" "}
                     </span>
-                    <UiText message={item.label} />
+                    {recommendationLabel(item.label, language)}
                   </span>
                   <span className="numeric shrink-0 font-mono font-semibold">
-                    {liftLabel(item.lift)}
+                    {liftLabel(item.lift, language)}
                   </span>
                 </li>
               ))}

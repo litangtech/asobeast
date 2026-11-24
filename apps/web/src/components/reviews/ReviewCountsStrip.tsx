@@ -60,7 +60,7 @@ export function ReviewCountsStrip({
         {states.map(({ value, label }) => (
           <StatTile
             key={value}
-            label={label}
+            label={uiLabel(label)}
             value={formatNumber(counts[COUNT_OF[value]])}
             selected={view.replyState === value}
             onSelect={() => onSelect(view.replyState === value ? null : value)}

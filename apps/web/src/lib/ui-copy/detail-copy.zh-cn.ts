@@ -1,0 +1,87 @@
+export const DETAIL_COPY = {
+  "After {0} days": "{0} 天后",
+  "Measurable on {0}": "可在 {0} 测量",
+  "Measured on {0}": "测量于 {0}",
+  "No rank check near {0}": "{0} 前后没有排名检查",
+  "{0} improved, {1} declined": "{0} 个上升，{1} 个下降",
+  "{0} started ranking": "{0} 个开始获得排名",
+  "{0} stopped ranking": "{0} 个失去排名",
+  "{0} keywords checked on both days": "两天均检查了 {0} 个关键词",
+  "Another change on {0} falls inside this window.":
+    "这段时间内，{0} 还有一次变更。",
+  "Other changes on {0} fall inside this window.":
+    "这段时间内，{0} 还有其他变更。",
+  "{0} changes to your listing in the last {1} days":
+    "最近 {1} 天，商店详情页有 {0} 次变更",
+  "The {0} newest of {1} changes to your listing in the last {2} days":
+    "最近 {2} 天商店详情页共变更 {1} 次，显示最新的 {0} 次",
+  "No console data before this change": "变更前没有商店控制台数据",
+  "The console's numbers for this window are final by {0}":
+    "该时间段的商店控制台数据将于 {0} 定稿",
+  "The console's numbers for this window are final in {0} days":
+    "该时间段的商店控制台数据将在 {0} 天后定稿",
+  "Get taps": "获取点击",
+  "Needs reply": "待回复",
+  "Draft saved": "已保存草稿",
+  Replied: "已回复",
+  Complaints: "负面反馈",
+  Praise: "正面反馈",
+  "Mentioned in {0} reviews, {1} at {2} stars or less":
+    "在 {0} 条评论中提及，其中 {1} 条为 {2} 星及以下",
+  "Discovered {0}": "已发现 {0} 个",
+  Default: "默认",
+  Also: "同时读取",
+  "Each localization has its own 30 character title, 30 character subtitle and 100 character keyword field.":
+    "每种本地化语言各有 30 字符标题、30 字符副标题和 100 字符关键词字段。",
+  "Search visibility": "搜索可见度",
+  "{0}% of the rubric measured": "已评估 {0}% 的审计项目",
+  "Reach {0} by finishing the plan": "完成优化计划后预计可达 {0} 分",
+  "Provisional · {0}% measured": "暂定评分 · 已评估 {0}%",
+  "Lift not estimated": "尚无预计提升",
+  "Add a subtitle": "添加副标题",
+  "Raise your search visibility": "提高搜索可见度",
+  "Use the {0} unused {1} characters": "利用{1}剩余的 {0} 个字符",
+  title: "标题",
+  subtitle: "副标题",
+  "short description": "简短描述",
+  "High impact": "影响较大",
+  "Medium impact": "影响中等",
+  "Low impact": "影响较小",
+  "Quick wins": "可快速改善",
+  Strategic: "长期优化",
+  "Quick wins · Today": "可快速改善 · 今天",
+  "High impact · This week": "影响较大 · 本周",
+  "Strategic · This month": "长期优化 · 本月",
+  "{0}, {1}": "{0}，{1} 项",
+  Minutes: "几分钟",
+  Hours: "几小时",
+  Weeks: "几周",
+  "Needs work": "待改善",
+  "Not scored yet": "尚未评分",
+  "Open the metadata workbench": "打开元数据编辑页",
+  "{0} of {1} screenshots carry a caption.": "{1} 张截图中有 {0} 张含文案。",
+  "Keyword discovery adds up to {0} searches per week, about {1} requests, outside the daily total.":
+    "关键词发现每周最多搜索 {0} 次，约需 {1} 次请求，另计于每日总量之外。",
+  "The next run starts {0}": "下次运行于 {0} 开始",
+  "{0} and has nothing to collect yet.": "{0}，暂无待采集的数据。",
+  "{0}.": "{0}。",
+  "{0} and is expected to finish within a minute.": "{0}，预计在一分钟内完成。",
+  "{0} and is expected to finish around {1}, after about {2} hours of collection.":
+    "{0}，预计于 {1} 完成，采集约需 {2} 小时。",
+  "vs previous day": "与前一天相比",
+  Grossing: "畅销榜",
+  "+{0} points": "+{0} 分",
+  "Google Play does not index screenshot text, so {0} does not read it.":
+    "Google Play 不会索引截图文案，因此 {0} 不会读取这类文案。",
+  "Reading screenshot text is switched off on this instance.":
+    "当前实例已关闭截图文案识别。",
+  "No screenshots recorded yet. Refresh the app to capture them.":
+    "暂无截图。刷新应用即可采集。",
+  "Reading {0} of {1} screenshots. This page updates when they are done.":
+    "共 {1} 张截图，已处理 {0} 张。全部处理完毕后，页面会自动更新。",
+  "What's new updated:": "更新说明已更新：",
+  "What's new": "更新说明",
+  "{0} star": "{0} 星",
+  "{0} ratings": "{0} 条评分",
+  "{0} ratings as of {1}": "截至 {1}，共 {0} 条评分",
+};

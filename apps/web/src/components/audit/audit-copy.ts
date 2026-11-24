@@ -13,6 +13,7 @@ import type {
 } from "@asobeast/shared";
 import { healthTone, type HealthTone } from "@/components/ui/meter";
 import { pluralize, storeLabel } from "@/lib/format";
+import { uiText, type UiLanguage } from "@/lib/ui-language";
 
 export const PROVISIONAL_CONFIDENCE = 0.6;
 
@@ -116,16 +117,25 @@ export const percent = (share: number): number => Math.round(share * 100);
 export const gradeLabel = (grade: AuditGrade | null | undefined): string =>
   grade ? GRADE_LABEL[grade] : NO_GRADE_LABEL;
 
-export const measuredLine = (confidence: number | undefined): string | null =>
+export const measuredLine = (
+  confidence: number | undefined,
+  language: UiLanguage = "en",
+): string | null =>
   confidence === undefined
     ? null
-    : `${percent(confidence)}% of the rubric measured`;
+    : uiText(language, "{0}% of the rubric measured", [percent(confidence)]);
 
-export const potentialLine = (potential: number): string =>
-  `Reach ${Math.round(potential)} by finishing the plan`;
+export const potentialLine = (
+  potential: number,
+  language: UiLanguage = "en",
+): string =>
+  uiText(language, "Reach {0} by finishing the plan", [Math.round(potential)]);
 
-export const provisionalLine = (confidence: number): string =>
-  `Provisional · ${percent(confidence)}% measured`;
+export const provisionalLine = (
+  confidence: number,
+  language: UiLanguage = "en",
+): string =>
+  uiText(language, "Provisional · {0}% measured", [percent(confidence)]);
 
 export const availabilityLabel = (
   availability: AuditFactorAvailability | undefined,
@@ -137,8 +147,30 @@ export const availabilityLabel = (
   return availability === "awaiting-input" ? "Waiting for input" : null;
 };
 
-export const liftLabel = (lift: number | undefined): string =>
-  lift === undefined ? "Lift not estimated" : `+${lift} points`;
+export const liftLabel = (
+  lift: number | undefined,
+  language: UiLanguage = "en",
+): string =>
+  lift === undefined
+    ? uiText(language, "Lift not estimated")
+    : uiText(language, "+{0} points", [lift]);
+
+export function recommendationLabel(
+  label: string,
+  language: UiLanguage,
+): string {
+  if (language === "en") return label;
+  const unused =
+    /^Use the (\d+) unused (title|subtitle|short description) characters$/.exec(
+      label,
+    );
+  if (unused)
+    return uiText(language, "Use the {0} unused {1} characters", [
+      unused[1],
+      uiText(language, unused[2]),
+    ]);
+  return uiText(language, label);
+}
 
 export const emptyBucketLine = (unanswered: number): string =>
   unanswered === 0

@@ -11,6 +11,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { formatDate, formatNumber, pluralize } from "@/lib/format";
+import { uiDate } from "@/lib/ui-formats";
 import { ratingsHistogramOptions } from "@/lib/queries";
 
 const percentOf = (count: number, total: number): number =>
@@ -32,8 +33,7 @@ function HistogramBars({
         return (
           <li key={star} className="flex items-center gap-3 text-sm">
             <span className="w-14 shrink-0 numeric font-mono whitespace-nowrap text-muted-foreground">
-              {star}
-              <UiText message="star" />
+              <UiText message="{0} star" values={[star]} />
             </span>
             <span
               role="meter"
@@ -59,6 +59,7 @@ function HistogramBars({
 }
 
 export function RatingsHistogramCard({ id }: { id: string }) {
+  const { language, text: uiLabel } = useUiLanguage();
   const { data } = useSuspenseQuery(ratingsHistogramOptions(id));
 
   if (!data.available || data.counts === null || data.total === null) {
@@ -72,7 +73,14 @@ export function RatingsHistogramCard({ id }: { id: string }) {
           <UiText message="Ratings distribution" />
         </CardDescription>
         <CardTitle>
-          {`${pluralize(data.total, "rating")}${data.capturedAt ? ` as of ${formatDate(data.capturedAt)}` : ""}`}
+          {language === "zh-CN"
+            ? data.capturedAt
+              ? uiLabel("{0} ratings as of {1}", [
+                  formatNumber(data.total),
+                  uiDate(language, data.capturedAt, "date"),
+                ])
+              : uiLabel("{0} ratings", [formatNumber(data.total)])
+            : `${pluralize(data.total, "rating")}${data.capturedAt ? ` as of ${formatDate(data.capturedAt)}` : ""}`}
         </CardTitle>
       </CardHeader>
       <CardContent>

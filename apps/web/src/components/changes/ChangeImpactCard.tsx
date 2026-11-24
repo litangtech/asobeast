@@ -34,7 +34,7 @@ import { changeImpactOptions, keywordCountriesOptions } from "@/lib/queries";
 import { changeDaysParser, countryParser } from "@/lib/search-params";
 import { ChangeImpactWindowTile, FunnelFacts } from "./ChangeImpactWindowTile";
 import { CHANGE_FIELD_LABELS } from "@asobeast/shared";
-import { impactScopeLine, windowTitle } from "./change-impact-copy";
+import { impactScopeLine } from "./change-impact-copy";
 import { ChangeImpactSkeleton } from "./skeletons";
 import { VisibilityHelp } from "@/components/visibility/VisibilityHelp";
 
@@ -60,7 +60,7 @@ function ChangeImpactRow({
         </h3>
         {item.fields.map((field) => (
           <Badge key={field} variant="outline">
-            {CHANGE_FIELD_LABELS[field]}
+            <UiText message={CHANGE_FIELD_LABELS[field]} />
           </Badge>
         ))}
       </div>
@@ -108,7 +108,9 @@ function FunnelOnlyTiles({
           key={impact.days}
           className="flex flex-col gap-2 rounded-lg border p-3"
         >
-          <h4 className="text-body font-medium">{windowTitle(impact.days)}</h4>
+          <h4 className="text-body font-medium">
+            <UiText message="After {0} days" values={[impact.days]} />
+          </h4>
           <FunnelFacts impact={impact} store={store} />
         </li>
       ))}
@@ -117,7 +119,7 @@ function FunnelOnlyTiles({
 }
 
 function ChangeImpactList({ id, store, days, market }: ImpactScope) {
-  const { text: uiLabel } = useUiLanguage();
+  const { language, text: uiLabel } = useUiLanguage();
   const { data } = useSuspenseQuery(changeImpactOptions(id, days, market));
 
   if (data.items.length === 0) {
@@ -134,11 +136,14 @@ function ChangeImpactList({ id, store, days, market }: ImpactScope) {
   return (
     <div className="flex flex-col gap-4">
       <p className="text-body text-muted-foreground">
-        {impactScopeLine({
-          days,
-          totalChanges: data.totalChanges,
-          shown: data.items.length,
-        })}
+        {impactScopeLine(
+          {
+            days,
+            totalChanges: data.totalChanges,
+            shown: data.items.length,
+          },
+          language,
+        )}
       </p>
       <ul className="flex flex-col gap-4">
         {data.items.map((item) => (

@@ -4,7 +4,6 @@ import { UiText, useUiLanguage } from "@/components/language/UiLanguage";
 import { useQuery } from "@tanstack/react-query";
 import { useQueryStates } from "nuqs";
 import { Tabs, TabsList, TabsOption } from "@/components/ui/tabs";
-import { discoveryTabLabel } from "@/lib/keyword-discoveries";
 import { keywordDiscoveriesOptions, keywordsOptions } from "@/lib/queries";
 import {
   discoveryStateParser,
@@ -30,7 +29,9 @@ export function KeywordsTabs({ id, market }: { id: string; market: string }) {
   const [tab, setTab] = useKeywordsTab();
   const { data: tracked } = useQuery(keywordsOptions(id, market));
   const { data: discovered } = useQuery(keywordDiscoveriesOptions(id, market));
-  const discoveredLabel = discoveryTabLabel(discovered?.counts);
+  const discoveredLabel = discovered?.counts
+    ? uiLabel("Discovered {0}", [discovered.counts.all])
+    : uiLabel("Discovered");
   const unseen = tab !== "discovered" && (discovered?.counts.all ?? 0) > 0;
 
   return (

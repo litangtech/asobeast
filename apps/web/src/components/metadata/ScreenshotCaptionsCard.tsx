@@ -24,7 +24,7 @@ export function ScreenshotCaptionsCard({
   market?: string;
   localization?: string;
 }) {
-  const { text: uiLabel } = useUiLanguage();
+  const { language, text: uiLabel } = useUiLanguage();
   const { data } = useSuspenseQuery(
     screenshotsOptions(id, market, localization),
   );
@@ -37,7 +37,7 @@ export function ScreenshotCaptionsCard({
       <Card className="min-w-0">
         <CardContent className="flex flex-col gap-4">
           <p className="text-body text-muted-foreground" aria-live="polite">
-            {screenshotSummary(data)}
+            {screenshotSummary(data, language)}
           </p>
           {data.screenshots.length === 0 ? (
             <EmptyState

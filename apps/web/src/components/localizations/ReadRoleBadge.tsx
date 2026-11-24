@@ -21,7 +21,8 @@ export function ReadRoleBadge({
   const label = READ_ROLE_LABELS[role];
   return (
     <Badge variant={ROLE_VARIANT[role]}>
-      {prefix === undefined ? label : `${prefix} · ${label}`}
+      {prefix === undefined ? null : `${prefix} · `}
+      <UiText message={label} />
     </Badge>
   );
 }

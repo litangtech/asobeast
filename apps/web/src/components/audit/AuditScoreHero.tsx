@@ -1,4 +1,6 @@
-import { UiText } from "@/components/language/UiLanguage";
+"use client";
+
+import { UiText, useUiLanguage } from "@/components/language/UiLanguage";
 import Link from "next/link";
 import type { AppAuditResult } from "@asobeast/shared";
 import { Badge } from "@/components/ui/badge";
@@ -23,6 +25,7 @@ export function AuditScoreHero({
   appId: string;
   audit: AppAuditResult;
 }) {
+  const { language, text: uiLabel } = useUiLanguage();
   const { overall, grade, confidence, potential, groups, unlocks } = audit;
 
   return (
@@ -46,10 +49,12 @@ export function AuditScoreHero({
                 {grade ?? "—"}
               </span>
               <span className="text-body text-muted-foreground">
-                {gradeLabel(grade)}
+                <UiText message={gradeLabel(grade)} />
               </span>
               {provisional(confidence) ? (
-                <Badge variant="warning">{provisionalLine(confidence)}</Badge>
+                <Badge variant="warning">
+                  {provisionalLine(confidence, language)}
+                </Badge>
               ) : null}
             </div>
           </div>
@@ -59,7 +64,7 @@ export function AuditScoreHero({
               {groups.map((group) => (
                 <StatTile
                   key={group.id}
-                  label={GROUP_LABEL[group.id]}
+                  label={uiLabel(GROUP_LABEL[group.id])}
                   value={
                     group.score === null
                       ? "—"
@@ -72,12 +77,12 @@ export function AuditScoreHero({
 
           {confidence === undefined ? null : (
             <p className="text-body text-muted-foreground">
-              {measuredLine(confidence)}
+              {measuredLine(confidence, language)}
             </p>
           )}
           {potential !== null && potential !== undefined ? (
             <p className="text-body text-muted-foreground">
-              {potentialLine(potential)}
+              {potentialLine(potential, language)}
             </p>
           ) : null}
 
