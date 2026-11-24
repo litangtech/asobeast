@@ -170,6 +170,7 @@ export function trackedArgs(appId: string) {
           text: true,
           country: true,
           store: true,
+          rankRecheckApps: true,
           rankings: {
             where: { appId },
             orderBy: { date: 'desc' as const },

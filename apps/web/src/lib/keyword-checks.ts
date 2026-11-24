@@ -45,5 +45,7 @@ export function keywordsPollInterval(
   updates: number,
 ): number | false {
   if (!rows || updates >= FIRST_CHECK_POLL_LIMIT) return false;
-  return rows.some(isChecking) ? FIRST_CHECK_POLL_MS : false;
+  return rows.some((row) => isChecking(row) || row.rankRecheckPending)
+    ? FIRST_CHECK_POLL_MS
+    : false;
 }

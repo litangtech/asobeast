@@ -1,5 +1,6 @@
 "use client";
 
+import { RankRecheckStatus } from "@/components/keywords/RankRecheckStatus";
 import { UiText, useUiLanguage } from "@/components/language/UiLanguage";
 import { useRef, type RefObject } from "react";
 import { useQuery, useSuspenseQuery } from "@tanstack/react-query";
@@ -71,6 +72,11 @@ export function RankingsView({ id }: { id: string }) {
     : tracked;
   const effective = selectionForMarket(scoped, selected);
 
+  const pending = scoped.filter(
+    (item) =>
+      item.rankRecheckPending &&
+      effective.slice(0, MAX_SERIES).includes(item.keywordId),
+  );
   const bounds = presetToRange(range);
   const { data } = useSuspenseQuery(
     rankingsOptions(id, { ...bounds, keywordIds: effective }),
@@ -165,6 +171,16 @@ export function RankingsView({ id }: { id: string }) {
           <PrintReportButton />
         </div>
 
+        {pending.length > 0 ? (
+          <ul className="flex flex-wrap gap-x-4 gap-y-2 text-caption">
+            {pending.map((keyword) => (
+              <li key={keyword.keywordId} className="flex items-start gap-2">
+                <span className="font-medium">{keywordLabel(keyword)}</span>
+                <RankRecheckStatus keyword={keyword} />
+              </li>
+            ))}
+          </ul>
+        ) : null}
         <RankingsChartBody
           id={id}
           country={country || undefined}

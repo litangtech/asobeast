@@ -3961,9 +3961,14 @@ const routes: Route[] = [
         200,
         sortKeywords(
           [
-            ...[...scoped, ...polishHistory].map((keyword) =>
-              annotated(id, keyword),
-            ),
+            ...[...scoped, ...polishHistory].map((keyword) => {
+              const row = annotated(id, keyword);
+              return id === "app-1" &&
+                row.text === "focus timer" &&
+                hasCookie(req, "e2e_rank_recheck", "1")
+                ? { ...row, latestPosition: 1, rankRecheckPending: true }
+                : row;
+            }),
             ...(id === "app-1" ? firstCheckRows(req) : []),
           ],
           query.get("sort"),

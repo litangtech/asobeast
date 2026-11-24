@@ -52,11 +52,11 @@ export class StoreJobsHandler {
     private readonly discoveryCheck: DiscoveryCheck,
   ) {}
 
-  async handle(job: Job): Promise<void> {
-    await this.workspace.runScope(requireJobScope(job), async () => {
+  async handle(job: Job): Promise<Date | void> {
+    return this.workspace.runScope(requireJobScope(job), async () => {
       if (!(await this.mayCollect(job))) return;
       const country = await this.targetCountry.of(job);
-      await this.egress.through(jobStore(job), country, () =>
+      return this.egress.through(jobStore(job), country, () =>
         this.dispatch(job),
       );
     });
@@ -74,7 +74,7 @@ export class StoreJobsHandler {
     return Promise.resolve(true);
   }
 
-  private async dispatch(job: Job): Promise<void> {
+  private async dispatch(job: Job): Promise<Date | void> {
     switch (job.name) {
       case JOBS.REFRESH_APP: {
         const { appId, country } = job.data as RefreshAppPayload;
@@ -85,11 +85,10 @@ export class StoreJobsHandler {
         await this.subtitles.resolve(resolveSubtitlePayloadOf(job));
         return;
       case JOBS.CHECK_KEYWORD:
-        await this.rankings.checkKeyword(
+        return this.rankings.checkKeyword(
           (job.data as CheckKeywordPayload).keywordId,
           isFinalAttempt(job),
         );
-        return;
       case JOBS.CHECK_CATEGORY:
         await this.categoryRanks.checkCategory(
           job.data as CheckCategoryPayload,

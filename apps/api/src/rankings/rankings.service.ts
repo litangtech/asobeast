@@ -5,8 +5,11 @@ import { CollectionEligibility } from '../auth/collection-eligibility.service';
 import { CrossTenantAccess } from '../common/tenancy/cross-tenant-access';
 import { WorkspaceContext } from '../common/tenancy/workspace-context';
 import { PrismaService } from '../prisma/prisma.service';
+import { ImplausibleResultError } from '../store-providers/errors';
+import type { SearchItem } from '../store-providers/types';
 import { RankingHistoryQueryDto } from './dto/ranking-history-query.dto';
 import { CompetitorCapture, RankCapture } from './rank-milestones';
+import { RankRecheck, RANK_RECHECK_SELECT } from './rank-recheck';
 import { RankingAlertsService } from './ranking-alerts.service';
 import { DAY_MS, toDateKey, utcToday } from './rankings.support';
 import { positionsByStoreAppId, SerpCapture } from './serp-capture';
@@ -49,12 +52,22 @@ export class RankingsService {
     private readonly workspace: WorkspaceContext,
     private readonly crossTenant: CrossTenantAccess,
     private readonly eligibility: CollectionEligibility,
+    private readonly recheck: RankRecheck,
   ) {}
 
-  async checkKeyword(keywordId: string, finalAttempt = false): Promise<void> {
+  async checkKeyword(
+    keywordId: string,
+    finalAttempt = false,
+  ): Promise<Date | void> {
     const keyword = await this.prisma.keyword.findUnique({
       where: { id: keywordId },
-      select: { id: true, text: true, store: true, country: true },
+      select: {
+        id: true,
+        text: true,
+        store: true,
+        country: true,
+        ...RANK_RECHECK_SELECT,
+      },
     });
     if (!keyword) {
       return;
@@ -73,10 +86,39 @@ export class RankingsService {
       return;
     }
 
-    const results = await this.capture.search(keyword, finalAttempt);
-    if (!results) return;
+    if (
+      keyword.rankRecheckAfter &&
+      keyword.rankRecheckAfter.getTime() > Date.now()
+    ) {
+      return keyword.rankRecheckAfter;
+    }
+    const ownAppIds = new Set(
+      [...apps]
+        .filter(([appId]) => primaryNames.has(appId))
+        .map(([, app]) => app.storeAppId),
+    );
+    let results: SearchItem[] | null;
+    try {
+      results = await this.capture.search(keyword, finalAttempt);
+    } catch (error) {
+      if (
+        !(error instanceof ImplausibleResultError) ||
+        keyword.store !== Store.APP_STORE
+      )
+        throw error;
+      const decision = await this.recheck.assess(keyword, ownAppIds, new Map());
+      if (!decision.record) return decision.retryAt;
+      throw error;
+    }
 
-    const positionByStoreAppId = positionsByStoreAppId(results);
+    const positionByStoreAppId = positionsByStoreAppId(results ?? []);
+    const decision = await this.recheck.assess(
+      keyword,
+      ownAppIds,
+      positionByStoreAppId,
+    );
+    if (!decision.record) return decision.retryAt;
+    if (!results) return;
     const date = utcToday();
     const baseline = await this.rankingAlerts.entrantBaseline(keywordId, date);
     const entries = await this.capture.store(keywordId, date, results);
@@ -108,6 +150,7 @@ export class RankingsService {
         }
       });
     }
+    await this.recheck.resolve(keyword);
   }
 
   private async collectableFor(

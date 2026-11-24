@@ -134,6 +134,18 @@ describe('StoreJobsHandler', () => {
     expect(checkKeyword).toHaveBeenNthCalledWith(2, 'kw1', true);
   });
 
+  it('returns the delayed recheck time to the store worker', async () => {
+    const retryAt = new Date('2026-11-24T06:30:00.000Z');
+    checkKeyword.mockResolvedValueOnce(retryAt);
+    const keywordJob = {
+      ...job({ keywordId: 'kw1', workspaceId: 'ws_a' }),
+      name: JOBS.CHECK_KEYWORD,
+      attemptsMade: 0,
+      opts: { attempts: 3 },
+    } as Job;
+    await expect(handler.handle(keywordJob)).resolves.toBe(retryAt);
+  });
+
   it('runs the job inside the workspace its payload carries', async () => {
     await handler.handle(job({ appId: 'a1', workspaceId: 'ws_a' }));
 

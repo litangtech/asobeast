@@ -16,6 +16,7 @@ import { StoreProviderRegistry } from '../store-providers/store-provider.registr
 import { SearchItem } from '../store-providers/types';
 import { EarlierRankings } from './earlier-rankings';
 import { RankingAlertsService } from './ranking-alerts.service';
+import { RankRecheck } from './rank-recheck';
 import { RankingsService } from './rankings.service';
 import { SerpCapture } from './serp-capture';
 
@@ -121,6 +122,7 @@ describe('RankingsService.checkKeyword', () => {
     rankedEarlier?: { date: Date } | null;
     competitorsPrevious?: { appId: string; position: number | null }[];
     existingByApp?: Record<string, { position: number | null }>;
+    verifyRecheck?: boolean;
   }) => {
     const search = jest
       .fn()
@@ -218,10 +220,14 @@ describe('RankingsService.checkKeyword', () => {
       text: 'habit tracker',
       store: Store.APP_STORE,
       country: options?.country ?? 'us',
+      rankRecheckAfter: null,
+      rankRecheckApps: [],
+      rankRecheckHasValidMiss: false,
     });
     const prisma = {
       keyword: {
         findUnique: keywordFindUnique,
+        updateMany: jest.fn().mockResolvedValue({ count: 1 }),
       },
       trackedKeyword: {
         findMany: trackedFindMany,
@@ -294,6 +300,12 @@ describe('RankingsService.checkKeyword', () => {
       workspace,
       new CrossTenantAccess(workspace),
       { forKeyword } as unknown as CollectionEligibility,
+      options?.verifyRecheck
+        ? new RankRecheck(prisma as unknown as PrismaService)
+        : ({
+            assess: () => Promise.resolve({ record: true }),
+            resolve: () => Promise.resolve(),
+          } as unknown as RankRecheck),
     );
     return {
       service,
@@ -307,6 +319,7 @@ describe('RankingsService.checkKeyword', () => {
       dispatch,
       trackedFindMany,
       keywordFindUnique,
+      updateKeyword: prisma.keyword.updateMany,
       serpFindFirst,
       serpFindMany: prisma.serpEntry.findMany,
       rankingFindFirst,
@@ -314,6 +327,121 @@ describe('RankingsService.checkKeyword', () => {
       earlierBefore,
     };
   };
+
+  it('marks a missing former leader pending without writing rankings or sending alerts', async () => {
+    const { service, upsert, createMany, dispatch, updateKeyword } = setup({
+      verifyRecheck: true,
+      previousSerp: [
+        { position: 1, storeAppId: 'primary-store', title: 'Primary' },
+      ],
+      searchResults: placed({}),
+    });
+    const delayed = await service.checkKeyword('kw1');
+    expect(delayed).toEqual(new Date(FROZEN_NOW.getTime() + 300_000));
+    expect(updateKeyword).toHaveBeenCalledWith({
+      where: { id: 'kw1', rankRecheckAfter: null },
+      data: {
+        rankRecheckAfter: delayed,
+        rankRecheckApps: ['primary-store'],
+        rankRecheckHasValidMiss: true,
+      },
+    });
+    expect(upsert).not.toHaveBeenCalled();
+    expect(createMany).not.toHaveBeenCalled();
+    expect(dispatch).not.toHaveBeenCalled();
+  });
+
+  it.each([1, null])(
+    'records %s only after a valid follow-up and clears pending',
+    async (position) => {
+      const { service, upsert, updateKeyword, keywordFindUnique } = setup({
+        verifyRecheck: true,
+        previousSerp: [
+          { position: 1, storeAppId: 'primary-store', title: 'Primary' },
+        ],
+        searchResults: placed(
+          position === null ? {} : { 'primary-store': position },
+        ),
+      });
+      keywordFindUnique.mockResolvedValue({
+        id: 'kw1',
+        text: 'habit tracker',
+        store: Store.APP_STORE,
+        country: 'us',
+        rankRecheckAfter: FROZEN_NOW,
+        rankRecheckApps: ['primary-store'],
+        rankRecheckHasValidMiss: true,
+      });
+      expect(await service.checkKeyword('kw1')).toBeUndefined();
+      expect(upsert.mock.calls[0][0].create.position).toBe(position);
+      expect(updateKeyword).toHaveBeenCalledWith({
+        where: { id: 'kw1', rankRecheckAfter: FROZEN_NOW },
+        data: {
+          rankRecheckAfter: null,
+          rankRecheckApps: [],
+          rankRecheckHasValidMiss: false,
+        },
+      });
+    },
+  );
+
+  it('keeps pending when the recheck is unusually short', async () => {
+    const { service, upsert, dispatch, updateKeyword, keywordFindUnique } =
+      setup({
+        verifyRecheck: true,
+        previousSerp: [
+          { position: 1, storeAppId: 'primary-store', title: 'Primary' },
+          { position: 2, storeAppId: 'earlier-other', title: 'Other' },
+        ],
+        searchResults: [{ storeAppId: 'other', title: 'Other' }],
+      });
+    keywordFindUnique.mockResolvedValue({
+      id: 'kw1',
+      text: 'habit tracker',
+      store: Store.APP_STORE,
+      country: 'cn',
+      rankRecheckAfter: FROZEN_NOW,
+      rankRecheckApps: ['primary-store'],
+      rankRecheckHasValidMiss: true,
+    });
+    expect(await service.checkKeyword('kw1')).toBeUndefined();
+    expect(upsert).not.toHaveBeenCalled();
+    expect(updateKeyword).not.toHaveBeenCalled();
+    expect(dispatch).not.toHaveBeenCalled();
+  });
+
+  it('does not call the store early or clear pending after a failed follow-up', async () => {
+    const {
+      service,
+      search,
+      upsert,
+      dispatch,
+      updateKeyword,
+      keywordFindUnique,
+    } = setup({ verifyRecheck: true });
+    const keyword = {
+      id: 'kw1',
+      text: 'habit tracker',
+      store: Store.APP_STORE,
+      country: 'cn',
+      rankRecheckAfter: new Date(Date.now() + 60_000),
+      rankRecheckApps: ['primary-store'],
+      rankRecheckHasValidMiss: true,
+    };
+    keywordFindUnique.mockResolvedValue(keyword);
+    expect(await service.checkKeyword('kw1')).toEqual(keyword.rankRecheckAfter);
+    expect(search).not.toHaveBeenCalled();
+    keywordFindUnique.mockResolvedValue({
+      ...keyword,
+      rankRecheckAfter: new Date(Date.now()),
+    });
+    const timeout = new Error('Store request timed out');
+    search.mockRejectedValueOnce(timeout);
+    await expect(service.checkKeyword('kw1', true)).rejects.toBe(timeout);
+    expect(upsert).not.toHaveBeenCalled();
+    expect(updateKeyword).not.toHaveBeenCalled();
+    expect(dispatch).not.toHaveBeenCalled();
+  });
 
   const dispatched = (dispatch: jest.Mock<Promise<void>, [AlertPayload]>) =>
     dispatch.mock.calls.map(([payload]) => payload);

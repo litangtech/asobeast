@@ -23,6 +23,7 @@ import { lostPosition } from "@/lib/keyword-checks";
 import type { RangePreset } from "@/lib/ranges";
 import { positionHoldFacts } from "./position-hold";
 import { PositionHistoryPanel } from "./PositionHistoryPanel";
+import { RankRecheckStatus } from "./RankRecheckStatus";
 import { lastRankedLine, PositionReadout } from "./PositionReadout";
 import { staleCheckLabel, staleCheckLine } from "./stale-check";
 
@@ -95,12 +96,16 @@ function PositionHistoryContent({
             </span>
           </PopoverDescription>
         </PopoverHeader>
-        <PositionReadout
-          keyword={keyword}
-          label={label}
-          staleOn={staleOn}
-          className="text-title"
-        />
+        {keyword.rankRecheckPending ? (
+          <RankRecheckStatus keyword={keyword} />
+        ) : (
+          <PositionReadout
+            keyword={keyword}
+            label={label}
+            staleOn={staleOn}
+            className="text-title"
+          />
+        )}
       </div>
       {staleOn === null ? null : (
         <p className="flex gap-1.5 text-caption text-muted-foreground">

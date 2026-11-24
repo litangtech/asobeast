@@ -65,6 +65,7 @@ export interface TrackedKeywordItem {
   latestPosition: number | null;
   latestDepth: number | null;
   latestCheckedOn?: string | null;
+  rankRecheckPending?: boolean;
   previousPosition: number | null;
   positionDelta1d: number | null;
   positionDelta7d: number | null;

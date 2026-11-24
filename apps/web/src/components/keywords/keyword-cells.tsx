@@ -21,6 +21,7 @@ import {
 import { formatMonth, formatNumber, pluralize } from "@/lib/format";
 import { isChecking, lostPosition, staleCheckDay } from "@/lib/keyword-checks";
 import { tagsLabel, visibleTags } from "@/lib/keyword-tags";
+import { RankRecheckStatus } from "./RankRecheckStatus";
 import { PositionReadout } from "./PositionReadout";
 import {
   PositionHistoryPopover,
@@ -69,6 +70,9 @@ export function PositionCell({
     keyword.latestPosition,
     keyword.latestDepth,
   );
+  if (label === null && keyword.rankRecheckPending) {
+    return <RankRecheckStatus keyword={keyword} />;
+  }
   if (label === null && isChecking(keyword)) {
     return (
       <Tooltip>
@@ -107,12 +111,16 @@ export function PositionCell({
   const staleOn = staleCheckDay(keyword, today);
   return (
     <span className="inline-flex items-center gap-1">
-      <PositionReadout
-        keyword={keyword}
-        label={label}
-        staleOn={staleOn}
-        lost={lostPosition(keyword)}
-      />
+      {keyword.rankRecheckPending ? (
+        <RankRecheckStatus keyword={keyword} />
+      ) : (
+        <PositionReadout
+          keyword={keyword}
+          label={label}
+          staleOn={staleOn}
+          lost={lostPosition(keyword)}
+        />
+      )}
       <PositionHistoryPopover
         keyword={keyword}
         label={label}

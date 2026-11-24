@@ -111,6 +111,10 @@ export class KeywordsService {
             volatility.get(row.keywordId) ?? null,
             hold ? (hold.get(row.keywordId) ?? null) : undefined,
           ),
+          ...(row.active &&
+          row.keyword.rankRecheckApps?.includes(app.storeAppId)
+            ? { rankRecheckPending: true }
+            : {}),
           ...(acquisitions
             ? {
                 playAcquisitions:

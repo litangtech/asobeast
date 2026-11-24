@@ -170,6 +170,8 @@ export const KEYWORDS_1: Readonly<Record<string, string>> = {
   Tags: "标记",
   Source: "来源",
   Bucket: "关键词分组",
+  "Recheck pending": "待复查",
+  "Last confirmed: #{0}": "上次确认：第 {0} 名",
   Aspirational: "挑战词",
   "{0}: {1}": "{0}：{1}",
   Type: "类型",

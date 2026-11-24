@@ -31,11 +31,9 @@ export abstract class StoreQueueWorker
     const startedAt = Date.now();
     this.logger.debug(`start ${job.name} #${job.id}`);
     await this.matchPoolCapacity();
+    let rankRetryAt: Date | void;
     try {
-      await this.handler.handle(job);
-      this.logger.debug(
-        `done ${job.name} #${job.id} in ${Date.now() - startedAt}ms`,
-      );
+      rankRetryAt = await this.handler.handle(job);
     } catch (error) {
       const retryAt = busyPoolRetryAt(job, error);
       if (retryAt !== null) {
@@ -50,6 +48,13 @@ export abstract class StoreQueueWorker
       );
       throw withoutRetry(error);
     }
+    if (rankRetryAt) {
+      await job.moveToDelayed(rankRetryAt.getTime(), token);
+      throw new DelayedError();
+    }
+    this.logger.debug(
+      `done ${job.name} #${job.id} in ${Date.now() - startedAt}ms`,
+    );
   }
 
   @OnWorkerEvent('failed')

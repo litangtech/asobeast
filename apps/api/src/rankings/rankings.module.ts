@@ -3,6 +3,7 @@ import { AlertsModule } from '../alerts/alerts.module';
 import { KeywordsModule } from '../keywords/keywords.module';
 import { StoreProvidersModule } from '../store-providers/store-providers.module';
 import { EarlierRankings } from './earlier-rankings';
+import { RankRecheck } from './rank-recheck';
 import { RankingAlertsService } from './ranking-alerts.service';
 import { RankingsController } from './rankings.controller';
 import { RankingsService } from './rankings.service';
@@ -16,6 +17,7 @@ import { SerpService } from './serp.service';
   providers: [
     RankingsService,
     RankingAlertsService,
+    RankRecheck,
     EarlierRankings,
     SerpService,
     SerpCapture,

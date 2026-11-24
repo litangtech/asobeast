@@ -107,3 +107,23 @@ test("describes generating a read-only MCP token in Chinese", async ({
   await expect(dialog.getByLabel("令牌名称")).toBeVisible();
   await expect(dialog).toContainText("默认生成只读令牌");
 });
+
+test("shows the last confirmed rank while an App Store keyword awaits recheck", async ({
+  page,
+}) => {
+  await page.context().addCookies([
+    { name: "asobeast_language", value: "zh-CN", url: "http://localhost:3000" },
+    { name: "e2e_rank_recheck", value: "1", url: "http://localhost:3000" },
+  ]);
+  await page.goto("/apps/app-1/keywords");
+  const row = page
+    .getByRole("row")
+    .filter({ hasText: "focus timer" })
+    .filter({ hasText: "待复查" });
+  await expect(row).toContainText("上次确认：第 1 名");
+  await expect(row).not.toContainText(">200");
+  await row
+    .getByRole("button", { name: /Position history: focus timer/ })
+    .click();
+  await expect(page.getByRole("dialog")).toContainText("待复查");
+});

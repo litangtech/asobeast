@@ -320,17 +320,20 @@ model ScreenshotText {
 }
 
 model Keyword {
-  id          String             @id @default(cuid())
-  text        String
-  store       Store
-  country     String             @default("us")
-  metrics     KeywordMetric[]
-  tracked     TrackedKeyword[]
-  rankings    KeywordRanking[]
-  serpEntries SerpEntry[]
-  actions     ActionItem[]
-  discoveries KeywordDiscovery[]
-  createdAt   DateTime           @default(now())
+  id                      String             @id @default(cuid())
+  text                    String
+  store                   Store
+  country                 String             @default("us")
+  metrics                 KeywordMetric[]
+  tracked                 TrackedKeyword[]
+  rankings                KeywordRanking[]
+  serpEntries             SerpEntry[]
+  rankRecheckAfter        DateTime?
+  rankRecheckApps         String[]           @default([])
+  rankRecheckHasValidMiss Boolean            @default(false)
+  actions                 ActionItem[]
+  discoveries             KeywordDiscovery[]
+  createdAt               DateTime           @default(now())
 
   @@unique([text, store, country])
 }

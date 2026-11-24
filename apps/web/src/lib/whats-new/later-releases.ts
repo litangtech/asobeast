@@ -12,6 +12,11 @@ export const LATER_RELEASES: readonly Release[] = [
         title: "Simplified Chinese dashboard",
         text: "Settings remembers the display language for this browser. Switch between English and Simplified Chinese across the dashboard, including keywords, rankings, reviews, integrations and administration.",
       },
+      {
+        kind: "improved",
+        title: "Unexpected ranking losses are checked again",
+        text: "When an App Store keyword suddenly loses a recent top ten position, the table shows the last confirmed position while the next check is pending.",
+      },
     ],
   },
   {
