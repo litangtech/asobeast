@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText, useUiLanguage } from "@/components/language/UiLanguage";
 import { useState } from "react";
 import type { FormEvent, ReactNode } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -27,6 +28,7 @@ import { awaitsConfirmation, recipientToast } from "./email-alert-recipient";
 const INVALID_ADDRESS = "Enter a valid email address";
 
 export function AddEmailAlertDialog({ trigger }: { trigger?: ReactNode }) {
+  const { text: uiLabel } = useUiLanguage();
   const queryClient = useQueryClient();
   const [open, setOpen] = useState(false);
   const [email, setEmail] = useState("");
@@ -53,14 +55,17 @@ export function AddEmailAlertDialog({ trigger }: { trigger?: ReactNode }) {
       invalidateEmailAlertMutation(queryClient);
       if (saved.confirmationSent === false) {
         toast.warning(
-          `Email alert added. The confirmation email to ${saved.email} could not be sent, so use Resend confirmation to try again.`,
+          uiLabel(
+            "Email alert added. The confirmation email to {0} could not be sent, so use Resend confirmation to try again.",
+            [saved.email],
+          ),
           recipientToast(saved),
         );
       } else {
         toast.success(
           awaitsConfirmation(saved)
-            ? `Confirmation email sent to ${saved.email}`
-            : "Email alert added",
+            ? uiLabel("Confirmation email sent to {0}", [saved.email])
+            : uiLabel("Email alert added"),
           recipientToast(saved),
         );
       }
@@ -117,21 +122,25 @@ export function AddEmailAlertDialog({ trigger }: { trigger?: ReactNode }) {
     <AlertChannelDialog
       open={open}
       onOpenChange={onOpenChange}
-      label="Add email alert"
-      description="AsoBeast emails this recipient when a subscribed event fires, using your configured SMTP server. Unless it is the verified account email of a member of this workspace, the recipient confirms the address from the link in a first email."
+      label={uiLabel("Add email alert")}
+      description={uiLabel(
+        "AsoBeast emails this recipient when a subscribed event fires, using your configured SMTP server. Unless it is the verified account email of a member of this workspace, the recipient confirms the address from the link in a first email.",
+      )}
       error={error}
       pending={mutation.isPending}
       onSubmit={submit}
       trigger={trigger}
     >
       <div className="flex flex-col gap-2">
-        <Label htmlFor="email-alert-address">Recipient email</Label>
+        <Label htmlFor="email-alert-address">
+          <UiText message="Recipient email" />
+        </Label>
         <Input
           id="email-alert-address"
           type="email"
           value={email}
           onChange={(event) => setEmail(event.target.value)}
-          placeholder="alerts@example.com"
+          placeholder={uiLabel("alerts@example.com")}
           aria-invalid={error === INVALID_ADDRESS}
         />
       </div>

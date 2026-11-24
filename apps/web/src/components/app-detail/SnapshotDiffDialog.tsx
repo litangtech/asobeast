@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText } from "@/components/language/UiLanguage";
 import type { RefObject } from "react";
 import type { SnapshotDiffResult } from "@asobeast/shared";
 import {
@@ -46,14 +47,24 @@ export function SnapshotDiffDialog({
       >
         <DialogHeader>
           <DialogTitle>
-            {market === null
-              ? "Snapshot refreshed"
-              : `Snapshot refreshed in ${formatCountry(market)}`}
+            {market === null ? (
+              <UiText message="Snapshot refreshed" />
+            ) : (
+              <UiText
+                message="Snapshot refreshed in {0}"
+                values={[formatCountry(market)]}
+              />
+            )}
           </DialogTitle>
           <DialogDescription>
-            {changes.length > 0
-              ? `${changes.length} field${changes.length === 1 ? "" : "s"} changed since the last snapshot.`
-              : "The store listing is unchanged since the last snapshot."}
+            {changes.length > 0 ? (
+              <UiText
+                message="{0} field{1} changed since the last snapshot."
+                values={[changes.length, changes.length === 1 ? "" : "s"]}
+              />
+            ) : (
+              <UiText message="The store listing is unchanged since the last snapshot." />
+            )}
           </DialogDescription>
         </DialogHeader>
 
@@ -61,14 +72,19 @@ export function SnapshotDiffDialog({
           {changes.length > 0 ? (
             <Table>
               <TableCaption className="sr-only">
-                Store listing fields that changed since the last snapshot, with
-                before and after values.
+                <UiText message="Store listing fields that changed since the last snapshot, with before and after values." />
               </TableCaption>
               <TableHeader>
                 <TableRow>
-                  <TableHead>Field</TableHead>
-                  <TableHead>Before</TableHead>
-                  <TableHead>After</TableHead>
+                  <TableHead>
+                    <UiText message="Field" />
+                  </TableHead>
+                  <TableHead>
+                    <UiText message="Before" />
+                  </TableHead>
+                  <TableHead>
+                    <UiText message="After" />
+                  </TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -94,7 +110,7 @@ export function SnapshotDiffDialog({
             </Table>
           ) : (
             <p className="text-sm text-muted-foreground">
-              No changes detected.
+              <UiText message="No changes detected." />
             </p>
           )}
         </DialogBody>

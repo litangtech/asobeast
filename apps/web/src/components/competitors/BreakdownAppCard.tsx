@@ -1,3 +1,5 @@
+import { UiDate } from "@/components/language/UiFormat";
+import { UiText } from "@/components/language/UiLanguage";
 import { useId } from "react";
 import Link from "next/link";
 import {
@@ -10,7 +12,7 @@ import { AppIcon } from "@/components/AppIcon";
 import { ReadRoleBadge } from "@/components/localizations/ReadRoleBadge";
 import { Badge } from "@/components/ui/badge";
 import { editLocalizationHref } from "@/lib/app-localizations";
-import { formatCountry, formatDate, formatList } from "@/lib/format";
+import { formatCountry, formatList } from "@/lib/format";
 import { localizationName } from "@/lib/localizations";
 import {
   insightText,
@@ -72,12 +74,13 @@ function ListingBlock({
         ))}
       {missingField ? (
         <p className="text-xs text-muted-foreground">
-          No keyword field saved for {localizationName(localization)}.{" "}
+          <UiText message="No keyword field saved for" trailing />
+          {localizationName(localization)}.{" "}
           <Link
             href={editLocalizationHref(appId, localization)}
             className="underline decoration-primary underline-offset-4"
           >
-            Edit it on the metadata page
+            <UiText message="Edit it on the metadata page" />
           </Link>
         </p>
       ) : null}
@@ -116,11 +119,16 @@ export function BreakdownAppCard({
             <bdi className="wrap-anywhere">
               {app.name ?? UNNAMED_COMPETITOR}
             </bdi>
-            {app.isYou ? <Badge>You</Badge> : null}
+            {app.isYou ? (
+              <Badge>
+                <UiText message="You" />
+              </Badge>
+            ) : null}
           </h3>
           {app.ranking ? (
             <span className="text-xs text-muted-foreground">
-              Checked {formatDate(app.ranking.date)}
+              <UiText message="Checked" trailing />
+              <UiDate value={app.ranking.date} />
             </span>
           ) : null}
         </div>
@@ -158,7 +166,8 @@ export function BreakdownAppCard({
       ))}
       {app.unread.length > 0 ? (
         <p className="text-xs text-muted-foreground">
-          Not read: {formatList(app.unread.map(localizationName))}.
+          <UiText message="Not read:" trailing />
+          {formatList(app.unread.map(localizationName))}.
         </p>
       ) : null}
       {rating ? (

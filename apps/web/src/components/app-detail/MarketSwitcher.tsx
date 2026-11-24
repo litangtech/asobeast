@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText } from "@/components/language/UiLanguage";
 import { Label } from "@/components/ui/label";
 import {
   Select,
@@ -31,17 +32,27 @@ export function MarketSwitcher({
   return (
     <div className="flex flex-wrap items-center gap-2 print:hidden">
       <Label htmlFor={`market-${id}`}>
-        {allowAll ? "Market" : "Listing market"}
+        {allowAll ? (
+          <UiText message="Market" />
+        ) : (
+          <UiText message="Listing market" />
+        )}
       </Label>
       <Select value={value} onValueChange={choose}>
         <SelectTrigger id={`market-${id}`} className="w-[240px]">
           <SelectValue>
-            {value === ALL_MARKETS ? "All markets" : marketLabel(selected)}
+            {value === ALL_MARKETS ? (
+              <UiText message="All markets" />
+            ) : (
+              marketLabel(selected)
+            )}
           </SelectValue>
         </SelectTrigger>
         <SelectContent>
           {allowAll ? (
-            <SelectItem value={ALL_MARKETS}>All markets</SelectItem>
+            <SelectItem value={ALL_MARKETS}>
+              <UiText message="All markets" />
+            </SelectItem>
           ) : null}
           {markets.map((entry) => (
             <SelectItem key={entry.country} value={entry.country}>

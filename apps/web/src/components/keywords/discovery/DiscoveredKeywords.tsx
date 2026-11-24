@@ -1,6 +1,6 @@
 "use client";
 
-import { UiText } from "@/components/language/UiLanguage";
+import { UiText, useUiLanguage } from "@/components/language/UiLanguage";
 import { Suspense, useMemo, useRef, useState, type RefObject } from "react";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import type { OnChangeFn, RowSelectionState } from "@tanstack/react-table";
@@ -38,11 +38,10 @@ export function DiscoveredKeywords(props: DiscoveredProps) {
           tabIndex={-1}
           className="text-lg font-semibold text-balance outline-none"
         >
-          Discovered keywords
+          <UiText message="Discovered keywords" />
         </h2>
         <p className="text-sm text-muted-foreground">
-          Phrases near your listing that you do not track yet, and where your
-          app ranks for them.
+          <UiText message="Phrases near your listing that you do not track yet, and where your app ranks for them." />
         </p>
       </div>
       <Suspense fallback={null}>
@@ -87,6 +86,7 @@ function DiscoveredList({
   market,
   heading,
 }: DiscoveredProps & { heading: RefObject<HTMLHeadingElement | null> }) {
+  const { text: uiLabel } = useUiLanguage();
   const { data: list, dataUpdatedAt } = useSuspenseQuery(
     keywordDiscoveriesOptions(id, market),
   );
@@ -112,7 +112,7 @@ function DiscoveredList({
           actions={actions}
         />
         {empty.kind === "never_run" ? (
-          <EmptyState title="No discoveries yet" body={empty.body} />
+          <EmptyState title={uiLabel("No discoveries yet")} body={empty.body} />
         ) : null}
         {empty.kind === "nothing_here" ? (
           <EmptyState
@@ -128,7 +128,7 @@ function DiscoveredList({
                     setState("all");
                   }}
                 >
-                  <UiText message={"Show all"} />
+                  <UiText message="Show all" />
                 </Button>
               )
             }

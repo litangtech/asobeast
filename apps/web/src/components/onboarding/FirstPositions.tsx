@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText, useUiLanguage } from "@/components/language/UiLanguage";
 import { useId } from "react";
 import { useQuery } from "@tanstack/react-query";
 import Link from "next/link";
@@ -21,6 +22,7 @@ function FirstPositionsBody({
   country: string;
   headingId: string;
 }) {
+  const { text: uiLabel } = useUiLanguage();
   const keywords = useQuery({
     ...keywordsOptions(id, country),
     refetchOnMount: "always",
@@ -29,7 +31,7 @@ function FirstPositionsBody({
   if (failedRead(keywords)) {
     return (
       <InlineQueryError
-        message="Could not load the first positions."
+        message={uiLabel("Could not load the first positions.")}
         read={keywords}
       />
     );
@@ -53,7 +55,9 @@ function FirstPositionsBody({
             ))}
           </ul>
           <Button asChild variant="link" className="h-auto w-fit px-0">
-            <Link href={`/apps/${id}/rankings`}>See every position</Link>
+            <Link href={`/apps/${id}/rankings`}>
+              <UiText message="See every position" />
+            </Link>
           </Button>
         </>
       ) : null}
@@ -73,7 +77,7 @@ export function FirstPositions({
   return (
     <section aria-labelledby={headingId} className="flex flex-col gap-2">
       <h3 id={headingId} className="text-sm font-medium">
-        First positions
+        <UiText message="First positions" />
       </h3>
       <FirstPositionsBody id={id} country={country} headingId={headingId} />
     </section>

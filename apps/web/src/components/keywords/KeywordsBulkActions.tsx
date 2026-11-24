@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText, useUiLanguage } from "@/components/language/UiLanguage";
 import { useRef, useState, type RefObject } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { ChartLine, Pause, Play, Trash2, X } from "lucide-react";
@@ -65,6 +66,7 @@ function ConfirmRemove({
   removed: RefObject<boolean>;
   onConfirm: () => void;
 }) {
+  const { text: uiLabel } = useUiLanguage();
   const settle = closeUnlessPending(pending, onOpenChange);
   return (
     <AlertDialog
@@ -77,7 +79,7 @@ function ConfirmRemove({
       <AlertDialogTrigger asChild>
         <Button variant="outline" size="sm" aria-disabled={busy || undefined}>
           <Trash2 />
-          Remove
+          <UiText message="Remove" />
         </Button>
       </AlertDialogTrigger>
       <AlertDialogContent
@@ -87,16 +89,16 @@ function ConfirmRemove({
       >
         <AlertDialogHeader>
           <AlertDialogTitle>
-            Stop tracking {pluralize(count, "keyword")}?
+            <UiText message="Stop tracking" trailing />
+            {pluralize(count, "keyword")}?
           </AlertDialogTitle>
           <AlertDialogDescription>
-            Ranking history for the selected keywords stops accruing. You can
-            add them again later, but the gap in history will remain.
+            <UiText message="Ranking history for the selected keywords stops accruing. You can add them again later, but the gap in history will remain." />
           </AlertDialogDescription>
         </AlertDialogHeader>
         <ConfirmActionFooter
           pending={pending}
-          label="Stop tracking"
+          label={uiLabel("Stop tracking")}
           pendingLabel="Removing…"
           onConfirm={onConfirm}
         />
@@ -122,6 +124,7 @@ export function KeywordsBulkActions({
   onExport: () => void;
   onShowDynamics: () => void;
 }) {
+  const { text: uiLabel } = useUiLanguage();
   const queryClient = useQueryClient();
   const selectedIds = selectedKeywords.map((keyword) => keyword.keywordId);
   const overCap = overChartLimit(selectedIds.length);
@@ -176,11 +179,11 @@ export function KeywordsBulkActions({
   return (
     <div
       role="group"
-      aria-label="Bulk keyword actions"
+      aria-label={uiLabel("Bulk keyword actions")}
       className="flex flex-wrap items-center gap-2 rounded-xl border bg-popover px-3 py-2 text-body shadow-overlay"
     >
       <span className="numeric font-mono font-medium">
-        {`${selectedIds.length} selected`}
+        <UiText message="{0} selected" values={[selectedIds.length]} />
       </span>
       <div className="flex flex-wrap items-center gap-2">
         <Button
@@ -193,7 +196,7 @@ export function KeywordsBulkActions({
           }}
         >
           <ChartLine />
-          Show dynamics
+          <UiText message="Show dynamics" />
         </Button>
         {overCap ? (
           <span className="text-caption text-muted-foreground">
@@ -207,7 +210,7 @@ export function KeywordsBulkActions({
           onClick={() => run("pause")}
         >
           <Pause />
-          Pause
+          <UiText message="Pause" />
         </Button>
         <Button
           variant="outline"
@@ -216,7 +219,7 @@ export function KeywordsBulkActions({
           onClick={() => run("resume")}
         >
           <Play />
-          Activate
+          <UiText message="Activate" />
         </Button>
         <BulkTagPopover
           keywords={selectedKeywords}
@@ -241,10 +244,10 @@ export function KeywordsBulkActions({
           onClick={() => {
             if (!busy) onClear();
           }}
-          aria-label="Clear selection"
+          aria-label={uiLabel("Clear selection")}
         >
           <X />
-          Clear
+          <UiText message="Clear" />
         </Button>
       </div>
     </div>

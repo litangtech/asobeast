@@ -1,6 +1,6 @@
 "use client";
 
-import { UiText } from "@/components/language/UiLanguage";
+import { UiText, useUiLanguage } from "@/components/language/UiLanguage";
 import { createColumnHelper } from "@tanstack/react-table";
 import type {
   DiscoverySource,
@@ -50,7 +50,9 @@ function Missing({ label }: { label: string }) {
   return (
     <span className="text-muted-foreground">
       <span aria-hidden>—</span>
-      <span className="sr-only">{label}</span>
+      <span className="sr-only">
+        <UiText message={label} />
+      </span>
     </span>
   );
 }
@@ -62,19 +64,25 @@ function ScoreValue({
   score: DiscoveryScore;
   label: string;
 }) {
+  const { text: uiLabel } = useUiLanguage();
   return score.value === null ? (
-    <Missing label={`No ${label.toLowerCase()} score`} />
+    <Missing label={uiLabel("No {0} score", [label.toLowerCase()])} />
   ) : (
     <GradedNumber value={`${score.value}`} grade={score.grade} label={label} />
   );
 }
 
 function RankCell({ item }: { item: KeywordDiscoveryItem }) {
+  const { text: uiLabel } = useUiLanguage();
   const text = rankText(item);
   if (text === null) {
     return (
-      <span title="Not checked yet. The next weekly run or a refresh checks it.">
-        <Missing label="Not checked yet" />
+      <span
+        title={uiLabel(
+          "Not checked yet. The next weekly run or a refresh checks it.",
+        )}
+      >
+        <Missing label={uiLabel("Not checked yet")} />
       </span>
     );
   }
@@ -90,7 +98,7 @@ function RankCell({ item }: { item: KeywordDiscoveryItem }) {
     <GradedNumber
       value={text}
       grade={grade("position", item.position)}
-      label="Rank"
+      label={uiLabel("Rank")}
     />
   );
 }
@@ -104,11 +112,14 @@ function MetricHeader({
   title: string;
   summary: string;
 }) {
+  const { text: uiLabel } = useUiLanguage();
   return (
     <span className="inline-flex items-center gap-1">
-      <span>{label}</span>
+      <span>
+        <UiText message={label} />
+      </span>
       <InfoTip
-        label={`About ${label.toLowerCase()}`}
+        label={uiLabel("About {0}", [label.toLowerCase()])}
         title={title}
         summary={summary}
       >
@@ -118,7 +129,7 @@ function MetricHeader({
           rel="noreferrer"
           className="font-medium text-foreground underline decoration-primary underline-offset-4 hover:decoration-2"
         >
-          Read about keyword discovery
+          <UiText message="Read about keyword discovery" />
         </a>
       </InfoTip>
     </span>
@@ -128,7 +139,11 @@ function MetricHeader({
 const selectColumn = columnHelper.display({
   id: "select",
   enableHiding: false,
-  header: () => <span className="sr-only">Select</span>,
+  header: () => (
+    <span className="sr-only">
+      <UiText message="Select" />
+    </span>
+  ),
   cell: ({ row }) => (
     <Checkbox
       data-discovery-select
@@ -146,7 +161,9 @@ const keywordColumn = columnHelper.accessor("text", {
     <span className="flex flex-wrap items-center gap-2">
       <span className="font-medium wrap-anywhere">{row.original.text}</span>
       {row.original.recommended ? (
-        <Badge variant="info">Recommended</Badge>
+        <Badge variant="info">
+          <UiText message="Recommended" />
+        </Badge>
       ) : null}
     </span>
   ),
@@ -224,7 +241,7 @@ const actionsColumn = columnHelper.display({
   meta: { label: "Actions" },
   header: () => (
     <span className="sr-only">
-      <UiText message={"Actions"} />
+      <UiText message="Actions" />
     </span>
   ),
   cell: ({ row }) => <DiscoveryRowActions item={row.original} />,

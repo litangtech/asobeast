@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText, useUiLanguage } from "@/components/language/UiLanguage";
 import type { ReactNode } from "react";
 import { MovementCell } from "@/components/movement/MovementCell";
 import { Button } from "@/components/ui/button";
@@ -36,7 +37,7 @@ function GuideLink() {
       rel="noreferrer"
       className="underline decoration-primary underline-offset-4 hover:decoration-2"
     >
-      Read about search results
+      <UiText message="Read about search results" />
     </a>
   );
 }
@@ -53,7 +54,9 @@ function Item({
   return (
     <div className="flex min-w-0 flex-col gap-1 bg-card p-3">
       <dt className="flex items-center gap-1 text-caption text-muted-foreground">
-        <span>{label}</span>
+        <span>
+          <UiText message={label} />
+        </span>
         {tip}
       </dt>
       <dd className="flex min-w-0 flex-wrap items-baseline gap-x-1.5 gap-y-0.5">
@@ -78,6 +81,7 @@ function PositionValue({
   position: PositionSummary;
   comparedTo: string | null;
 }) {
+  const { text: uiLabel } = useUiLanguage();
   switch (position.kind) {
     case "listed":
       return (
@@ -85,7 +89,9 @@ function PositionValue({
           <Button
             variant="link"
             className="h-auto p-0 numeric font-mono text-base font-medium"
-            aria-label={`Jump to your row at #${position.position}`}
+            aria-label={uiLabel("Jump to your row at #{0}", [
+              position.position,
+            ])}
             onClick={() => jumpToRow(position.position)}
           >
             #{position.position}
@@ -104,19 +110,38 @@ function PositionValue({
       return (
         <>
           <Value>{`#${position.position}`}</Value>
-          <Note>{`below the top ${position.listed}`}</Note>
+          <Note>
+            <UiText message="below the top {0}" values={[position.listed]} />
+          </Note>
         </>
       );
     case "notFound":
-      return <Note>{`Not in the top ${position.depth}`}</Note>;
+      return (
+        <Note>
+          <UiText message="Not in the top {0}" values={[position.depth]} />
+        </Note>
+      );
     default:
-      return <Note>Not in this list</Note>;
+      return (
+        <Note>
+          <UiText message="Not in this list" />
+        </Note>
+      );
   }
 }
 
 function TitlesValue({ titles }: { titles: TitleSummary | null }) {
-  if (!titles) return <Note>Not reported</Note>;
-  return <Value>{`${titles.withKeyword} of ${titles.of}`}</Value>;
+  if (!titles)
+    return (
+      <Note>
+        <UiText message="Not reported" />
+      </Note>
+    );
+  return (
+    <Value>
+      <UiText message="{0} of {1}" values={[titles.withKeyword, titles.of]} />
+    </Value>
+  );
 }
 
 function RatingsValue({ ratings }: { ratings: RatingSummary }) {
@@ -124,7 +149,9 @@ function RatingsValue({ ratings }: { ratings: RatingSummary }) {
     return (
       <>
         <Value>{formatCompact(ratings.value)}</Value>
-        <Note>median</Note>
+        <Note>
+          <UiText message="median" />
+        </Note>
       </>
     );
   }
@@ -132,11 +159,17 @@ function RatingsValue({ ratings }: { ratings: RatingSummary }) {
     return (
       <>
         <Value>{formatRating(ratings.value)}</Value>
-        <Note>average</Note>
+        <Note>
+          <UiText message="average" />
+        </Note>
       </>
     );
   }
-  return <Note>No ratings</Note>;
+  return (
+    <Note>
+      <UiText message="No ratings" />
+    </Note>
+  );
 }
 
 function SummaryGrid({
@@ -150,6 +183,7 @@ function SummaryGrid({
   ratings: ReactNode;
   tips: boolean;
 }) {
+  const { text: uiLabel } = useUiLanguage();
   const tip = (tipLabel: string, title: string, summary: string) =>
     tips ? (
       <InfoTip label={tipLabel} title={title} summary={summary}>
@@ -163,9 +197,9 @@ function SummaryGrid({
       data-slot="serp-summary"
       className="mx-4 mt-4 grid grid-cols-3 gap-px overflow-hidden rounded-lg border bg-border"
     >
-      <Item label="Your position">{position}</Item>
+      <Item label={uiLabel("Your position")}>{position}</Item>
       <Item
-        label="Titles with it"
+        label={uiLabel("Titles with it")}
         tip={tip(
           "About titles with the keyword",
           "Titles with the keyword",
@@ -175,7 +209,7 @@ function SummaryGrid({
         {titles}
       </Item>
       <Item
-        label="Top 10 ratings"
+        label={uiLabel("Top 10 ratings")}
         tip={tip(
           "About top 10 ratings",
           "Top 10 ratings",
@@ -210,7 +244,10 @@ export function SerpSummary({
 export function SerpSummarySkeleton() {
   const value = (
     <Skeleton className="w-16 border border-transparent text-transparent *:text-transparent">
-      <Value>0</Value> <Note>median</Note>
+      <Value>0</Value>{" "}
+      <Note>
+        <UiText message="median" />
+      </Note>
     </Skeleton>
   );
   return (

@@ -1,6 +1,6 @@
 "use client";
 
-import { UiText } from "@/components/language/UiLanguage";
+import { UiText, useUiLanguage } from "@/components/language/UiLanguage";
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useQueryState } from "nuqs";
@@ -59,6 +59,7 @@ function BreakdownBody({
   read: BreakdownRead;
   onClose: () => void;
 }) {
+  const { text: uiLabel } = useUiLanguage();
   if (read.data) {
     return (
       <div className="flex flex-col gap-4">
@@ -73,9 +74,9 @@ function BreakdownBody({
           ))}
         </ul>
         <p className="text-xs text-muted-foreground">
-          These are rules of thumb from what {PRODUCT_NAME} can see. Neither
-          store publishes how it weighs a field, and installs are not visible
-          for other apps.
+          <UiText message="These are rules of thumb from what" trailing />
+          {PRODUCT_NAME}
+          <UiText message="can see. Neither store publishes how it weighs a field, and installs are not visible for other apps." />
         </p>
       </div>
     );
@@ -83,9 +84,11 @@ function BreakdownBody({
   if (isNotFound(read.error)) {
     return (
       <div className="flex flex-col items-start gap-3 text-sm">
-        <p>This keyword is not tracked any more.</p>
+        <p>
+          <UiText message="This keyword is not tracked any more." />
+        </p>
         <Button variant="outline" size="sm" onClick={onClose}>
-          <UiText message={"Close"} />
+          <UiText message="Close" />
         </Button>
       </div>
     );
@@ -93,7 +96,7 @@ function BreakdownBody({
   if (failedRead(read)) {
     return (
       <InlineQueryError
-        message="The breakdown could not be loaded."
+        message={uiLabel("The breakdown could not be loaded.")}
         read={read}
       />
     );
@@ -101,7 +104,7 @@ function BreakdownBody({
   if (waitsForConnection(read)) {
     return (
       <p role="status" className="text-sm text-muted-foreground">
-        You are offline. The breakdown loads when the connection is back.
+        <UiText message="You are offline. The breakdown loads when the connection is back." />
       </p>
     );
   }
@@ -150,7 +153,9 @@ export function KeywordBreakdownSheet({ appId }: { appId: string }) {
         }}
       >
         <SheetHeader>
-          <SheetTitle>Why apps rank for this keyword</SheetTitle>
+          <SheetTitle>
+            <UiText message="Why apps rank for this keyword" />
+          </SheetTitle>
           <SheetDescription>{descriptionOf(read)}</SheetDescription>
         </SheetHeader>
         <BreakdownBody appId={appId} read={read} onClose={close} />

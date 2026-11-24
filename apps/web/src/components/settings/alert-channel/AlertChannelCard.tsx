@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText } from "@/components/language/UiLanguage";
 import type { ReactNode } from "react";
 import {
   Card,
@@ -22,8 +23,12 @@ export function AlertChannelCard({
     <Card>
       <CardHeader className="flex-row items-start justify-between gap-4">
         <div className="flex flex-col gap-1.5">
-          <CardDescription>Alerts</CardDescription>
-          <CardTitle>{title}</CardTitle>
+          <CardDescription>
+            <UiText message="Alerts" />
+          </CardDescription>
+          <CardTitle>
+            <UiText message={title} />
+          </CardTitle>
         </div>
         {action}
       </CardHeader>

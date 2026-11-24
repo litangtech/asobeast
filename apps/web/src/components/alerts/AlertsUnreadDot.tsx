@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText } from "@/components/language/UiLanguage";
 import { useQuery } from "@tanstack/react-query";
 import { useAuth } from "@/components/auth/use-auth";
 import { useAlertsSeen } from "@/components/layout/AlertsSeen";
@@ -17,7 +18,9 @@ export function AlertsUnreadDot() {
 
   return (
     <>
-      <span className="sr-only">, new alerts</span>
+      <span className="sr-only">
+        <UiText message=", new alerts" />
+      </span>
       <span
         data-slot="alerts-unread"
         aria-hidden

@@ -1,5 +1,6 @@
 "use client";
 
+import { useUiLanguage } from "@/components/language/UiLanguage";
 import {
   CATEGORY_COLLECTIONS,
   chartDevicesOf,
@@ -59,6 +60,7 @@ export function ChartGenreFilter({ chart, onChange }: ChartFilterProps) {
 }
 
 export function ChartKindFilter({ chart, view, onChange }: ChartFilterProps) {
+  const { text: uiLabel } = useUiLanguage();
   if (view !== "table") return null;
   return (
     <Tabs
@@ -67,7 +69,7 @@ export function ChartKindFilter({ chart, view, onChange }: ChartFilterProps) {
         onChange({ collection: next as CategoryCollection })
       }
     >
-      <TabsList aria-label="Chart">
+      <TabsList aria-label={uiLabel("Chart")}>
         {CATEGORY_COLLECTIONS.map((collection) => (
           <TabsOption key={collection} value={collection}>
             {COLLECTION_LABELS[collection]}
@@ -79,9 +81,10 @@ export function ChartKindFilter({ chart, view, onChange }: ChartFilterProps) {
 }
 
 export function ChartCompareFilter({ compare, onChange }: ChartFilterProps) {
+  const { text: uiLabel } = useUiLanguage();
   return (
     <SelectFilter
-      title="Compare"
+      title={uiLabel("Compare")}
       value={compare}
       options={COMPARE_OPTIONS}
       onChange={(next) => onChange({ compare: next })}
@@ -99,10 +102,11 @@ export function ChartLayoutFilter({ view, onChange }: ChartFilterProps) {
 }
 
 export function ChartDeviceFilter({ chart, onChange }: ChartFilterProps) {
+  const { text: uiLabel } = useUiLanguage();
   if (!showsDevice(chart.store)) return null;
   return (
     <SelectFilter
-      title="Device"
+      title={uiLabel("Device")}
       value={chart.device}
       options={chartDevicesOf(chart.store).map((device) => ({
         value: device,

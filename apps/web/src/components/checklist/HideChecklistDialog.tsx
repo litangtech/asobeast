@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText, useUiLanguage } from "@/components/language/UiLanguage";
 import type { RefObject } from "react";
 import {
   ConfirmActionFooter,
@@ -27,6 +28,7 @@ export function HideChecklistDialog({
   pending: boolean;
   returnFocus: RefObject<HTMLElement | null>;
 }) {
+  const { text: uiLabel } = useUiLanguage();
   return (
     <AlertDialog
       open={open}
@@ -34,16 +36,17 @@ export function HideChecklistDialog({
     >
       <AlertDialogContent onCloseAutoFocus={returnFocusTo(returnFocus)}>
         <AlertDialogHeader>
-          <AlertDialogTitle>Hide the setup checklist?</AlertDialogTitle>
+          <AlertDialogTitle>
+            <UiText message="Hide the setup checklist?" />
+          </AlertDialogTitle>
           <AlertDialogDescription>
-            It stays hidden for everyone in this workspace. You can show it
-            again under Settings, Getting started.
+            <UiText message="It stays hidden for everyone in this workspace. You can show it again under Settings, Getting started." />
           </AlertDialogDescription>
         </AlertDialogHeader>
         <ConfirmActionFooter
           variant="default"
           pending={pending}
-          label="Hide checklist"
+          label={uiLabel("Hide checklist")}
           pendingLabel="Hiding…"
           onConfirm={onConfirm}
         />

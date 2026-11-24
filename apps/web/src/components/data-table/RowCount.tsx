@@ -1,3 +1,4 @@
+import { UiText } from "@/components/language/UiLanguage";
 export function RowCount({
   shown,
   total,
@@ -12,7 +13,7 @@ export function RowCount({
       <span className="numeric font-mono font-medium text-foreground">
         {shown}
       </span>
-      {" of "}
+      <UiText message=" of " />
       <span className="numeric font-mono font-medium text-foreground">
         {total}
       </span>

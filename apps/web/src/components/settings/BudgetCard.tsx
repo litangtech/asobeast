@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText, useUiLanguage } from "@/components/language/UiLanguage";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { TriangleAlert } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
@@ -26,6 +27,7 @@ const WARNING_COPY =
   "Daily jobs may not finish within store rate limits; remove keywords or countries, or raise SCRAPE_ITUNES_RPM at your own risk.";
 
 export function BudgetCard() {
+  const { text: uiLabel } = useUiLanguage();
   const { data: budget } = useSuspenseQuery(budgetOptions);
   const level = utilizationLevel(budget.utilization);
   const completion = budgetCompletionSentence(budget.completion, budget.total);
@@ -45,17 +47,20 @@ export function BudgetCard() {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Daily request budget</CardTitle>
+        <CardTitle>
+          <UiText message="Daily request budget" />
+        </CardTitle>
         <CardDescription>
-          Estimated store requests the daily pipeline enqueues, against your
-          rate limit.
+          <UiText message="Estimated store requests the daily pipeline enqueues, against your rate limit." />
         </CardDescription>
       </CardHeader>
       <CardContent className="flex flex-col gap-4">
         <dl className="grid grid-cols-2 gap-x-6 gap-y-3 text-sm sm:grid-cols-4">
           {rows.map((row) => (
             <div key={row.label} className="flex flex-col gap-0.5">
-              <dt className="text-muted-foreground">{row.label}</dt>
+              <dt className="text-muted-foreground">
+                <UiText message={row.label} />
+              </dt>
               <dd className="text-lg font-semibold tabular-nums">
                 {formatNumber(row.value)}
               </dd>
@@ -76,12 +81,15 @@ export function BudgetCard() {
                 <span className="font-medium">{storeLabel(store.store)}</span>
                 <span className="text-muted-foreground tabular-nums">
                   {formatNumber(store.total)} of{" "}
-                  {formatNumber(store.capacityPerDay)} requests/day ·{" "}
+                  {formatNumber(store.capacityPerDay)}
+                  <UiText message="requests/day ·" />{" "}
                   {utilizationPercent(store.utilization)}%
                 </span>
               </div>
               <UtilizationMeter
-                label={`${storeLabel(store.store)} daily request utilization`}
+                label={uiLabel("{0} daily request utilization", [
+                  storeLabel(store.store),
+                ])}
                 utilization={store.utilization}
               />
             </div>
@@ -91,8 +99,10 @@ export function BudgetCard() {
         <div className="flex flex-col gap-2 border-t pt-4">
           <div className="flex items-baseline justify-between text-sm">
             <span className="text-muted-foreground">
-              Peak store utilization · {formatNumber(budget.total)} of{" "}
-              {formatNumber(budget.capacityPerDay)} requests/day
+              <UiText message="Peak store utilization ·" trailing />
+              {formatNumber(budget.total)} of{" "}
+              {formatNumber(budget.capacityPerDay)}
+              <UiText message="requests/day" />
             </span>
             <span className="font-medium tabular-nums">
               {utilizationStatus(budget.utilization)} ·{" "}
@@ -100,7 +110,7 @@ export function BudgetCard() {
             </span>
           </div>
           <UtilizationMeter
-            label="Peak store utilization"
+            label={uiLabel("Peak store utilization")}
             utilization={budget.utilization}
           />
         </div>

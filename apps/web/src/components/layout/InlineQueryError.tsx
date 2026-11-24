@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText } from "@/components/language/UiLanguage";
 import { RefreshCw } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -36,7 +37,7 @@ export function InlineQueryError({
         }}
       >
         <RefreshCw className={cn(retrying && "animate-spin")} />
-        Retry
+        <UiText message="Retry" />
       </Button>
     </div>
   );

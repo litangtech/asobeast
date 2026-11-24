@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText } from "@/components/language/UiLanguage";
 import {
   Dialog,
   DialogContent,
@@ -32,20 +33,25 @@ export function ActionShortcutsDialog({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Keyboard shortcuts</DialogTitle>
+          <DialogTitle>
+            <UiText message="Keyboard shortcuts" />
+          </DialogTitle>
           <DialogDescription>
-            Work the queue without the mouse. Shortcuts pause while you type or
-            while a menu is open.
+            <UiText message="Work the queue without the mouse. Shortcuts pause while you type or while a menu is open." />
           </DialogDescription>
         </DialogHeader>
         <table className="w-full text-body">
           <caption className="sr-only">
-            Action Center keyboard shortcuts
+            <UiText message="Action Center keyboard shortcuts" />
           </caption>
           <thead className="sr-only">
             <tr>
-              <th scope="col">Keys</th>
-              <th scope="col">Action</th>
+              <th scope="col">
+                <UiText message="Keys" />
+              </th>
+              <th scope="col">
+                <UiText message="Action" />
+              </th>
             </tr>
           </thead>
           <tbody>

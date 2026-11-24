@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText, useUiLanguage } from "@/components/language/UiLanguage";
 import { Sparkles } from "lucide-react";
 import type {
   AppLocalizationItem,
@@ -31,6 +32,7 @@ export function LocalizationItem({
   sync?: AppLocalizationStoreSync | null;
   onDraft: ((localization: AppStoreLocalization) => void) | null;
 }) {
+  const { text: uiLabel } = useUiLanguage();
   const name = localizationName(item.localization);
 
   return (
@@ -56,11 +58,11 @@ export function LocalizationItem({
               <Button
                 variant="outline"
                 size="xs"
-                aria-label={`Draft with AI: ${name}`}
+                aria-label={uiLabel("Draft with AI: {0}", [name])}
                 onClick={() => onDraft(item.localization)}
               >
                 <Sparkles aria-hidden />
-                Draft with AI
+                <UiText message="Draft with AI" />
               </Button>
             </div>
           ) : null}

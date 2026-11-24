@@ -1,6 +1,6 @@
 "use client";
 
-import { UiText, useUiLanguage } from "@/components/language/UiLanguage";
+import { useUiLanguage, UiText } from "@/components/language/UiLanguage";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { ExternalLink } from "lucide-react";
 import type { AppDetail } from "@asobeast/shared";
@@ -19,6 +19,7 @@ function storeUrl(detail: AppDetail): string {
 }
 
 export function AppHeader({ id }: { id: string }) {
+  const { text: uiLabel } = useUiLanguage();
   const { text } = useUiLanguage();
   const { data: detail } = useSuspenseQuery(appDetailOptions(id));
   const name = detail.name ?? text("Untitled app");
@@ -37,7 +38,9 @@ export function AppHeader({ id }: { id: string }) {
             <Badge variant="secondary">{storeLabel(detail.store)}</Badge>
             <Badge
               variant="outline"
-              title={`Home storefront · ${formatCountry(detail.country)}`}
+              title={uiLabel("Home storefront · {0}", [
+                formatCountry(detail.country),
+              ])}
             >
               {detail.country.toUpperCase()}
             </Badge>

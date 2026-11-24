@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText } from "@/components/language/UiLanguage";
 import { useId } from "react";
 import { Check, Loader2, Plus, RotateCw } from "lucide-react";
 import type {
@@ -19,7 +20,10 @@ function SuggestionMeta({ suggestion }: { suggestion: KeywordSuggestion }) {
   return (
     <span className="flex flex-wrap items-center gap-2 text-caption text-muted-foreground">
       {suggestion.seed ? (
-        <span className="wrap-anywhere">from “{suggestion.seed}”</span>
+        <span className="wrap-anywhere">
+          <UiText message="from “" />
+          {suggestion.seed}”
+        </span>
       ) : null}
       {suggestion.usedByCount !== undefined ? (
         <span className="numeric font-mono">
@@ -29,7 +33,8 @@ function SuggestionMeta({ suggestion }: { suggestion: KeywordSuggestion }) {
       ) : null}
       {suggestion.priority !== undefined ? (
         <span className="numeric font-mono">
-          priority {Math.round(suggestion.priority)}
+          <UiText message="priority" trailing />
+          {Math.round(suggestion.priority)}
         </span>
       ) : null}
       {suggestion.event ? (
@@ -92,12 +97,12 @@ function TrackAction({
       {already ? (
         <>
           <Check />
-          Tracked
+          <UiText message="Tracked" />
         </>
       ) : (
         <>
           {pending ? <Loader2 className="animate-spin" /> : <Plus />}
-          Track
+          <UiText message="Track" />
         </>
       )}
     </Button>
@@ -133,13 +138,15 @@ export function SuggestionList({
     return (
       <div className="flex items-center justify-between gap-4 rounded-lg border border-dashed p-4 text-body text-muted-foreground">
         <span>
-          {state.error instanceof ApiError
-            ? state.error.envelope.message
-            : "Could not load suggestions."}
+          {state.error instanceof ApiError ? (
+            state.error.envelope.message
+          ) : (
+            <UiText message="Could not load suggestions." />
+          )}
         </span>
         <Button variant="outline" size="sm" onClick={onRetry}>
           <RotateCw />
-          Retry
+          <UiText message="Retry" />
         </Button>
       </div>
     );
@@ -148,8 +155,9 @@ export function SuggestionList({
   if (state.suggestions.length === 0) {
     return (
       <p className="rounded-lg border border-dashed p-4 text-center text-body text-muted-foreground">
-        {EMPTY_COPY[strategy] ??
-          "No new suggestions from this source right now."}
+        {EMPTY_COPY[strategy] ?? (
+          <UiText message="No new suggestions from this source right now." />
+        )}
       </p>
     );
   }
@@ -179,7 +187,11 @@ export function SuggestionList({
                 </span>
                 <SuggestionMeta suggestion={suggestion} />
               </Label>
-              {already ? <Badge variant="outline">Tracked</Badge> : null}
+              {already ? (
+                <Badge variant="outline">
+                  <UiText message="Tracked" />
+                </Badge>
+              ) : null}
             </li>
           );
         }

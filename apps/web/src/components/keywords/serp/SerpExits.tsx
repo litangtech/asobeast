@@ -1,3 +1,4 @@
+import { UiText } from "@/components/language/UiLanguage";
 import type { SerpExitItem } from "@asobeast/shared";
 import { AppIcon } from "@/components/AppIcon";
 import { formatDayMonth } from "@/lib/format";
@@ -20,9 +21,14 @@ export function SerpExits({
         {exits.map((exit) => (
           <li key={exit.storeAppId} className={SERP_ROW_GRID}>
             <span className="col-start-1 row-span-2 row-start-1 text-right text-caption">
-              <span aria-hidden>{`was ${exit.previous}`}</span>
+              <span aria-hidden>
+                <UiText message="was {0}" values={[exit.previous]} />
+              </span>
               <span className="sr-only">
-                {`was number ${exit.previous}, not in this list`}
+                <UiText
+                  message="was number {0}, not in this list"
+                  values={[exit.previous]}
+                />
               </span>
             </span>
             <span className="col-start-2 row-span-2 row-start-1">

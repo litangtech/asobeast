@@ -1,3 +1,4 @@
+import { UiText } from "@/components/language/UiLanguage";
 import { Suspense } from "react";
 import { InfoTip } from "@/components/ui/info-tip";
 import { ActionStatusLine } from "./ActionStatusLine";
@@ -29,7 +30,11 @@ export function ActionCenterHeader({
               appId ? "text-title" : "text-display tracking-tight text-balance"
             }
           >
-            {appId ? "Actions" : "Action Center"}
+            {appId ? (
+              <UiText message="Actions" />
+            ) : (
+              <UiText message="Action Center" />
+            )}
           </Heading>
           <InfoTip
             label="About how actions are generated"
@@ -42,7 +47,7 @@ export function ActionCenterHeader({
               rel="noreferrer"
               className="font-medium text-foreground underline decoration-primary underline-offset-4 hover:decoration-2"
             >
-              Read how the Action Center works
+              <UiText message="Read how the Action Center works" />
             </a>
           </InfoTip>
         </div>

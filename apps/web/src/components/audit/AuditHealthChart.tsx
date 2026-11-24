@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText, useUiLanguage } from "@/components/language/UiLanguage";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import {
   CartesianGrid,
@@ -87,12 +88,14 @@ function DeltaChip({ delta }: { delta: number | null }) {
   return (
     <Badge variant={variant}>
       {sign}
-      {rounded} vs 7d
+      {rounded}
+      <UiText message="vs 7d" />
     </Badge>
   );
 }
 
 export function AuditHealthChart({ id }: { id: string }) {
+  const { text: uiLabel } = useUiLanguage();
   const { data } = useSuspenseQuery(auditHistoryOptions(id));
   const points = scored(data.points);
   const state = trendState(points.length);
@@ -102,9 +105,13 @@ export function AuditHealthChart({ id }: { id: string }) {
   return (
     <Card>
       <CardHeader>
-        <CardDescription>ASO health</CardDescription>
+        <CardDescription>
+          <UiText message="ASO health" />
+        </CardDescription>
         <CardTitle asChild>
-          <h2>Score history</h2>
+          <h2>
+            <UiText message="Score history" />
+          </h2>
         </CardTitle>
         <CardAction>
           <DeltaChip delta={computeDelta(data.points)} />
@@ -116,7 +123,7 @@ export function AuditHealthChart({ id }: { id: string }) {
             config={chartConfig}
             className={`${CHART_HEIGHT.compact} w-full`}
             role="region"
-            aria-label="Score history"
+            aria-label={uiLabel("Score history")}
           >
             <LineChart
               accessibilityLayer
@@ -133,7 +140,7 @@ export function AuditHealthChart({ id }: { id: string }) {
                 <ReferenceLine
                   x={rubricChange}
                   stroke="var(--border)"
-                  label="Rubric v2"
+                  label={uiLabel("Rubric v2")}
                 />
               ) : null}
               <Line
@@ -147,13 +154,15 @@ export function AuditHealthChart({ id }: { id: string }) {
         ) : state === "empty" ? (
           <ChartNotice
             height={CHART_HEIGHT.compact}
-            title="No audit snapshots yet"
+            title={uiLabel("No audit snapshots yet")}
             body="The daily audit snapshot builds this trend."
           />
         ) : (
           <ChartStat
             height={CHART_HEIGHT.compact}
-            label={`Last daily snapshot · ${formatDate(lastPoint.date)}`}
+            label={uiLabel("Last daily snapshot · {0}", [
+              formatDate(lastPoint.date),
+            ])}
             value={String(lastPoint.overall)}
             note="A trend needs a few more daily snapshots."
           />

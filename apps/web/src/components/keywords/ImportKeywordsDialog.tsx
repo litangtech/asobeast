@@ -85,10 +85,11 @@ export function ImportKeywordsDialog({
       <DialogTrigger asChild>{children}</DialogTrigger>
       <DialogContent size="lg">
         <DialogHeader>
-          <DialogTitle>Import keywords from CSV</DialogTitle>
+          <DialogTitle>
+            <UiText message="Import keywords from CSV" />
+          </DialogTitle>
           <DialogDescription>
-            Choose a file with one keyword per row. Country, tags and note are
-            optional columns. Nothing is saved until you confirm.
+            <UiText message="Choose a file with one keyword per row. Country, tags and note are optional columns. Nothing is saved until you confirm." />
           </DialogDescription>
         </DialogHeader>
 
@@ -144,7 +145,7 @@ export function ImportKeywordsDialog({
             disabled={flow.importing}
             onClick={() => onOpenChange(false)}
           >
-            <UiText message={"Cancel"} />
+            <UiText message="Cancel" />
           </Button>
           <Button
             aria-disabled={flow.action === null}

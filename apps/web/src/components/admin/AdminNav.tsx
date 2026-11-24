@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText, useUiLanguage } from "@/components/language/UiLanguage";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { ExternalLink } from "lucide-react";
@@ -14,11 +15,12 @@ const TAB_CLASS =
   "relative shrink-0 border-b-2 border-transparent px-3 py-2 text-sm whitespace-nowrap text-muted-foreground transition-colors hover:text-foreground focus-visible:rounded-sm focus-visible:ring-[3px] focus-visible:ring-ring/50 focus-visible:ring-inset focus-visible:outline-none aria-[current=page]:border-primary aria-[current=page]:font-medium aria-[current=page]:text-foreground";
 
 export function AdminNav() {
+  const { text: uiLabel } = useUiLanguage();
   const current = adminSectionFrom(usePathname());
 
   return (
     <nav
-      aria-label="Admin"
+      aria-label={uiLabel("Admin")}
       className="flex min-w-0 items-end gap-1 overflow-x-auto shadow-[inset_0_-1px_0_var(--color-border)]"
     >
       {ADMIN_SECTIONS.map(({ segment, label }) => (
@@ -28,7 +30,7 @@ export function AdminNav() {
           aria-current={current?.segment === segment ? "page" : undefined}
           className={TAB_CLASS}
         >
-          {label}
+          <UiText message={label} />
         </Link>
       ))}
       <span aria-hidden className="mx-2 mb-2 h-4 w-px shrink-0 bg-border" />
@@ -40,9 +42,11 @@ export function AdminNav() {
           rel="noreferrer"
           className={`${TAB_CLASS} inline-flex items-center gap-1`}
         >
-          {label}
+          <UiText message={label} />
           <ExternalLink aria-hidden className="size-3.5" />
-          <span className="sr-only">(opens in a new tab)</span>
+          <span className="sr-only">
+            <UiText message="(opens in a new tab)" />
+          </span>
         </a>
       ))}
     </nav>

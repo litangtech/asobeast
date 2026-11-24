@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText, useUiLanguage } from "@/components/language/UiLanguage";
 import { Suspense, useState } from "react";
 import Link from "next/link";
 import { useSuspenseQuery } from "@tanstack/react-query";
@@ -41,6 +42,7 @@ const ownedBy =
     owner === "all" || event.isCompetitor === (owner === "competitors");
 
 function RecentChangesList({ today }: { today: string }) {
+  const { text: uiLabel } = useUiLanguage();
   const { data } = useSuspenseQuery(recentChangesOptions());
   const { data: portfolio } = useSuspenseQuery(portfolioOptions);
   const [owner, setOwner] = useQueryState("changes", changeOwnerParser);
@@ -49,7 +51,7 @@ function RecentChangesList({ today }: { today: string }) {
   if (data.events.length === 0) {
     return (
       <EmptyState
-        title="No changes yet"
+        title={uiLabel("No changes yet")}
         body="Metadata changes across your portfolio appear after daily refreshes."
       />
     );
@@ -76,7 +78,7 @@ function RecentChangesList({ today }: { today: string }) {
           <TabsList>
             {OWNER_TABS.map((tab) => (
               <TabsOption key={tab.value} value={tab.value}>
-                {tab.label}
+                <UiText message={tab.label} />
               </TabsOption>
             ))}
           </TabsList>
@@ -91,7 +93,7 @@ function RecentChangesList({ today }: { today: string }) {
         groupChangesByDay(shown, today).map((group) => (
           <section key={group.day} className="flex flex-col gap-1">
             <h3 className="text-label text-muted-foreground uppercase">
-              {group.label}
+              <UiText message={group.label} />
             </h3>
             <div className="divide-y">
               {group.events.map((event) => (
@@ -122,7 +124,9 @@ function RecentChangesList({ today }: { today: string }) {
           className="self-start"
           onClick={() => setExpanded(true)}
         >
-          Show {hidden} more
+          <UiText message="Show" trailing />
+          {hidden}
+          <UiText message="more" />
         </Button>
       ) : null}
     </div>
@@ -134,9 +138,13 @@ export function RecentChangesCard({ today }: { today: string }) {
     <Card>
       <CardHeader>
         <CardTitle asChild>
-          <h2>Recent changes</h2>
+          <h2>
+            <UiText message="Recent changes" />
+          </h2>
         </CardTitle>
-        <CardDescription>Across your portfolio</CardDescription>
+        <CardDescription>
+          <UiText message="Across your portfolio" />
+        </CardDescription>
       </CardHeader>
       <CardContent>
         <Suspense fallback={<ChangeTimelineSkeleton />}>

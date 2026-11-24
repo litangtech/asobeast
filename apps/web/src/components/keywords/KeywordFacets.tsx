@@ -1,5 +1,6 @@
 "use client";
 
+import { useUiLanguage } from "@/components/language/UiLanguage";
 import type { SetValues } from "nuqs";
 import type { Row, Table } from "@tanstack/react-table";
 import {
@@ -85,6 +86,7 @@ function TagFacet({
   selected: readonly string[];
   setFilters: SetValues<typeof keywordFilterParsers>;
 }) {
+  const { text: uiLabel } = useUiLanguage();
   const counts = table.getColumn("tags")?.getFacetedUniqueValues() ?? new Map();
   const options = tagOptions(
     [...counts.keys()].filter((tag): tag is string => typeof tag === "string"),
@@ -93,7 +95,7 @@ function TagFacet({
   if (options.length === 0) return null;
   return (
     <FacetFilter
-      title="Tags"
+      title={uiLabel("Tags")}
       options={options}
       selected={selected}
       counts={counts}
@@ -111,31 +113,32 @@ export function KeywordFacets({
   filters: KeywordFilters;
   setFilters: SetValues<typeof keywordFilterParsers>;
 }) {
+  const { text: uiLabel } = useUiLanguage();
   return (
     <>
       <FacetFilter
-        title="Source"
+        title={uiLabel("Source")}
         options={SOURCE_OPTIONS}
         selected={filters.source}
         counts={facetCounts(table, "source", (row) => row.original.source)}
         onChange={(source) => void setFilters({ source })}
       />
       <FacetFilter
-        title="Bucket"
+        title={uiLabel("Bucket")}
         options={BUCKET_OPTIONS}
         selected={filters.bucket}
         counts={facetCounts(table, "bucket", (row) => row.original.bucket)}
         onChange={(bucket) => void setFilters({ bucket })}
       />
       <SelectFilter
-        title="Status"
+        title={uiLabel("Status")}
         value={filters.status}
         options={STATUS_OPTIONS}
         onChange={(status) => void setFilters({ status })}
       />
       <span className="inline-flex items-center gap-1">
         <FacetFilter
-          title="Type"
+          title={uiLabel("Type")}
           options={KEYWORD_CLASS_OPTIONS}
           selected={filters.type}
           counts={facetCounts(
@@ -149,28 +152,28 @@ export function KeywordFacets({
       </span>
       <TagFacet table={table} selected={filters.tag} setFilters={setFilters} />
       <FacetFilter
-        title="Popularity"
+        title={uiLabel("Popularity")}
         options={GRADE_OPTIONS}
         selected={filters.pop}
         counts={gradeCounts(table, "traffic", "popularity")}
         onChange={(pop) => void setFilters({ pop })}
       />
       <FacetFilter
-        title="Difficulty"
+        title={uiLabel("Difficulty")}
         options={GRADE_OPTIONS}
         selected={filters.diff}
         counts={gradeCounts(table, "difficulty", "difficulty")}
         onChange={(diff) => void setFilters({ diff })}
       />
       <FacetFilter
-        title="Opportunity"
+        title={uiLabel("Opportunity")}
         options={GRADE_OPTIONS}
         selected={filters.opp}
         counts={gradeCounts(table, "opportunity", "opportunity")}
         onChange={(opp) => void setFilters({ opp })}
       />
       <FacetFilter
-        title="Position"
+        title={uiLabel("Position")}
         options={POSITION_OPTIONS}
         selected={filters.pos}
         counts={facetCounts(table, "position", (row) =>

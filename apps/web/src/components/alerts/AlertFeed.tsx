@@ -1,6 +1,6 @@
 "use client";
 
-import { UiText } from "@/components/language/UiLanguage";
+import { UiText, useUiLanguage } from "@/components/language/UiLanguage";
 import { useDeferredValue, useEffect, useMemo, useRef, useState } from "react";
 import { useQuery, useSuspenseInfiniteQuery } from "@tanstack/react-query";
 import { isAlertFeedEvent } from "@asobeast/shared";
@@ -28,14 +28,15 @@ const WHAT_THE_PAGE_LISTS =
   "Every event the daily run detected for your apps in the last 30 days, whether or not an alert channel is subscribed. Delivery is separate: channels are set up in Settings.";
 
 function AlertFeedHeader() {
+  const { text: uiLabel } = useUiLanguage();
   return (
     <header className="flex items-center gap-2">
       <h1 className="text-display tracking-tight text-balance">
-        <UiText message={"Alerts"} />
+        <UiText message="Alerts" />
       </h1>
       <InfoTip
-        label="About the alerts page"
-        title="What the alerts page lists"
+        label={uiLabel("About the alerts page")}
+        title={uiLabel("What the alerts page lists")}
         summary={WHAT_THE_PAGE_LISTS}
       >
         <a
@@ -44,7 +45,7 @@ function AlertFeedHeader() {
           rel="noreferrer"
           className="font-medium text-foreground underline decoration-primary underline-offset-4 hover:decoration-2"
         >
-          Read how alerts work
+          <UiText message="Read how alerts work" />
         </a>
       </InfoTip>
     </header>
@@ -112,7 +113,7 @@ export function AlertFeed() {
           }
           action={
             <Button variant="outline" onClick={clearAll}>
-              Clear filters
+              <UiText message="Clear filters" />
             </Button>
           }
         />

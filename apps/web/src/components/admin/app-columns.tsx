@@ -1,17 +1,14 @@
 "use client";
 
+import { UiDate } from "@/components/language/UiFormat";
+import { UiText } from "@/components/language/UiLanguage";
 import { createColumnHelper } from "@tanstack/react-table";
 import type { AdminApp } from "@asobeast/shared";
 import { AppIcon } from "@/components/AppIcon";
 import { SortableHeader } from "@/components/data-table/SortableHeader";
 import type { DataTableFeatures } from "@/components/data-table/table-features";
 import { workspaceListHref } from "@/lib/admin-sections";
-import {
-  formatCountry,
-  formatDate,
-  formatNumber,
-  storeLabel,
-} from "@/lib/format";
+import { formatCountry, formatNumber, storeLabel } from "@/lib/format";
 import { NUMBER_SORT, WorkspaceName } from "./cells";
 
 const columnHelper = createColumnHelper<DataTableFeatures, AdminApp>();
@@ -22,7 +19,7 @@ function AppName({ app }: { app: AdminApp }) {
       <AppIcon src={app.iconUrl} name={app.name} size={32} />
       <div className="flex min-w-0 flex-col">
         <span className="truncate font-medium">
-          {app.name ?? "Untitled app"}
+          {app.name ?? <UiText message="Untitled app" />}
         </span>
         <span
           className="truncate text-caption text-muted-foreground"
@@ -112,7 +109,9 @@ export const appColumns = columnHelper.columns([
     meta: { label: "Added" },
     header: ({ column }) => <SortableHeader column={column} label="Added" />,
     cell: ({ getValue }) => (
-      <span className="whitespace-nowrap">{formatDate(getValue())}</span>
+      <span className="whitespace-nowrap">
+        <UiDate value={getValue()} />
+      </span>
     ),
   }),
 ]);

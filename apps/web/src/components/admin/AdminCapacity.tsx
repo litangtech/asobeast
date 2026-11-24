@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText, useUiLanguage } from "@/components/language/UiLanguage";
 import { useId, type ReactNode } from "react";
 import Link from "next/link";
 import { useSuspenseQuery } from "@tanstack/react-query";
@@ -55,10 +56,17 @@ function DemandLine({
   return (
     <div className="flex flex-col gap-2">
       <div className="flex flex-wrap items-baseline justify-between gap-x-4 text-sm">
-        <span className="font-medium">{label}</span>
+        <span className="font-medium">
+          <UiText message={label} />
+        </span>
         <span className="text-muted-foreground tabular-nums">
-          {formatNumber(requests)} of {formatNumber(capacity)} requests/day ·{" "}
-          {utilizationPercent(utilization)}% · {utilizationStatus(utilization)}
+          <UiText
+            message="{0} of {1} requests/day"
+            values={[formatNumber(requests), formatNumber(capacity)]}
+          />
+          {" · "}
+          {utilizationPercent(utilization)}%{" · "}
+          <UiText message={utilizationStatus(utilization)} />
         </span>
       </div>
       <UtilizationMeter label={meterLabel} utilization={utilization} />
@@ -80,9 +88,13 @@ function SectionCard({
     <Card role="region" aria-labelledby={id}>
       <CardHeader>
         <CardTitle asChild>
-          <h2 id={id}>{title}</h2>
+          <h2 id={id}>
+            <UiText message={title} />
+          </h2>
         </CardTitle>
-        <CardDescription>{description}</CardDescription>
+        <CardDescription>
+          <UiText message={description} />
+        </CardDescription>
       </CardHeader>
       <CardContent className="flex flex-col gap-4">{children}</CardContent>
     </Card>
@@ -90,13 +102,16 @@ function SectionCard({
 }
 
 function InstanceDemand({ report }: { report: CapacityReport }) {
+  const { text: uiLabel } = useUiLanguage();
   return (
     <SectionCard
-      title="Instance demand"
-      description="Store requests the daily run enqueues for every workspace it visits, against the capacity of this instance. Suspended and unentitled workspaces are skipped."
+      title={uiLabel("Instance demand")}
+      description={uiLabel(
+        "Store requests the daily run enqueues for every workspace it visits, against the capacity of this instance. Suspended and unentitled workspaces are skipped.",
+      )}
     >
       <DemandLine
-        label="All stores"
+        label={uiLabel("All stores")}
         requests={report.requestsPerDay}
         capacity={report.capacityPerDay}
         utilization={report.utilization}
@@ -123,17 +138,20 @@ function TopConsumers({
   report: CapacityReport;
   workspaces: SupportWorkspaceSummary[];
 }) {
+  const { text: uiLabel } = useUiLanguage();
   const names = new Map(
     workspaces.map((workspace) => [workspace.workspaceId, workspace.name]),
   );
   return (
     <SectionCard
-      title="Top consumers"
-      description="The workspaces whose tracking costs the most requests per day."
+      title={uiLabel("Top consumers")}
+      description={uiLabel(
+        "The workspaces whose tracking costs the most requests per day.",
+      )}
     >
       {report.workspaces.length === 0 ? (
         <p className="text-sm text-muted-foreground">
-          No workspace is tracking anything yet.
+          <UiText message="No workspace is tracking anything yet." />
         </p>
       ) : (
         <ol className="flex flex-col divide-y text-sm">
@@ -150,7 +168,8 @@ function TopConsumers({
                 {names.get(consumer.workspaceId) ?? consumer.workspaceId}
               </Link>
               <span className="shrink-0 text-muted-foreground tabular-nums">
-                {formatNumber(consumer.requests)} requests/day
+                {formatNumber(consumer.requests)}
+                <UiText message="requests/day" />
               </span>
             </li>
           ))}
@@ -161,30 +180,42 @@ function TopConsumers({
 }
 
 function ProxyPool({ pool }: { pool: ProxyPoolHealth }) {
+  const { text: uiLabel } = useUiLanguage();
   return (
     <SectionCard
-      title="Proxy pool"
-      description={`Store requests leave through ${pool.provider} endpoints instead of the host address.`}
+      title={uiLabel("Proxy pool")}
+      description={uiLabel(
+        "Store requests leave through {0} endpoints instead of the host address.",
+        [pool.provider],
+      )}
     >
       <dl className="grid grid-cols-2 gap-x-6 gap-y-3 text-sm sm:grid-cols-4">
         <div className="flex flex-col gap-0.5">
-          <dt className="text-muted-foreground">Provider</dt>
+          <dt className="text-muted-foreground">
+            <UiText message="Provider" />
+          </dt>
           <dd className="font-medium">{pool.provider}</dd>
         </div>
         <div className="flex flex-col gap-0.5">
-          <dt className="text-muted-foreground">Pool</dt>
+          <dt className="text-muted-foreground">
+            <UiText message="Pool" />
+          </dt>
           <dd className="font-medium tabular-nums">
             {pluralize(pool.total, "endpoint")}
           </dd>
         </div>
         <div className="flex flex-col gap-0.5">
-          <dt className="text-muted-foreground">Pending</dt>
+          <dt className="text-muted-foreground">
+            <UiText message="Pending" />
+          </dt>
           <dd className="font-medium tabular-nums">
             {formatNumber(pool.pending)}
           </dd>
         </div>
         <div className="flex flex-col gap-0.5">
-          <dt className="text-muted-foreground">Retired</dt>
+          <dt className="text-muted-foreground">
+            <UiText message="Retired" />
+          </dt>
           <dd className="font-medium tabular-nums">
             {formatNumber(pool.retired)}
           </dd>
@@ -196,13 +227,15 @@ function ProxyPool({ pool }: { pool: ProxyPoolHealth }) {
             <span>{storeLabel(store.store)}</span>
             <span className="text-muted-foreground tabular-nums">
               {formatNumber(store.healthy)} of {formatNumber(store.endpoints)}{" "}
-              healthy
+              <UiText message="healthy" />
             </span>
           </li>
         ))}
         {pool.residential.configured ? (
           <li className="flex justify-between gap-4">
-            <span>Residential fallback this month</span>
+            <span>
+              <UiText message="Residential fallback this month" />
+            </span>
             <span className="text-muted-foreground tabular-nums">
               {formatUsd(pool.residential.spendUsd)} of{" "}
               {formatUsd(pool.residential.capUsd)}
@@ -222,8 +255,10 @@ function ProxyPool({ pool }: { pool: ProxyPoolHealth }) {
         rel="noreferrer"
         className="w-fit text-sm font-medium underline underline-offset-4"
       >
-        Raw pool health
-        <span className="sr-only"> (opens in a new tab)</span>
+        <UiText message="Raw pool health" />
+        <span className="sr-only">
+          <UiText message="(opens in a new tab)" />
+        </span>
       </a>
     </SectionCard>
   );
@@ -240,8 +275,7 @@ export function AdminCapacity() {
       <TopConsumers report={report} workspaces={workspaces} />
       {pool.enabled ? <ProxyPool pool={pool} /> : null}
       <p className="text-sm text-muted-foreground">
-        Each workspace sees only its own plan usage. Capacity is shown to the
-        platform operator only.
+        <UiText message="Each workspace sees only its own plan usage. Capacity is shown to the platform operator only." />
       </p>
     </div>
   );

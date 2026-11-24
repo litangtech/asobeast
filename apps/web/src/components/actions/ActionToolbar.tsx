@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText, useUiLanguage } from "@/components/language/UiLanguage";
 import { useMemo } from "react";
 import {
   ACTION_CATEGORIES,
@@ -133,10 +134,11 @@ function QueueFacets({
   counts: QueueFacetCounts;
   options: FacetOptions;
 }) {
+  const { text: uiLabel } = useUiLanguage();
   return (
     <>
       <FacetFilter
-        title="Rule"
+        title={uiLabel("Rule")}
         options={options.rules.map((rule) => ({
           value: rule,
           label: ACTION_RULE_LABEL[rule],
@@ -146,7 +148,7 @@ function QueueFacets({
         onChange={(rule) => void setView({ rule })}
       />
       <FacetFilter
-        title="Category"
+        title={uiLabel("Category")}
         options={options.categories.map((category) => ({
           value: category,
           label: ACTION_CATEGORY_LABEL[category],
@@ -157,7 +159,7 @@ function QueueFacets({
       />
       {appId ? null : (
         <FacetFilter
-          title="App"
+          title={uiLabel("App")}
           options={[...options.apps].map(([value, label]) => ({
             value,
             label,
@@ -168,7 +170,7 @@ function QueueFacets({
         />
       )}
       <FacetFilter
-        title="Market"
+        title={uiLabel("Market")}
         options={options.markets.map((market) => ({
           value: market,
           label: formatCountry(market),
@@ -179,7 +181,7 @@ function QueueFacets({
       />
       {options.stores.length > 1 ? (
         <FacetFilter
-          title="Store"
+          title={uiLabel("Store")}
           options={options.stores.map((store) => ({
             value: store,
             label: storeLabel(store),
@@ -210,6 +212,7 @@ export function ActionToolbar({
   loadedTotal: number;
   onShowShortcuts: () => void;
 }) {
+  const { text: uiLabel } = useUiLanguage();
   const counts = facetCounts(items, view);
   const options = useFacetOptions(items, view);
   const groups = appId
@@ -226,7 +229,7 @@ export function ActionToolbar({
         />
         <div className="flex flex-wrap items-center gap-2">
           <SearchInput
-            label="Search actions"
+            label={uiLabel("Search actions")}
             value={view.q}
             onSearch={(q, searchOptions) =>
               void setView({ q: q === "" ? null : q }, searchOptions)
@@ -248,13 +251,13 @@ export function ActionToolbar({
           />
           <div className="flex items-center gap-2 @3xl/actions:ml-auto">
             <QueueSelect
-              label="Group by"
+              label={uiLabel("Group by")}
               value={view.group}
               labels={groups}
               onChange={(group) => void setView({ group })}
             />
             <QueueSelect
-              label="Sort by"
+              label={uiLabel("Sort by")}
               value={view.sort}
               labels={SORT_LABEL}
               onChange={(sort) => void setView({ sort })}
@@ -274,12 +277,15 @@ export function ActionToolbar({
         <RowCount shown={shown} total={items.length} noun="action" />
         <Button variant="link" size="sm" onClick={onShowShortcuts}>
           <Keyboard aria-hidden />
-          Shortcuts
+          <UiText message="Shortcuts" />
         </Button>
       </div>
       {loadedTotal > items.length ? (
         <p className="text-caption text-muted-foreground">
-          {`Only the ${items.length} highest-impact actions are loaded; narrow the status or scope to see the rest.`}
+          <UiText
+            message="Only the {0} highest-impact actions are loaded; narrow the status or scope to see the rest."
+            values={[items.length]}
+          />
         </p>
       ) : null}
     </div>

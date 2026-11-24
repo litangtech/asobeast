@@ -1,6 +1,6 @@
 "use client";
 
-import { UiText } from "@/components/language/UiLanguage";
+import { UiText, useUiLanguage } from "@/components/language/UiLanguage";
 import { Check, Clock } from "lucide-react";
 import type { ActionUpdateRequest } from "@asobeast/shared";
 import { Button } from "@/components/ui/button";
@@ -31,16 +31,17 @@ export function ActionBulkBar({
   onSelectAll: () => void;
   onClear: () => void;
 }) {
+  const { text: uiLabel } = useUiLanguage();
   if (count === 0) return null;
 
   return (
     <div
       role="toolbar"
-      aria-label="Bulk actions"
+      aria-label={uiLabel("Bulk actions")}
       className="sticky bottom-4 z-20 flex flex-wrap items-center gap-2 rounded-lg border bg-popover px-3 py-2 shadow-overlay"
     >
       <span className="text-body font-medium">
-        {`${formatNumber(count)} selected`}
+        <UiText message="{0} selected" values={[formatNumber(count)]} />
       </span>
       <Button
         size="sm"
@@ -49,7 +50,7 @@ export function ActionBulkBar({
         onClick={() => onUpdate({ status: "DONE" })}
       >
         <Check aria-hidden />
-        Done
+        <UiText message="Done" />
       </Button>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
@@ -60,7 +61,7 @@ export function ActionBulkBar({
             disabled={busy}
           >
             <Clock aria-hidden />
-            Snooze
+            <UiText message="Snooze" />
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="start">
@@ -71,7 +72,8 @@ export function ActionBulkBar({
                 onUpdate({ status: "SNOOZED", snoozedUntil: snoozeUntil(days) })
               }
             >
-              {days} days
+              {days}
+              <UiText message="days" />
             </DropdownMenuItem>
           ))}
         </DropdownMenuContent>
@@ -88,7 +90,9 @@ export function ActionBulkBar({
           className={BAR_BUTTON}
           onClick={onSelectAll}
         >
-          Select all {formatNumber(shown)} shown
+          <UiText message="Select all" trailing />
+          {formatNumber(shown)}
+          <UiText message="shown" />
         </Button>
       ) : null}
       <Button
@@ -97,7 +101,7 @@ export function ActionBulkBar({
         className={BAR_BUTTON}
         onClick={onClear}
       >
-        <UiText message={"Clear selection"} />
+        <UiText message="Clear selection" />
       </Button>
     </div>
   );

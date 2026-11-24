@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText, useUiLanguage } from "@/components/language/UiLanguage";
 import { Copy } from "lucide-react";
 import { toast } from "sonner";
 import type { AppAuditResult } from "@asobeast/shared";
@@ -13,19 +14,20 @@ export function CopyReportButton({
   audit: AppAuditResult;
   app: { name: string | null; country: string };
 }) {
+  const { text: uiLabel } = useUiLanguage();
   const copy = async () => {
     try {
       await navigator.clipboard.writeText(auditMarkdown(audit, app));
-      toast.success("Report copied");
+      toast.success(uiLabel("Report copied"));
     } catch {
-      toast.error("Your browser blocked the clipboard");
+      toast.error(uiLabel("Your browser blocked the clipboard"));
     }
   };
 
   return (
     <Button variant="outline" className="w-fit" onClick={() => void copy()}>
       <Copy />
-      Copy report
+      <UiText message="Copy report" />
     </Button>
   );
 }

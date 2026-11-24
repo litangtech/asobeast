@@ -1,3 +1,4 @@
+import { UiText } from "@/components/language/UiLanguage";
 import { KEYWORD_MIN_RELEVANCE } from "@asobeast/shared";
 import { InfoTip } from "@/components/ui/info-tip";
 import {
@@ -41,7 +42,9 @@ export function InsightsTip() {
       <ul className="flex flex-col gap-1 text-muted-foreground">
         {RULES.map(({ label, rule }) => (
           <li key={label}>
-            <span className="font-medium text-foreground">{label}</span>
+            <span className="font-medium text-foreground">
+              <UiText message={label} />
+            </span>
             <span>{`: ${rule}`}</span>
           </li>
         ))}
@@ -52,7 +55,7 @@ export function InsightsTip() {
         rel="noreferrer"
         className="font-medium text-foreground underline decoration-primary underline-offset-4 hover:decoration-2"
       >
-        Read about insights
+        <UiText message="Read about insights" />
       </a>
     </InfoTip>
   );

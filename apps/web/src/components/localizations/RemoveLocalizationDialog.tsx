@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText, useUiLanguage } from "@/components/language/UiLanguage";
 import { useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useQueryState } from "nuqs";
@@ -38,6 +39,7 @@ export function RemoveLocalizationDialog({
   id: string;
   item: AppLocalizationItem;
 }) {
+  const { text: uiLabel } = useUiLanguage();
   const queryClient = useQueryClient();
   const [open, setOpen] = useState(false);
   const [fieldLocale, setFieldLocale] = useQueryState(
@@ -58,7 +60,7 @@ export function RemoveLocalizationDialog({
       if (fieldLocale === item.localization) {
         void setFieldLocale(null, { history: "replace" });
       }
-      toast.success(`Removed ${name}`);
+      toast.success(uiLabel("Removed {0}", [name]));
     },
     onError: (err) =>
       toast.error(apiErrorMessage(err, `Could not remove ${name}`)),
@@ -78,19 +80,22 @@ export function RemoveLocalizationDialog({
           size="sm"
           className="text-destructive hover:text-destructive"
         >
-          Remove localization
+          <UiText message="Remove localization" />
         </Button>
       </AlertDialogTrigger>
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>Remove {name}?</AlertDialogTitle>
+          <AlertDialogTitle>
+            <UiText message="Remove" trailing />
+            {name}?
+          </AlertDialogTitle>
           <AlertDialogDescription>
             {removeDescription(item)}
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel disabled={remove.isPending}>
-            Cancel
+            <UiText message="Cancel" />
           </AlertDialogCancel>
           <AlertDialogAction
             variant="destructive"
@@ -100,7 +105,11 @@ export function RemoveLocalizationDialog({
               removeOnce();
             }}
           >
-            {remove.isPending ? "Removing…" : "Remove"}
+            {remove.isPending ? (
+              <UiText message="Removing…" />
+            ) : (
+              <UiText message="Remove" />
+            )}
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>

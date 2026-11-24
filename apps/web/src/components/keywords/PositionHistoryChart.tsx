@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText } from "@/components/language/UiLanguage";
 import type { Ref } from "react";
 import {
   Area,
@@ -93,7 +94,10 @@ function HistoryTooltip({
               <span>{movementLine(movement.places, movement.day)}</span>
             ) : null}
             {changed ? (
-              <span>{changedFieldsLabel(changed)} changed</span>
+              <span>
+                {changedFieldsLabel(changed)}
+                <UiText message="changed" />
+              </span>
             ) : null}
           </div>
         ) : null

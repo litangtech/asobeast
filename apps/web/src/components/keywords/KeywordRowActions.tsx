@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText, useUiLanguage } from "@/components/language/UiLanguage";
 import { useState } from "react";
 import {
   useIsMutating,
@@ -54,6 +55,7 @@ export function KeywordRowActions({
   keyword: TrackedKeywordItem;
   marketTags: () => string[];
 }) {
+  const { text: uiLabel } = useUiLanguage();
   const queryClient = useQueryClient();
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [editOpen, setEditOpen] = useState(false);
@@ -73,7 +75,8 @@ export function KeywordRowActions({
         "Popularity, difficulty and opportunity land after the run.",
       );
     },
-    onError: () => toast.error(`Could not queue scoring for ${keyword.text}`),
+    onError: () =>
+      toast.error(uiLabel("Could not queue scoring for {0}", [keyword.text])),
   });
   const scoreOnce = useSingleFlight(score);
 
@@ -82,9 +85,10 @@ export function KeywordRowActions({
     onSuccess: () => {
       invalidateKeywordMutation(queryClient, appId);
       setConfirmOpen(false);
-      toast.success(`Stopped tracking ${keyword.text}`);
+      toast.success(uiLabel("Stopped tracking {0}", [keyword.text]));
     },
-    onError: () => toast.error(`Could not stop tracking ${keyword.text}`),
+    onError: () =>
+      toast.error(uiLabel("Could not stop tracking {0}", [keyword.text])),
   });
   const removeOnce = useSingleFlight(remove);
 
@@ -94,7 +98,7 @@ export function KeywordRowActions({
         checked={keyword.active}
         disabled={update.isPending}
         onCheckedChange={(next) => update.mutate({ active: next })}
-        aria-label="Track keyword"
+        aria-label={uiLabel("Track keyword")}
       />
 
       <DropdownMenu>
@@ -103,7 +107,7 @@ export function KeywordRowActions({
             variant="ghost"
             size="icon-sm"
             className="pointer-coarse:size-11"
-            aria-label="Keyword actions"
+            aria-label={uiLabel("Keyword actions")}
           >
             <MoreHorizontal />
           </Button>
@@ -111,12 +115,12 @@ export function KeywordRowActions({
         <DropdownMenuContent align="end">
           <DropdownMenuItem onSelect={() => setEditOpen(true)}>
             <Tag />
-            Edit tags and note
+            <UiText message="Edit tags and note" />
           </DropdownMenuItem>
           <DropdownMenuSub>
             <DropdownMenuSubTrigger>
               <Shapes />
-              Keyword type
+              <UiText message="Keyword type" />
             </DropdownMenuSubTrigger>
             <DropdownMenuSubContent>
               <DropdownMenuRadioGroup
@@ -129,14 +133,18 @@ export function KeywordRowActions({
                 }}
               >
                 <DropdownMenuRadioItem value={DETECTED_CHOICE}>
-                  <span>Detected automatically</span>
+                  <span>
+                    <UiText message="Detected automatically" />
+                  </span>
                 </DropdownMenuRadioItem>
                 {KEYWORD_CLASS_OPTIONS.map((option) => (
                   <DropdownMenuRadioItem
                     key={option.value}
                     value={option.value}
                   >
-                    <span>{option.label}</span>
+                    <span>
+                      <UiText message={option.label} />
+                    </span>
                   </DropdownMenuRadioItem>
                 ))}
               </DropdownMenuRadioGroup>
@@ -144,7 +152,7 @@ export function KeywordRowActions({
           </DropdownMenuSub>
           <DropdownMenuItem disabled={scoring} onSelect={() => scoreOnce()}>
             <Sparkles />
-            Score now
+            <UiText message="Score now" />
           </DropdownMenuItem>
           <DropdownMenuSeparator />
           <DropdownMenuItem
@@ -152,7 +160,7 @@ export function KeywordRowActions({
             onSelect={() => setConfirmOpen(true)}
           >
             <Trash2 />
-            Stop tracking
+            <UiText message="Stop tracking" />
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
@@ -168,15 +176,17 @@ export function KeywordRowActions({
       <AlertDialog open={confirmOpen} onOpenChange={setConfirmOpen}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Stop tracking {keyword.text}?</AlertDialogTitle>
+            <AlertDialogTitle>
+              <UiText message="Stop tracking" trailing />
+              {keyword.text}?
+            </AlertDialogTitle>
             <AlertDialogDescription>
-              Ranking history for this keyword stops accruing. You can add it
-              again later, but the gap in history will remain.
+              <UiText message="Ranking history for this keyword stops accruing. You can add it again later, but the gap in history will remain." />
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel disabled={remove.isPending}>
-              Cancel
+              <UiText message="Cancel" />
             </AlertDialogCancel>
             <AlertDialogAction
               variant="destructive"
@@ -186,7 +196,11 @@ export function KeywordRowActions({
                 removeOnce();
               }}
             >
-              {remove.isPending ? "Removing…" : "Stop tracking"}
+              {remove.isPending ? (
+                <UiText message="Removing…" />
+              ) : (
+                <UiText message="Stop tracking" />
+              )}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

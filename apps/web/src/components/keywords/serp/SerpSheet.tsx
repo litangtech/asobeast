@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText, useUiLanguage } from "@/components/language/UiLanguage";
 import { useState, type ReactNode } from "react";
 import {
   keepPreviousData,
@@ -66,6 +67,7 @@ function SerpResults({
   keyword: TrackedKeywordItem | undefined;
   actionsFor: ActionsFor | undefined;
 }) {
+  const { text: uiLabel } = useUiLanguage();
   const { entries, date } = snapshot;
   const comparedTo = snapshot.comparedTo ?? null;
   if (entries.length === 0) {
@@ -88,7 +90,7 @@ function SerpResults({
       />
       {topTen.length > 0 ? (
         <SerpList
-          heading="Top 10"
+          heading={uiLabel("Top 10")}
           entries={topTen}
           viewer={viewer}
           comparedTo={comparedTo}
@@ -97,7 +99,10 @@ function SerpResults({
       ) : null}
       {deeper.length > 0 ? (
         <SerpList
-          heading={`Positions ${SERP_DEPTH + 1} to ${deeper.at(-1)?.position}`}
+          heading={uiLabel("Positions {0} to {1}", [
+            SERP_DEPTH + 1,
+            deeper.at(-1)?.position,
+          ])}
           entries={deeper}
           viewer={viewer}
           comparedTo={comparedTo}
@@ -185,11 +190,12 @@ function SerpContent({
   keyword: TrackedKeywordItem | undefined;
   actionsFor: ActionsFor | undefined;
 }) {
+  const { text: uiLabel } = useUiLanguage();
   if (failedRead(read)) {
     return (
       <div className="px-4 pt-4">
         <InlineQueryError
-          message="The search results could not be loaded."
+          message={uiLabel("The search results could not be loaded.")}
           read={read}
         />
       </div>
@@ -198,7 +204,9 @@ function SerpContent({
   if (!snapshot) {
     return (
       <div role="status">
-        <span className="sr-only">Loading search results</span>
+        <span className="sr-only">
+          <UiText message="Loading search results" />
+        </span>
         <SerpSkeleton />
       </div>
     );
@@ -250,9 +258,11 @@ export function SerpSheet({
         }}
       >
         <SheetHeader className="px-4 pt-4 pr-12">
-          <SheetTitle>Search results</SheetTitle>
+          <SheetTitle>
+            <UiText message="Search results" />
+          </SheetTitle>
           <SheetDescription>
-            The apps the store showed for this keyword on a daily check.
+            <UiText message="The apps the store showed for this keyword on a daily check." />
           </SheetDescription>
         </SheetHeader>
         {open ? (

@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText, useUiLanguage } from "@/components/language/UiLanguage";
 import { useMemo, useState } from "react";
 import { Loader2 } from "lucide-react";
 import { flexRender, useTable } from "@tanstack/react-table";
@@ -38,6 +39,7 @@ export function ImportPreview({
   lines: readonly number[];
   busy: boolean;
 }) {
+  const { text: uiLabel } = useUiLanguage();
   const [statuses, setStatuses] = useState<KeywordImportStatus[]>([]);
   const data = useMemo<PreviewRow[]>(
     () => result.results.map((row) => ({ ...row, line: lines[row.index] })),
@@ -68,7 +70,7 @@ export function ImportPreview({
 
   return (
     <section
-      aria-label="Review"
+      aria-label={uiLabel("Review")}
       aria-busy={busy}
       className="flex flex-col gap-3"
     >
@@ -79,13 +81,13 @@ export function ImportPreview({
         {busy ? (
           <span className="flex items-center gap-1.5 text-xs text-muted-foreground">
             <Loader2 aria-hidden className="size-3.5 animate-spin" />
-            Updating
+            <UiText message="Updating" />
           </span>
         ) : null}
       </div>
       <div className="flex flex-wrap items-center gap-3">
         <FacetFilter
-          title="Status"
+          title={uiLabel("Status")}
           options={STATUS_OPTIONS}
           selected={statuses}
           counts={counts}
@@ -98,7 +100,7 @@ export function ImportPreview({
         containerClassName="max-h-72 overflow-y-auto rounded-xl border bg-card"
       >
         <TableCaption className="sr-only">
-          Every row of the file, with what an import would do with it.
+          <UiText message="Every row of the file, with what an import would do with it." />
         </TableCaption>
         <TableHeader className="sticky top-0 bg-card">
           {table.getHeaderGroups().map((headerGroup) => (
@@ -119,7 +121,7 @@ export function ImportPreview({
             <TableRow>
               <TableCell colSpan={columns.length}>
                 <FilteredEmpty
-                  title="No rows match this status"
+                  title={uiLabel("No rows match this status")}
                   onClear={() => setStatuses([])}
                 />
               </TableCell>

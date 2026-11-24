@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText } from "@/components/language/UiLanguage";
 import { InfoTip } from "@/components/ui/info-tip";
 import { SortableHeader } from "@/components/data-table/SortableHeader";
 import { nullsLast } from "@/lib/table/sorting";
@@ -57,7 +58,9 @@ export function insightsColumn(today: string, multiMarket: boolean) {
     enableSorting: false,
     header: () => (
       <span className="inline-flex items-center gap-1">
-        <span>Insights</span>
+        <span>
+          <UiText message="Insights" />
+        </span>
         <InsightsTip />
       </span>
     ),

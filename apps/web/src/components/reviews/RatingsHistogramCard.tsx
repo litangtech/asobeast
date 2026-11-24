@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText, useUiLanguage } from "@/components/language/UiLanguage";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { RATING_STARS, type RatingCounts } from "@asobeast/shared";
 import {
@@ -22,6 +23,7 @@ function HistogramBars({
   counts: RatingCounts;
   total: number;
 }) {
+  const { text: uiLabel } = useUiLanguage();
   return (
     <ul className="flex flex-col gap-2">
       {[...RATING_STARS].reverse().map((star) => {
@@ -30,14 +32,15 @@ function HistogramBars({
         return (
           <li key={star} className="flex items-center gap-3 text-sm">
             <span className="w-14 shrink-0 numeric font-mono whitespace-nowrap text-muted-foreground">
-              {star} star
+              {star}
+              <UiText message="star" />
             </span>
             <span
               role="meter"
               aria-valuenow={Math.round(percent)}
               aria-valuemin={0}
               aria-valuemax={100}
-              aria-label={`${star} star ratings`}
+              aria-label={uiLabel("{0} star ratings", [star])}
               className="h-2 flex-1 overflow-hidden rounded-full bg-muted"
             >
               <span
@@ -65,7 +68,9 @@ export function RatingsHistogramCard({ id }: { id: string }) {
   return (
     <Card>
       <CardHeader>
-        <CardDescription>Ratings distribution</CardDescription>
+        <CardDescription>
+          <UiText message="Ratings distribution" />
+        </CardDescription>
         <CardTitle>
           {`${pluralize(data.total, "rating")}${data.capturedAt ? ` as of ${formatDate(data.capturedAt)}` : ""}`}
         </CardTitle>

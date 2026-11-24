@@ -1,3 +1,4 @@
+import { UiText } from "@/components/language/UiLanguage";
 import type { LintIssue } from "@asobeast/shared";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -14,7 +15,9 @@ export function LintIssueRow({ issue }: { issue: LintIssue }) {
       >
         {LINT_SEVERITY_LABEL[issue.severity]} · {issue.rule}
       </Badge>
-      <span className="min-w-0 wrap-anywhere">{issue.message}</span>
+      <span className="min-w-0 wrap-anywhere">
+        <UiText message={issue.message} />
+      </span>
     </li>
   );
 }

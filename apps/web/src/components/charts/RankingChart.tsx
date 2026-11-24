@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText, useUiLanguage } from "@/components/language/UiLanguage";
 import type { Ref } from "react";
 import {
   CartesianGrid,
@@ -120,6 +121,7 @@ export function RankingChart({
   annotations?: AppAnnotationItem[];
   chartRef?: Ref<HTMLDivElement>;
 }) {
+  const { text: uiLabel } = useUiLanguage();
   const today = todayUtc();
   const plotted = new Set(data.rows.map((row) => String(row.date)));
   const marked = [...new Set(changeDates)].filter(
@@ -134,7 +136,7 @@ export function RankingChart({
         config={data.config}
         className={`${CHART_HEIGHT.hero} w-full`}
         role="region"
-        aria-label="Keyword rank positions"
+        aria-label={uiLabel("Keyword rank positions")}
       >
         <LineChart accessibilityLayer data={data.rows} margin={CHART_MARGIN}>
           {rankTierAreas()}
@@ -220,7 +222,7 @@ export function RankingChart({
       </ChartContainer>
       {marked.length > 0 ? (
         <p className="text-caption text-muted-foreground">
-          The triangle marks a day the listing changed.
+          <UiText message="The triangle marks a day the listing changed." />
         </p>
       ) : null}
     </div>

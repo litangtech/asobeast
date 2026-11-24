@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText, useUiLanguage } from "@/components/language/UiLanguage";
 import { useId, type ReactNode } from "react";
 import { InfoIcon, type LucideIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -25,6 +26,7 @@ function InfoTip({
   icon?: LucideIcon;
   children?: ReactNode;
 }) {
+  const { text } = useUiLanguage();
   const titleId = useId();
   const summaryId = useId();
   return (
@@ -33,7 +35,7 @@ function InfoTip({
         <Button
           variant="ghost"
           size="icon-xs"
-          aria-label={label}
+          aria-label={text(label)}
           className="-my-1 text-muted-foreground hover:text-foreground print:hidden"
         >
           <Icon aria-hidden />
@@ -46,8 +48,12 @@ function InfoTip({
         className="w-80 max-w-(--radix-popover-content-available-width) text-body"
       >
         <PopoverHeader>
-          <PopoverTitle id={titleId}>{title}</PopoverTitle>
-          <PopoverDescription id={summaryId}>{summary}</PopoverDescription>
+          <PopoverTitle id={titleId}>
+            <UiText message={title} />
+          </PopoverTitle>
+          <PopoverDescription id={summaryId}>
+            <UiText message={summary} />
+          </PopoverDescription>
         </PopoverHeader>
         {children}
       </PopoverContent>

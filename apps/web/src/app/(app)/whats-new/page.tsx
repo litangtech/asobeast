@@ -1,3 +1,4 @@
+import { UiText } from "@/components/language/UiLanguage";
 import { ExternalLink } from "lucide-react";
 import { appVersion, RELEASES_URL } from "@/components/layout/app-version";
 import { MarkReleasesSeen } from "@/components/whats-new/MarkReleasesSeen";
@@ -13,10 +14,10 @@ export default function WhatsNewPage() {
     <div className="page-reading flex flex-col gap-8">
       <div className="flex flex-col gap-2">
         <h1 className="text-display tracking-tight text-balance">
-          What&apos;s New
+          <UiText message="What's New" />
         </h1>
         <p className="text-body text-muted-foreground">
-          What changed in AsoBeast, release by release, in plain words.
+          <UiText message="What changed in AsoBeast, release by release, in plain words." />
         </p>
         <a
           href={RELEASES_URL}
@@ -24,7 +25,9 @@ export default function WhatsNewPage() {
           rel="noreferrer noopener"
           className="inline-flex w-fit items-center gap-1.5 rounded-sm text-sm font-medium text-foreground underline decoration-primary underline-offset-4 hover:decoration-2 focus-visible:ring-3 focus-visible:ring-ring/50 focus-visible:outline-none"
         >
-          <span>Technical release notes</span>
+          <span>
+            <UiText message="Technical release notes" />
+          </span>
           <ExternalLink aria-hidden className="size-3.5 shrink-0" />
         </a>
       </div>

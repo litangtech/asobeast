@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText, useUiLanguage } from "@/components/language/UiLanguage";
 import { useState } from "react";
 import Image from "next/image";
 import type { AuditScreenshotObservation } from "@asobeast/shared";
@@ -14,6 +15,7 @@ export function ScreenshotCard({
 }: {
   screenshot: AuditScreenshotObservation;
 }) {
+  const { text: uiLabel } = useUiLanguage();
   const [failed, setFailed] = useState(false);
   const alt = `Screenshot ${screenshot.position}${
     screenshot.captionText ? `: ${screenshot.captionText}` : ""
@@ -25,11 +27,11 @@ export function ScreenshotCard({
         {failed ? (
           <span
             role="img"
-            aria-label={`${alt}, image unavailable`}
+            aria-label={uiLabel("{0}, image unavailable", [alt])}
             style={{ height: SCREENSHOT_HEIGHT }}
             className="grid place-items-center rounded-xl bg-muted text-caption text-muted-foreground"
           >
-            Image unavailable
+            <UiText message="Image unavailable" />
           </span>
         ) : (
           <Image
@@ -45,7 +47,7 @@ export function ScreenshotCard({
         )}
         <figcaption className="flex flex-col gap-1 text-sm">
           <span className="font-medium">
-            {screenshot.captionText ?? "No readable caption"}
+            {screenshot.captionText ?? <UiText message="No readable caption" />}
           </span>
           <span className="text-caption text-muted-foreground">
             {MESSAGE_LABEL[screenshot.message]}

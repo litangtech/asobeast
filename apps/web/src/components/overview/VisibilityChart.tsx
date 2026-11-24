@@ -1,6 +1,6 @@
 "use client";
 
-import { UiText } from "@/components/language/UiLanguage";
+import { UiText, useUiLanguage } from "@/components/language/UiLanguage";
 import { Suspense, useDeferredValue } from "react";
 import { useQueryState } from "nuqs";
 import {
@@ -30,6 +30,7 @@ const VIEW_TITLES: Record<VisibilityView, string> = {
 };
 
 export function VisibilityChart({ id }: { id: string }) {
+  const { text: uiLabel } = useUiLanguage();
   const [range, setRange] = useQueryState("range", visibilityRangeParser);
   const shownRange = useDeferredValue(range);
   const [view, setView] = useQueryState("visView", visibilityViewParser);
@@ -38,19 +39,24 @@ export function VisibilityChart({ id }: { id: string }) {
   return (
     <Card>
       <CardHeader>
-        <CardDescription>Visibility history</CardDescription>
+        <CardDescription>
+          <UiText message="Visibility history" />
+        </CardDescription>
         <CardTitle>{VIEW_TITLES[shownView]}</CardTitle>
         <CardAction className="flex flex-wrap items-center justify-end gap-2">
           <Tabs
             value={view}
             onValueChange={(next) => void setView(next as VisibilityView)}
           >
-            <TabsList aria-label="Chart view" className="print:hidden">
+            <TabsList
+              aria-label={uiLabel("Chart view")}
+              className="print:hidden"
+            >
               <TabsOption value="visibility">
-                <UiText message={"Visibility"} />
+                <UiText message="Visibility" />
               </TabsOption>
               <TabsOption value="share">
-                <UiText message={"Share of voice"} />
+                <UiText message="Share of voice" />
               </TabsOption>
             </TabsList>
           </Tabs>

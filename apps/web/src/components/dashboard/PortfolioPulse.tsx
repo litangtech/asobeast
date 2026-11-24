@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText, useUiLanguage } from "@/components/language/UiLanguage";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import type { ActionSummary } from "@asobeast/shared";
 import { TrendChip } from "@/components/ui/delta-chip";
@@ -24,26 +25,30 @@ function Top10Note({
   return (
     <span className="flex flex-wrap items-center gap-x-1">
       <TrendChip label="7d" value={delta} />
-      <span>of {formatNumber(tracked)} tracked</span>
+      <span>
+        <UiText message="of {0} tracked" values={[formatNumber(tracked)]} />
+      </span>
     </span>
   );
 }
 
 function OpenActionsNote({ summary }: { summary: ActionSummary }) {
-  if (summary.generatedAt === null) return "not generated yet";
+  if (summary.generatedAt === null)
+    return <UiText message="not generated yet" />;
   const { critical, high } = summary.openByPriority;
-  if (critical === 0 && high === 0) return "waiting on you";
+  if (critical === 0 && high === 0) return <UiText message="waiting on you" />;
   return (
     <>
       <span className={cn(critical > 0 && "text-priority-critical")}>
-        {formatNumber(critical)} critical
+        <UiText message="{0} critical" values={[formatNumber(critical)]} />
       </span>{" "}
-      · {formatNumber(high)} high
+      · <UiText message="{0} high" values={[formatNumber(high)]} />
     </>
   );
 }
 
 export function PortfolioPulse() {
+  const { text: uiLabel } = useUiLanguage();
   const { data: portfolio } = useSuspenseQuery(portfolioOptions);
   const { data: insights } = useSuspenseQuery(portfolioInsightsOptions);
   const { data: actions } = useSuspenseQuery(actionSummaryOptions);
@@ -54,7 +59,7 @@ export function PortfolioPulse() {
   return (
     <StatTileGroup className={PULSE_GRID}>
       <StatTile
-        label="Keywords in top 10"
+        label={uiLabel("Keywords in top 10")}
         value={formatNumber(top10)}
         note={
           <Top10Note
@@ -64,19 +69,25 @@ export function PortfolioPulse() {
         }
       />
       <StatTile
-        label="Keyword movement"
+        label={uiLabel("Keyword movement")}
         value={<MovementValue movement={movement} />}
-        note={`${formatNumber(movement.entered)} new · ${formatNumber(movement.lost)} lost in 7 days`}
+        note={uiLabel("{0} new · {1} lost in 7 days", [
+          formatNumber(movement.entered),
+          formatNumber(movement.lost),
+        ])}
       />
       <StatTile
-        label="Open actions"
+        label={uiLabel("Open actions")}
         value={actions.generatedAt === null ? "—" : formatNumber(actions.open)}
         note={<OpenActionsNote summary={actions} />}
       />
       <StatTile
-        label="Changes this week"
+        label={uiLabel("Changes this week")}
         value={formatNumber(changes7d.own + changes7d.competitors)}
-        note={`${formatNumber(changes7d.competitors)} by competitors · ${formatNumber(changes7d.own)} yours`}
+        note={uiLabel("{0} by competitors · {1} yours", [
+          formatNumber(changes7d.competitors),
+          formatNumber(changes7d.own),
+        ])}
       />
     </StatTileGroup>
   );

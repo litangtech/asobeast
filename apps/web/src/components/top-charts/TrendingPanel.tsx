@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText, useUiLanguage } from "@/components/language/UiLanguage";
 import { useState } from "react";
 import type {
   CategoryCollection,
@@ -46,16 +47,24 @@ function Place({
   period: string;
 }) {
   if (list === "entries") {
-    return <span>{`New at #${mover.position}`}</span>;
+    return (
+      <span>
+        <UiText message="New at #{0}" values={[mover.position]} />
+      </span>
+    );
   }
   if (list === "exits") {
-    return <span>{`Was #${mover.previous}`}</span>;
+    return (
+      <span>
+        <UiText message="Was #{0}" values={[mover.previous]} />
+      </span>
+    );
   }
   return (
     <span className="inline-flex items-baseline gap-1.5 whitespace-nowrap">
       <DeltaChip value={mover.delta} period={period} />
       <span className="text-caption text-muted-foreground">
-        {`from #${mover.previous}`}
+        <UiText message="from #{0}" values={[mover.previous]} />
       </span>
     </span>
   );
@@ -98,17 +107,18 @@ function MoverList({
 }
 
 function TrendingLists({ page }: { page: ChartPage }) {
+  const { text: uiLabel } = useUiLanguage();
   const period = compareLabel(page.compare, page.comparison);
 
   return page.comparison ? (
     <Tabs defaultValue="climbers">
       <TabsList
-        aria-label="Trending list"
+        aria-label={uiLabel("Trending list")}
         className="w-full flex-wrap group-data-horizontal/tabs:h-auto"
       >
         {LISTS.map(({ id, label }) => (
           <TabsTrigger key={id} value={id}>
-            {label}
+            <UiText message={label} />
             <span className="numeric font-mono">
               {page.trending[id].length}
             </span>
@@ -128,7 +138,7 @@ function TrendingLists({ page }: { page: ChartPage }) {
     </Tabs>
   ) : (
     <p className="text-body text-muted-foreground">
-      Capture more days to see movement.
+      <UiText message="Capture more days to see movement." />
     </p>
   );
 }
@@ -138,6 +148,7 @@ function firstCompared(pages: readonly ChartPage[]): CategoryCollection {
 }
 
 export function TrendingPanel({ pages }: { pages: readonly ChartPage[] }) {
+  const { text: uiLabel } = useUiLanguage();
   const [kind, setKind] = useState(() => firstCompared(pages));
   const page =
     pages.find((candidate) => candidate.chart.collection === kind) ?? pages[0];
@@ -145,7 +156,9 @@ export function TrendingPanel({ pages }: { pages: readonly ChartPage[] }) {
   return (
     <Card>
       <CardHeader>
-        <CardDescription>Trending</CardDescription>
+        <CardDescription>
+          <UiText message="Trending" />
+        </CardDescription>
         <CardTitle>{compareLabel(page.compare, page.comparison)}</CardTitle>
       </CardHeader>
       <CardContent className="flex flex-col gap-4">
@@ -154,7 +167,7 @@ export function TrendingPanel({ pages }: { pages: readonly ChartPage[] }) {
             value={page.chart.collection}
             onValueChange={(next) => setKind(next as CategoryCollection)}
           >
-            <TabsList aria-label="Chart kind">
+            <TabsList aria-label={uiLabel("Chart kind")}>
               {pages.map(({ chart }) => (
                 <TabsOption key={chart.collection} value={chart.collection}>
                   {COLLECTION_LABELS[chart.collection]}

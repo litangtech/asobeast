@@ -1,3 +1,4 @@
+import { UiText } from "@/components/language/UiLanguage";
 import { GAP_TOP } from "@asobeast/shared";
 import { EmptyState } from "@/components/ui/empty-state";
 import { formatCountry } from "@/lib/format";
@@ -38,7 +39,7 @@ export function GapEmpty({
             href="#competitor-search"
             className="text-sm font-medium underline decoration-primary underline-offset-4"
           >
-            Add a competitor
+            <UiText message="Add a competitor" />
           </a>
         }
       />

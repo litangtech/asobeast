@@ -1,5 +1,6 @@
 "use client";
 
+import { useUiLanguage } from "@/components/language/UiLanguage";
 import { useQuery } from "@tanstack/react-query";
 import { Trophy } from "lucide-react";
 import type { ReactNode } from "react";
@@ -19,6 +20,7 @@ export function ChartEmpty({
   action?: ReactNode;
   className?: string;
 }) {
+  const { text: uiLabel } = useUiLanguage();
   const limits = useQuery(accountPlanOptions).data?.limits;
   return (
     <EmptyState
@@ -26,8 +28,8 @@ export function ChartEmpty({
       icon={Trophy}
       title={
         captured
-          ? `No capture of this chart on ${formatDate(date)}`
-          : "This chart has not been captured yet"
+          ? uiLabel("No capture of this chart on {0}", [formatDate(date)])
+          : uiLabel("This chart has not been captured yet")
       }
       body={emptyChartBody(captured, limits)}
       action={action}

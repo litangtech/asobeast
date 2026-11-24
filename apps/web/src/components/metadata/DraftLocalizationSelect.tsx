@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText } from "@/components/language/UiLanguage";
 import { useId } from "react";
 import { useQueryState } from "nuqs";
 import {
@@ -46,7 +47,7 @@ export function DraftLocalizationSelect({ appId }: { appId: string }) {
         htmlFor={DRAFT_LOCALIZATION_ID}
         className="text-xs font-semibold uppercase tracking-wide text-muted-foreground"
       >
-        Localization
+        <UiText message="Localization" />
       </label>
       <Select
         value={draftLocale ?? PRIMARY_LISTING}
@@ -62,7 +63,9 @@ export function DraftLocalizationSelect({ appId }: { appId: string }) {
           <SelectValue />
         </SelectTrigger>
         <SelectContent>
-          <SelectItem value={PRIMARY_LISTING}>Primary listing</SelectItem>
+          <SelectItem value={PRIMARY_LISTING}>
+            <UiText message="Primary listing" />
+          </SelectItem>
           {options.map((localization) => (
             <SelectItem key={localization} value={localization}>
               {APP_STORE_LOCALIZATIONS[localization]}
@@ -72,7 +75,10 @@ export function DraftLocalizationSelect({ appId }: { appId: string }) {
       </Select>
       {draftLocale ? (
         <p id={hintId} className="text-xs text-muted-foreground">
-          {`Drafts are written in ${APP_STORE_LOCALIZATIONS[draftLocale]}. To fill its keyword field with keywords in another language instead, say so in the instructions.`}
+          <UiText
+            message="Drafts are written in {0}. To fill its keyword field with keywords in another language instead, say so in the instructions."
+            values={[APP_STORE_LOCALIZATIONS[draftLocale]]}
+          />
         </p>
       ) : null}
     </div>

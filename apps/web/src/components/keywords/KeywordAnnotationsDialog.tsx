@@ -1,6 +1,6 @@
 "use client";
 
-import { UiText } from "@/components/language/UiLanguage";
+import { UiText, useUiLanguage } from "@/components/language/UiLanguage";
 import { useId, useState } from "react";
 import type { FormEvent, KeyboardEvent } from "react";
 import { X } from "lucide-react";
@@ -54,6 +54,7 @@ function AnnotationsForm({
   marketTags,
   onSaved,
 }: AnnotationsProps & { onSaved: () => void }) {
+  const { text: uiLabel } = useUiLanguage();
   const update = useKeywordUpdate(appId, keyword);
   const tagsId = useId();
   const messageId = useId();
@@ -117,17 +118,20 @@ function AnnotationsForm({
       <DialogBody className="flex flex-col gap-4">
         <div className="flex flex-col gap-2">
           <Label htmlFor={tagsId}>
-            <UiText message={"Tags"} />
+            <UiText message="Tags" />
           </Label>
           {tags.length > 0 ? (
-            <ul className="flex flex-wrap gap-1" aria-label="Current tags">
+            <ul
+              className="flex flex-wrap gap-1"
+              aria-label={uiLabel("Current tags")}
+            >
               {tags.map((tag) => (
                 <li key={tag}>
                   <Badge variant="outline" className="gap-1 pr-0.5">
                     {tag}
                     <button
                       type="button"
-                      aria-label={`Remove tag ${tag}`}
+                      aria-label={uiLabel("Remove tag {0}", [tag])}
                       onClick={() => setTags(tags.filter((t) => t !== tag))}
                       className="rounded-sm p-0.5 outline-none hover:bg-muted focus-visible:ring-2 focus-visible:ring-ring"
                     >
@@ -142,7 +146,7 @@ function AnnotationsForm({
             id={tagsId}
             autoFocus
             value={input}
-            placeholder="Type a tag, then Enter or a comma"
+            placeholder={uiLabel("Type a tag, then Enter or a comma")}
             aria-describedby={refused ? messageId : undefined}
             onChange={(event) => changeInput(event.target.value)}
             onKeyDown={keyDown}
@@ -160,7 +164,7 @@ function AnnotationsForm({
                   type="button"
                   variant="outline"
                   size="xs"
-                  aria-label={`Add tag ${tag}`}
+                  aria-label={uiLabel("Add tag {0}", [tag])}
                   onClick={() => commit([tag])}
                 >
                   {tag}
@@ -170,7 +174,9 @@ function AnnotationsForm({
           ) : null}
         </div>
         <div className="flex flex-col gap-2">
-          <Label htmlFor={noteId}>Note</Label>
+          <Label htmlFor={noteId}>
+            <UiText message="Note" />
+          </Label>
           <Textarea
             id={noteId}
             value={note}
@@ -195,11 +201,11 @@ function AnnotationsForm({
       <DialogFooter>
         <DialogClose asChild>
           <Button type="button" variant="outline">
-            <UiText message={"Cancel"} />
+            <UiText message="Cancel" />
           </Button>
         </DialogClose>
         <Button type="submit" disabled={update.isPending || noteLimit.over > 0}>
-          <UiText message={"Save"} />
+          <UiText message="Save" />
         </Button>
       </DialogFooter>
     </form>
@@ -218,10 +224,13 @@ export function KeywordAnnotationsDialog({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Edit tags and note</DialogTitle>
+          <DialogTitle>
+            <UiText message="Edit tags and note" />
+          </DialogTitle>
           <DialogDescription>
-            Tags and a note for {props.keyword.text}, visible to your workspace
-            only.
+            <UiText message="Tags and a note for" trailing />
+            {props.keyword.text}
+            <UiText message=", visible to your workspace only." />
           </DialogDescription>
         </DialogHeader>
         {open ? (

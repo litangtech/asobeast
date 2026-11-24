@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText, useUiLanguage } from "@/components/language/UiLanguage";
 import { useId } from "react";
 import { useQuery } from "@tanstack/react-query";
 import Link from "next/link";
@@ -20,6 +21,7 @@ export function FirstDiscoveries({
   id: string;
   country: string;
 }) {
+  const { text: uiLabel } = useUiLanguage();
   const headingId = useId();
   const read = useQuery({
     ...keywordDiscoveriesOptions(id, country),
@@ -29,7 +31,7 @@ export function FirstDiscoveries({
   if (failedRead(read)) {
     return (
       <InlineQueryError
-        message="Could not load the first results."
+        message={uiLabel("Could not load the first results.")}
         read={read}
       />
     );
@@ -41,9 +43,11 @@ export function FirstDiscoveries({
   return (
     <section aria-labelledby={headingId} className="flex flex-col gap-2">
       <h4 id={headingId} className="text-sm font-medium">
-        {summary.status === "ready"
-          ? "Your first results are ready"
-          : "Looking for keywords near your listing"}
+        {summary.status === "ready" ? (
+          <UiText message="Your first results are ready" />
+        ) : (
+          <UiText message="Looking for keywords near your listing" />
+        )}
       </h4>
       {summary.status === "ready" ? (
         <>
@@ -59,13 +63,14 @@ export function FirstDiscoveries({
             ))}
           </ul>
           <Button asChild variant="link" className="h-auto w-fit px-0">
-            <Link href={discoveriesHref(id, country)}>See all discoveries</Link>
+            <Link href={discoveriesHref(id, country)}>
+              <UiText message="See all discoveries" />
+            </Link>
           </Button>
         </>
       ) : (
         <p className="text-sm text-muted-foreground">
-          AsoBeast is checking where your app ranks for the phrases of your
-          listing. The first results appear here within minutes.
+          <UiText message="AsoBeast is checking where your app ranks for the phrases of your listing. The first results appear here within minutes." />
         </p>
       )}
     </section>

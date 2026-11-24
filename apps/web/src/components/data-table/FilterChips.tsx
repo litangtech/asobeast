@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText, useUiLanguage } from "@/components/language/UiLanguage";
 import { useRef } from "react";
 import { X } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
@@ -26,6 +27,7 @@ export function FilterChips({
   chips: readonly FilterChip[];
   onClearAll: () => void;
 }) {
+  const { text: uiLabel } = useUiLanguage();
   const list = useRef<HTMLUListElement>(null);
   const focusAfterCommit = useFocusAfterCommit();
 
@@ -61,7 +63,7 @@ export function FilterChips({
   return (
     <ul
       ref={list}
-      aria-label="Active filters"
+      aria-label={uiLabel("Active filters")}
       className="flex flex-wrap items-center gap-2"
     >
       {chips.map((chip) => (
@@ -75,7 +77,7 @@ export function FilterChips({
               type="button"
               data-chip-remove
               data-chip-key={chip.key}
-              aria-label={`Remove ${chip.label}`}
+              aria-label={uiLabel("Remove {0}", [chip.label])}
               onClick={(event) => remove(chip, event.currentTarget)}
               className="inline-flex size-5 shrink-0 items-center justify-center rounded-full opacity-70 outline-none hover:opacity-100 focus-visible:ring-2 focus-visible:ring-ring"
             >
@@ -91,7 +93,7 @@ export function FilterChips({
             size="xs"
             onClick={(event) => clearAll(event.currentTarget)}
           >
-            Clear all
+            <UiText message="Clear all" />
           </Button>
         </li>
       ) : null}

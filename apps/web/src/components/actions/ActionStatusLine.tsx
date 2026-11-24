@@ -1,10 +1,12 @@
 "use client";
 
+import { UiDate } from "@/components/language/UiFormat";
+import { UiText } from "@/components/language/UiLanguage";
 import type { ReactNode } from "react";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import type { ActionSummary } from "@asobeast/shared";
 import { Separated } from "@/components/ui/separated";
-import { formatDateTime, formatNumber } from "@/lib/format";
+import { formatNumber } from "@/lib/format";
 import { actionSummaryFor } from "@/lib/queries";
 
 function statusParts(summary: ActionSummary): ReactNode[] {
@@ -13,15 +15,15 @@ function statusParts(summary: ActionSummary): ReactNode[] {
     `${formatNumber(summary.open)} open`,
     critical > 0 ? (
       <span className="text-priority-critical">
-        {`${formatNumber(critical)} critical`}
+        <UiText message="{0} critical" values={[formatNumber(critical)]} />
       </span>
     ) : null,
     high > 0 ? `${formatNumber(high)} high` : null,
     summary.generatedAt ? (
       <span>
-        generated{" "}
+        <UiText message="generated" />{" "}
         <time dateTime={summary.generatedAt}>
-          {formatDateTime(summary.generatedAt)}
+          <UiDate value={summary.generatedAt} style="dateTime" />
         </time>
       </span>
     ) : (
@@ -40,7 +42,10 @@ export function ActionStatusLine({ appId }: { appId?: string }) {
         <span className="hidden @md/actions:inline">
           <span aria-hidden> · </span>
           <span>
-            {`${formatNumber(summary.suppressedByCap)} withheld by the per app cap`}
+            <UiText
+              message="{0} withheld by the per app cap"
+              values={[formatNumber(summary.suppressedByCap)]}
+            />
           </span>
         </span>
       ) : null}

@@ -1,6 +1,6 @@
 "use client";
 
-import { UiText } from "@/components/language/UiLanguage";
+import { UiText, useUiLanguage } from "@/components/language/UiLanguage";
 import { useCallback, useState } from "react";
 import {
   useMutation,
@@ -44,6 +44,7 @@ export function SuggestionsPanel({
   country: string;
   store: Store;
 }) {
+  const { text: uiLabel } = useUiLanguage();
   const queryClient = useQueryClient();
   const [open, setOpen] = useState(false);
   const [strategy, setStrategy] = useQueryState(
@@ -67,13 +68,13 @@ export function SuggestionsPanel({
     mutationFn: (text: string) => addKeywords(id, [text], country),
     onSuccess: (_data, text) => {
       invalidateKeywordMutation(queryClient, id);
-      toast.success(`Tracking ${text}`);
+      toast.success(uiLabel("Tracking {0}", [text]));
     },
     onError: (error, text) =>
       toast.error(
         error instanceof ApiError
           ? error.envelope.message
-          : `Could not track ${text}`,
+          : uiLabel("Could not track {0}", [text]),
       ),
   });
   const trackKeyOf = useCallback(
@@ -97,11 +98,13 @@ export function SuggestionsPanel({
         >
           <div className="flex flex-col gap-1">
             <CardTitle>
-              <UiText message={"Suggestions"} />
+              <UiText message="Suggestions" />
             </CardTitle>
             <CardDescription>
-              {formatList(storeLookupLabels())} run a live {storeLabel(store)}{" "}
-              lookup, so results can take a few seconds.
+              {formatList(storeLookupLabels())}
+              <UiText message="run a live" trailing />
+              {storeLabel(store)}{" "}
+              <UiText message="lookup, so results can take a few seconds." />
             </CardDescription>
           </div>
           <ChevronDown
@@ -124,7 +127,7 @@ export function SuggestionsPanel({
             <TabsList scrollable>
               {STRATEGIES.map((item) => (
                 <TabsOption key={item.value} value={item.value}>
-                  {item.label}
+                  <UiText message={item.label} />
                 </TabsOption>
               ))}
             </TabsList>
@@ -137,7 +140,7 @@ export function SuggestionsPanel({
             <SpiderDialog appId={id} country={country}>
               <Button variant="outline" size="sm">
                 <Search />
-                Deep search
+                <UiText message="Deep search" />
               </Button>
             </SpiderDialog>
           </div>

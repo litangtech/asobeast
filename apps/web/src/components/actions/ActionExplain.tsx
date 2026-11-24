@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText } from "@/components/language/UiLanguage";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Sparkles } from "lucide-react";
 import Link from "next/link";
@@ -73,7 +74,11 @@ export function ActionExplain({ item }: { item: ActionItem }) {
           onClick={() => explainOnce()}
         >
           <Sparkles aria-hidden className="size-4" />
-          {explanation ? "Regenerate summary" : "Explain"}
+          {explanation ? (
+            <UiText message="Regenerate summary" />
+          ) : (
+            <UiText message="Explain" />
+          )}
         </Button>
         <AiCallsLeft />
         {item.category === "metadata" && (
@@ -81,7 +86,7 @@ export function ActionExplain({ item }: { item: ActionItem }) {
             href={`/apps/${item.scope.appId}/metadata`}
             className="text-sm underline-offset-4 hover:underline"
           >
-            Draft metadata with the assistant
+            <UiText message="Draft metadata with the assistant" />
           </Link>
         )}
       </div>

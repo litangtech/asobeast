@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText, useUiLanguage } from "@/components/language/UiLanguage";
 import { useId, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { CheckCircle2 } from "lucide-react";
@@ -16,6 +17,7 @@ import { GOAL_COPY } from "./checklist-copy";
 import { useChecklistSave } from "./use-checklist-save";
 
 export function GoalPicker({ as: Heading = "h2" }: { as?: "h2" | "h3" }) {
+  const { text: uiLabel } = useUiLanguage();
   const { authenticated } = useAuth();
   const read = useQuery({
     ...workspaceChecklistOptions,
@@ -28,7 +30,10 @@ export function GoalPicker({ as: Heading = "h2" }: { as?: "h2" | "h3" }) {
 
   if (!checklist) {
     return failedRead(read) ? (
-      <InlineQueryError message="Could not load your goal." read={read} />
+      <InlineQueryError
+        message={uiLabel("Could not load your goal.")}
+        read={read}
+      />
     ) : null;
   }
 
@@ -48,11 +53,10 @@ export function GoalPicker({ as: Heading = "h2" }: { as?: "h2" | "h3" }) {
     <section aria-labelledby={headingId} className="flex flex-col gap-3">
       <div className="flex flex-col gap-1">
         <Heading id={headingId} className="text-title tracking-tight">
-          What would you like to get done?
+          <UiText message="What would you like to get done?" />
         </Heading>
         <p className="text-body text-muted-foreground">
-          Pick one and the setup checklist starts with the steps that matter
-          most. You can change it any time.
+          <UiText message="Pick one and the setup checklist starts with the steps that matter most. You can change it any time." />
         </p>
       </div>
       <div
@@ -75,7 +79,9 @@ export function GoalPicker({ as: Heading = "h2" }: { as?: "h2" | "h3" }) {
               onClick={() => choose(goal)}
             >
               <span className="flex items-center gap-1.5 font-medium">
-                <span>{GOAL_COPY[goal].label}</span>
+                <span>
+                  <UiText message={GOAL_COPY[goal].label} />
+                </span>
                 {pressed ? (
                   <CheckCircle2
                     className="size-4 shrink-0 text-success"
@@ -84,7 +90,7 @@ export function GoalPicker({ as: Heading = "h2" }: { as?: "h2" | "h3" }) {
                 ) : null}
               </span>
               <span className="text-caption font-normal text-muted-foreground">
-                {GOAL_COPY[goal].description}
+                <UiText message={GOAL_COPY[goal].description} />
               </span>
             </Button>
           );

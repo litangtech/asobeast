@@ -1,10 +1,13 @@
 "use client";
 
+import { UiCountry } from "@/components/language/UiFormat";
+import { UiText, useUiLanguage } from "@/components/language/UiLanguage";
 import { Suspense, useState, type FormEvent, type ReactNode } from "react";
 import { ExternalLink, Plus, X } from "lucide-react";
 import Link from "next/link";
 import {
   SETUP_KEYWORD_TARGET,
+  SETUP_STEPS,
   type CompetitorItem,
   type MarketSuggestionsResult,
   type SetupStep,
@@ -30,12 +33,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { DiscoveredApps } from "./DiscoveredApps";
 import { KeywordPicker } from "./KeywordPicker";
 import { FirstDiscoveries } from "./FirstDiscoveries";
-import {
-  activeKeywordCount,
-  keywordsStepDescription,
-  STEP_TITLES,
-  stepLabel,
-} from "./setup-progress";
+import { activeKeywordCount, STEP_TITLES } from "./setup-progress";
 import { MarketCostTip, SuggestedMarkets } from "./SuggestedMarkets";
 
 const SKIP_REASON: Record<SetupStep, string> = {
@@ -64,10 +62,17 @@ function StepCard({
   return (
     <Card id={`setup-${step}`} className="scroll-mt-20">
       <CardHeader>
-        <CardDescription>{stepLabel(step)}</CardDescription>
+        <CardDescription>
+          <UiText
+            message="Step {0} of {1}"
+            values={[SETUP_STEPS.indexOf(step) + 1, SETUP_STEPS.length]}
+          />
+        </CardDescription>
         <div className="flex flex-wrap items-center gap-2">
           <CardTitle asChild>
-            <h3>{STEP_TITLES[step]}</h3>
+            <h3>
+              <UiText message={STEP_TITLES[step]} />
+            </h3>
           </CardTitle>
           <StepBadge state={state} />
         </div>
@@ -82,8 +87,18 @@ function StepCard({
 }
 
 function StepBadge({ state }: { state: SetupStepState }) {
-  if (state === "done") return <Badge variant="success">Done</Badge>;
-  if (state === "skipped") return <Badge variant="outline">Skipped</Badge>;
+  if (state === "done")
+    return (
+      <Badge variant="success">
+        <UiText message="Done" />
+      </Badge>
+    );
+  if (state === "skipped")
+    return (
+      <Badge variant="outline">
+        <UiText message="Skipped" />
+      </Badge>
+    );
   return null;
 }
 
@@ -91,13 +106,14 @@ function SkipAction({ step, state, onSkip }: StepProps & { step: SetupStep }) {
   if (state === "skipped") {
     return (
       <p className="flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-muted-foreground">
-        Skipped. {SKIP_REASON[step]}
+        <UiText message="Skipped." trailing />
+        <UiText message={SKIP_REASON[step]} />
         <Button
           variant="link"
           className="h-auto px-0"
           onClick={() => onSkip(false)}
         >
-          Undo skip
+          <UiText message="Undo skip" />
         </Button>
       </p>
     );
@@ -109,7 +125,7 @@ function SkipAction({ step, state, onSkip }: StepProps & { step: SetupStep }) {
       className="h-auto w-fit px-0"
       onClick={() => onSkip(true)}
     >
-      Skip this step
+      <UiText message="Skip this step" />
     </Button>
   );
 }
@@ -139,21 +155,26 @@ export function CompetitorsStep({
   error: boolean;
   collecting: boolean;
 }) {
+  const { text: uiLabel } = useUiLanguage();
   return (
     <StepCard
       step="competitors"
-      description="Track at least one app you compete with, so every keyword search compares you against it. Two or three is typical."
+      description={uiLabel(
+        "Track at least one app you compete with, so every keyword search compares you against it. Two or three is typical.",
+      )}
       {...step}
     >
       <Suspense fallback={<Skeleton className="h-9 w-full" />}>
         <AddCompetitorForm id={appId} />
       </Suspense>
       <p className="text-sm text-muted-foreground">
-        {competitorsLine(competitors, error)}
+        <UiText message={competitorsLine(competitors, error)} />
       </p>
       <DiscoveredApps appId={appId} collecting={collecting} />
       <Button asChild variant="link" className="h-auto w-fit px-0">
-        <Link href={`/apps/${appId}/competitors`}>Manage competitors</Link>
+        <Link href={`/apps/${appId}/competitors`}>
+          <UiText message="Manage competitors" />
+        </Link>
       </Button>
     </StepCard>
   );
@@ -195,14 +216,27 @@ export function KeywordsStep({
   error: boolean;
   counts: MarketKeywordCount[];
 }) {
+  const { text: uiLabel } = useUiLanguage();
   return (
     <StepCard
       step="keywords"
-      description={keywordsStepDescription(store)}
+      description={
+        <UiText
+          message="Track at least {0} keywords in your home storefront. The import already tracked the phrases of your {1}."
+          values={[
+            SETUP_KEYWORD_TARGET,
+            uiLabel(
+              store === "APP_STORE"
+                ? "title and subtitle"
+                : "title and short description",
+            ),
+          ]}
+        />
+      }
       {...step}
     >
       <p className="text-sm text-muted-foreground">
-        {homeKeywordsLine(tracked, error, homeMarket)}
+        <UiText message={homeKeywordsLine(tracked, error, homeMarket)} />
       </p>
       <FirstDiscoveries id={appId} country={homeMarket} />
       {tracked ? (
@@ -215,13 +249,17 @@ export function KeywordsStep({
               key={market}
               className="flex items-center justify-between rounded-lg border p-3"
             >
-              <span>{formatCountry(market)}</span>
+              <span>
+                <UiCountry code={market} />
+              </span>
               <span className="text-muted-foreground">
-                {failed
-                  ? "Unavailable"
-                  : active === null
-                    ? "Loading…"
-                    : `${active} active`}
+                {failed ? (
+                  <UiText message="Unavailable" />
+                ) : active === null ? (
+                  <UiText message="Loading…" />
+                ) : (
+                  <UiText message="{0} active" values={[active]} />
+                )}
               </span>
             </li>
           ))}
@@ -229,7 +267,7 @@ export function KeywordsStep({
       ) : null}
       <Button asChild variant="link" className="h-auto w-fit px-0">
         <Link href={`/apps/${appId}/keywords?country=${homeMarket}`}>
-          Review keywords
+          <UiText message="Review keywords" />
         </Link>
       </Button>
     </StepCard>
@@ -257,6 +295,7 @@ export function CountriesStep({
   onSelect: (market: string, selected: boolean) => void;
   onReviewed: () => void;
 }) {
+  const { text: uiLabel } = useUiLanguage();
   const suggested =
     suggestions !== null && suggestions.suggestions.length > 0
       ? suggestions
@@ -276,8 +315,7 @@ export function CountriesStep({
       step="countries"
       description={
         <>
-          Your home country is selected. Add the countries you sell in; each one
-          adds daily requests.{" "}
+          <UiText message="Your home country is selected. Add the countries you sell in; each one adds daily requests." />{" "}
           {suggested ? null : <MarketCostTip store={store} />}
         </>
       }
@@ -292,15 +330,18 @@ export function CountriesStep({
           onSelect={onSelect}
         />
       ) : null}
-      <ul aria-label="Selected countries" className="flex flex-wrap gap-2">
+      <ul
+        aria-label={uiLabel("Selected countries")}
+        className="flex flex-wrap gap-2"
+      >
         {markets.map((market) => (
           <li key={market}>
             <Badge variant="secondary" className="h-7 gap-1 pl-2.5">
-              {formatCountry(market)} ({market.toUpperCase()})
+              <UiCountry code={market} /> ({market.toUpperCase()})
               {market !== homeMarket && markets.length > 1 ? (
                 <button
                   type="button"
-                  aria-label={`Remove ${formatCountry(market)}`}
+                  aria-label={uiLabel("Remove {0}", [formatCountry(market)])}
                   onClick={() => onSelect(market, false)}
                   className="rounded-full p-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                 >
@@ -313,7 +354,11 @@ export function CountriesStep({
       </ul>
       <form onSubmit={submit} className="flex flex-col gap-1">
         <Label htmlFor="setup-country">
-          {suggested ? "Add another country" : "Add a country"}
+          {suggested ? (
+            <UiText message="Add another country" />
+          ) : (
+            <UiText message="Add a country" />
+          )}
         </Label>
         <div className="flex flex-wrap items-start gap-2">
           <CountrySelect
@@ -321,11 +366,11 @@ export function CountriesStep({
             store={store}
             value={value}
             onChange={setPicked}
-            ariaLabel="Country to add"
+            ariaLabel={uiLabel("Country to add")}
           />
           <Button type="submit" variant="outline" disabled={!addable}>
             <Plus />
-            Add
+            <UiText message="Add" />
           </Button>
         </div>
       </form>
@@ -333,7 +378,9 @@ export function CountriesStep({
         {markets.map((market) => (
           <Button key={market} asChild variant="outline" size="sm">
             <Link href={`/apps/${appId}/keywords?country=${market}`}>
-              Review {market.toUpperCase()} keywords
+              <UiText message="Review" trailing />
+              {market.toUpperCase()}
+              <UiText message="keywords" />
               <ExternalLink />
             </Link>
           </Button>
@@ -341,7 +388,7 @@ export function CountriesStep({
       </div>
       {step.state === "open" ? (
         <Button variant="outline" className="w-fit" onClick={onReviewed}>
-          Countries reviewed
+          <UiText message="Countries reviewed" />
         </Button>
       ) : null}
     </StepCard>

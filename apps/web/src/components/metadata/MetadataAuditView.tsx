@@ -1,6 +1,6 @@
 "use client";
 
-import { UiText } from "@/components/language/UiLanguage";
+import { UiText, useUiLanguage } from "@/components/language/UiLanguage";
 import { Suspense } from "react";
 import {
   useQuery,
@@ -40,10 +40,11 @@ function FieldSuggestion({
   read: UseQueryResult<AppLocalizationsResult>;
   suggestion: MetadataAuditResult["keywordFieldSuggestion"];
 }) {
+  const { text: uiLabel } = useUiLanguage();
   if (failedRead(read)) {
     return (
       <InlineQueryError
-        message="The localizations could not be read."
+        message={uiLabel("The localizations could not be read.")}
         read={read}
       />
     );
@@ -51,7 +52,9 @@ function FieldSuggestion({
   if (suggestion === null) return null;
   return (
     <section className="flex flex-col gap-3">
-      <h2 className="text-lg font-medium">Suggestion</h2>
+      <h2 className="text-lg font-medium">
+        <UiText message="Suggestion" />
+      </h2>
       <KeywordFieldSuggestionCard
         suggestion={suggestion}
         editHref={editLocalizationHref(
@@ -129,11 +132,11 @@ export function MetadataAuditView({
 
       <section className="flex flex-col gap-3">
         <h2 className="text-lg font-medium">
-          <UiText message={"Keyword coverage"} />
+          <UiText message="Keyword coverage" />
         </h2>
         {result.coverage.length === 0 ? (
           <div className="rounded-xl border border-dashed p-8 text-center text-sm text-muted-foreground">
-            Track keywords to see how your metadata covers them.
+            <UiText message="Track keywords to see how your metadata covers them." />
           </div>
         ) : (
           <CoverageTable

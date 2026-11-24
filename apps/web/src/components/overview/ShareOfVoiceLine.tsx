@@ -1,3 +1,4 @@
+import { UiText } from "@/components/language/UiLanguage";
 import type { ReactNode } from "react";
 import type { AppSummary, ShareOfVoice } from "@asobeast/shared";
 import { TrendChip } from "@/components/ui/delta-chip";
@@ -17,7 +18,9 @@ function ShareRow({
   return (
     <div className="flex flex-col gap-0.5 text-xs text-muted-foreground">
       <p className="flex items-center gap-1">
-        <span>{label}</span>
+        <span>
+          <UiText message={label} />
+        </span>
         {measured ? (
           <span className="numeric font-mono font-medium text-foreground">
             {shareLine(block)}

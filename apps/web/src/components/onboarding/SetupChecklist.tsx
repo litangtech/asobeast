@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText, useUiLanguage } from "@/components/language/UiLanguage";
 import { useQueries, useQuery, useSuspenseQuery } from "@tanstack/react-query";
 import { CheckCircle2, RefreshCw } from "lucide-react";
 import Link from "next/link";
@@ -136,8 +137,7 @@ function ActiveSetup({
           states={states}
         />
         <p className="text-sm text-muted-foreground">
-          Three short steps. Each one is done once its number is reached, or
-          skipped when it does not apply.
+          <UiText message="Three short steps. Each one is done once its number is reached, or skipped when it does not apply." />
         </p>
       </div>
       <CompetitorsStep
@@ -200,13 +200,15 @@ function SetupActions({
       {!ready ? (
         <Alert role="status" className="items-center">
           <AlertDescription className="flex flex-wrap items-center gap-3">
-            {failed
-              ? "Some live counts could not be loaded."
-              : "Finish loading every live count before completing setup."}
+            {failed ? (
+              <UiText message="Some live counts could not be loaded." />
+            ) : (
+              <UiText message="Finish loading every live count before completing setup." />
+            )}
             {failed ? (
               <Button size="sm" variant="outline" onClick={onRetry}>
                 <RefreshCw />
-                Retry
+                <UiText message="Retry" />
               </Button>
             ) : null}
           </AlertDescription>
@@ -214,11 +216,11 @@ function SetupActions({
       ) : null}
       <div className="flex flex-wrap items-center justify-between gap-3 border-t pt-6">
         <Button variant="ghost" onClick={onDismiss}>
-          Dismiss setup
+          <UiText message="Dismiss setup" />
         </Button>
         <Button disabled={!completable} onClick={onComplete}>
           <CheckCircle2 />
-          Complete setup
+          <UiText message="Complete setup" />
         </Button>
       </div>
     </>
@@ -226,10 +228,13 @@ function SetupActions({
 }
 
 function StartStatus({ onStart }: { onStart: () => void }) {
+  const { text: uiLabel } = useUiLanguage();
   return (
     <SetupStatus
-      title="Start setup for this app"
-      description="This checklist helps you reach a first set of positions. Nothing is changed until you add something."
+      title={uiLabel("Start setup for this app")}
+      description={uiLabel(
+        "This checklist helps you reach a first set of positions. Nothing is changed until you add something.",
+      )}
       action="Start this setup"
       onAction={onStart}
     />
@@ -245,11 +250,14 @@ function TerminalStatus({
   completed: boolean;
   onRestart: () => void;
 }) {
+  const { text: uiLabel } = useUiLanguage();
   if (!completed) {
     return (
       <SetupStatus
-        title="Setup dismissed"
-        description="The checklist will not resume automatically. You can restart it whenever you need it."
+        title={uiLabel("Setup dismissed")}
+        description={uiLabel(
+          "The checklist will not resume automatically. You can restart it whenever you need it.",
+        )}
         action="Restart setup"
         onAction={onRestart}
       />
@@ -258,17 +266,21 @@ function TerminalStatus({
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Setup complete</CardTitle>
+        <CardTitle>
+          <UiText message="Setup complete" />
+        </CardTitle>
         <CardDescription>
-          Positions, competitors and countries are being collected.
+          <UiText message="Positions, competitors and countries are being collected." />
         </CardDescription>
       </CardHeader>
       <CardContent className="flex flex-wrap gap-2">
         <Button asChild>
-          <Link href={`/apps/${appId}`}>Open the overview</Link>
+          <Link href={`/apps/${appId}`}>
+            <UiText message="Open the overview" />
+          </Link>
         </Button>
         <Button variant="outline" onClick={onRestart}>
-          Restart setup
+          <UiText message="Restart setup" />
         </Button>
       </CardContent>
     </Card>
@@ -289,13 +301,19 @@ function SetupStatus({
   return (
     <Card>
       <CardHeader>
-        <CardTitle>{title}</CardTitle>
-        <CardDescription>{description}</CardDescription>
+        <CardTitle>
+          <UiText message={title} />
+        </CardTitle>
+        <CardDescription>
+          <UiText message={description} />
+        </CardDescription>
       </CardHeader>
       <CardContent className="flex flex-wrap gap-2">
         <Button onClick={onAction}>{action}</Button>
         <Button asChild variant="outline">
-          <Link href="/">Back to apps</Link>
+          <Link href="/">
+            <UiText message="Back to apps" />
+          </Link>
         </Button>
       </CardContent>
     </Card>

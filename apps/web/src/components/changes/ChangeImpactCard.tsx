@@ -1,6 +1,7 @@
 "use client";
 
-import { UiText } from "@/components/language/UiLanguage";
+import { UiDate, UiCountry } from "@/components/language/UiFormat";
+import { UiText, useUiLanguage } from "@/components/language/UiLanguage";
 import { Suspense, useId } from "react";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { useQueryState } from "nuqs";
@@ -28,7 +29,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { formatCountry, formatDate } from "@/lib/format";
+import { formatCountry } from "@/lib/format";
 import { changeImpactOptions, keywordCountriesOptions } from "@/lib/queries";
 import { changeDaysParser, countryParser } from "@/lib/search-params";
 import { ChangeImpactWindowTile, FunnelFacts } from "./ChangeImpactWindowTile";
@@ -54,7 +55,9 @@ function ChangeImpactRow({
   return (
     <li className="flex flex-col gap-3 border-t pt-4 first:border-t-0 first:pt-0">
       <div className="flex flex-wrap items-center gap-2">
-        <h3 className="text-body font-medium">{formatDate(item.changedOn)}</h3>
+        <h3 className="text-body font-medium">
+          <UiDate value={item.changedOn} />
+        </h3>
         {item.fields.map((field) => (
           <Badge key={field} variant="outline">
             {CHANGE_FIELD_LABELS[field]}
@@ -64,15 +67,15 @@ function ChangeImpactRow({
       {item.baselineDate === null ? (
         <>
           <p className="text-body text-muted-foreground">
-            No rank check just before this change, so its effect on rankings
-            cannot be measured.
+            <UiText message="No rank check just before this change, so its effect on rankings cannot be measured." />
           </p>
           <FunnelOnlyTiles windows={item.windows} store={store} />
         </>
       ) : (
         <>
           <p className="text-caption text-muted-foreground">
-            Compared with the rank check on {formatDate(item.baselineDate)}
+            <UiText message="Compared with the rank check on" trailing />
+            <UiDate value={item.baselineDate} />
           </p>
           <ul className="grid gap-3 sm:grid-cols-3">
             {item.windows.map((impact) => (
@@ -114,12 +117,15 @@ function FunnelOnlyTiles({
 }
 
 function ChangeImpactList({ id, store, days, market }: ImpactScope) {
+  const { text: uiLabel } = useUiLanguage();
   const { data } = useSuspenseQuery(changeImpactOptions(id, days, market));
 
   if (data.items.length === 0) {
     return (
       <EmptyState
-        title={`No changes to your listing in the last ${days} days`}
+        title={uiLabel("No changes to your listing in the last {0} days", [
+          days,
+        ])}
         body="A change appears here once a refresh detects an edit to your own listing. Widen the window to look further back."
       />
     );
@@ -157,7 +163,7 @@ function ImpactMarketSelect({
   return (
     <div className="flex flex-wrap items-center gap-2">
       <Label htmlFor={selectId}>
-        <UiText message={"Market"} />
+        <UiText message="Market" />
       </Label>
       <Select value={market} onValueChange={onChange}>
         <SelectTrigger id={selectId} className="w-[220px]">
@@ -166,7 +172,7 @@ function ImpactMarketSelect({
         <SelectContent>
           {markets.map((entry) => (
             <SelectItem key={entry.country} value={entry.country}>
-              {entry.country.toUpperCase()} · {formatCountry(entry.country)}
+              {entry.country.toUpperCase()} · <UiCountry code={entry.country} />
             </SelectItem>
           ))}
         </SelectContent>
@@ -182,6 +188,7 @@ function ChangeImpactBody({
   market,
   onMarketChange,
 }: ImpactScope & { onMarketChange: (country: string) => void }) {
+  const { text: uiLabel } = useUiLanguage();
   const { data: markets } = useSuspenseQuery(keywordCountriesOptions(id));
   const tracked =
     markets.find((entry) => entry.country === market)?.keywordCount ?? 0;
@@ -197,7 +204,9 @@ function ChangeImpactBody({
       ) : null}
       {tracked === 0 ? (
         <EmptyState
-          title={`No keywords tracked in ${formatCountry(market)} yet`}
+          title={uiLabel("No keywords tracked in {0} yet", [
+            formatCountry(market),
+          ])}
           body="Track keywords in this market to see how changes to your listing move them."
         />
       ) : (
@@ -226,9 +235,13 @@ export function ChangeImpactCard({
   return (
     <Card role="region" aria-labelledby={titleId}>
       <CardHeader>
-        <CardDescription>Change impact</CardDescription>
+        <CardDescription>
+          <UiText message="Change impact" />
+        </CardDescription>
         <CardTitle asChild>
-          <h2 id={titleId}>How rankings moved after each change</h2>
+          <h2 id={titleId}>
+            <UiText message="How rankings moved after each change" />
+          </h2>
         </CardTitle>
         <CardAction>
           <VisibilityHelp note="Here visibility covers only this market's keywords checked on both days, each weighted by its popularity on the last check before the change, so only positions move it." />

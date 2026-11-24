@@ -1,5 +1,7 @@
 "use client";
 
+import { UiDate, UiCountry } from "@/components/language/UiFormat";
+import { UiText, useUiLanguage } from "@/components/language/UiLanguage";
 import { useEffect, useRef, useState } from "react";
 import type { FormEvent } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -40,7 +42,6 @@ import {
 } from "@/components/layout/InlineQueryError";
 import { addAnnotation, ApiError, deleteAnnotation } from "@/lib/api";
 import { focusCanMoveTo, survivingNeighbour } from "@/lib/focus-handoff";
-import { formatCountry, formatDate } from "@/lib/format";
 import {
   annotationsOptions,
   invalidateAnnotationMutation,
@@ -60,12 +61,13 @@ function AnnotationRow({
   onRemove: (annotation: AppAnnotationItem) => void;
   registerButton: (annotationId: string, button: HTMLButtonElement) => void;
 }) {
+  const { text: uiLabel } = useUiLanguage();
   const [confirmOpen, setConfirmOpen] = useState(false);
 
   return (
     <div className="flex items-start gap-3 py-2">
       <span className="w-24 shrink-0 pt-0.5 text-caption text-muted-foreground">
-        {formatDate(annotation.date)}
+        <UiDate value={annotation.date} />
       </span>
       <div className="flex min-w-0 flex-1 flex-col gap-1">
         <span className="text-body break-words">{annotation.label}</span>
@@ -76,7 +78,7 @@ function AnnotationRow({
             ) : null}
             {annotation.market !== null ? (
               <Badge variant="outline">
-                {formatCountry(annotation.market)}
+                <UiCountry code={annotation.market} />
               </Badge>
             ) : null}
           </div>
@@ -90,7 +92,7 @@ function AnnotationRow({
           <Button
             variant="ghost"
             size="icon-sm"
-            aria-label={`Remove ${annotation.label}`}
+            aria-label={uiLabel("Remove {0}", [annotation.label])}
             ref={(button) => {
               if (button) registerButton(annotation.id, button);
             }}
@@ -100,14 +102,17 @@ function AnnotationRow({
         </AlertDialogTrigger>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Remove {annotation.label}?</AlertDialogTitle>
+            <AlertDialogTitle>
+              <UiText message="Remove" trailing />
+              {annotation.label}?
+            </AlertDialogTitle>
             <AlertDialogDescription>
-              The marker disappears from the rank history and visibility charts.
+              <UiText message="The marker disappears from the rank history and visibility charts." />
             </AlertDialogDescription>
           </AlertDialogHeader>
           <ConfirmActionFooter
             pending={removing}
-            label="Remove"
+            label={uiLabel("Remove")}
             pendingLabel="Removing…"
             onConfirm={() => onRemove(annotation)}
           />
@@ -118,6 +123,7 @@ function AnnotationRow({
 }
 
 function AnnotationsList({ id }: { id: string }) {
+  const { text: uiLabel } = useUiLanguage();
   const queryClient = useQueryClient();
   const list = useQuery(annotationsOptions(id));
   const buttons = useRef(new Map<string, HTMLButtonElement>());
@@ -129,11 +135,11 @@ function AnnotationsList({ id }: { id: string }) {
       deleteAnnotation(id, annotation.id),
     onSuccess: (_data, annotation) => {
       invalidateAnnotationMutation(queryClient, id);
-      toast.success(`Removed ${annotation.label}`);
+      toast.success(uiLabel("Removed {0}", [annotation.label]));
     },
     onError: (_error, annotation) => {
       removing.current.delete(annotation.id);
-      toast.error(`Could not remove ${annotation.label}`);
+      toast.error(uiLabel("Could not remove {0}", [annotation.label]));
     },
   });
   const removeOnce = useKeyedSingleFlight(remove, (row) => row.id);
@@ -163,7 +169,10 @@ function AnnotationsList({ id }: { id: string }) {
 
   if (failedRead(list)) {
     return (
-      <InlineQueryError message="Could not load the annotations." read={list} />
+      <InlineQueryError
+        message={uiLabel("Could not load the annotations.")}
+        read={list}
+      />
     );
   }
 
@@ -172,7 +181,7 @@ function AnnotationsList({ id }: { id: string }) {
   if (rows.length === 0) {
     return (
       <EmptyState
-        title="No annotations yet"
+        title={uiLabel("No annotations yet")}
         body="Pin a release, a listing change or the start of a campaign to its day, and the charts draw a line there."
       />
     );
@@ -199,6 +208,7 @@ function AnnotationsList({ id }: { id: string }) {
 }
 
 function AddAnnotationForm({ id }: { id: string }) {
+  const { text: uiLabel } = useUiLanguage();
   const queryClient = useQueryClient();
   const [date, setDate] = useState("");
   const [label, setLabel] = useState("");
@@ -220,7 +230,7 @@ function AddAnnotationForm({ id }: { id: string }) {
       setLabel("");
       setTag("");
       setError(null);
-      toast.success("Annotation added");
+      toast.success(uiLabel("Annotation added"));
     },
     onError: (err) => {
       setError(
@@ -248,7 +258,9 @@ function AddAnnotationForm({ id }: { id: string }) {
     <form onSubmit={submit} className="flex flex-col gap-3">
       <div className="grid gap-3 sm:grid-cols-[10rem_1fr]">
         <div className="flex flex-col gap-1.5">
-          <Label htmlFor="annotation-date">Date</Label>
+          <Label htmlFor="annotation-date">
+            <UiText message="Date" />
+          </Label>
           <Input
             id="annotation-date"
             type="date"
@@ -258,11 +270,13 @@ function AddAnnotationForm({ id }: { id: string }) {
           />
         </div>
         <div className="flex flex-col gap-1.5">
-          <Label htmlFor="annotation-label">Label</Label>
+          <Label htmlFor="annotation-label">
+            <UiText message="Label" />
+          </Label>
           <Input
             id="annotation-label"
             required
-            placeholder="Release 5.21.0"
+            placeholder={uiLabel("Release 5.21.0")}
             value={label}
             onChange={(event) => setLabel(event.target.value)}
           />
@@ -275,10 +289,12 @@ function AddAnnotationForm({ id }: { id: string }) {
       </div>
       <div className="flex flex-wrap items-end gap-3">
         <div className="flex w-40 flex-col gap-1.5">
-          <Label htmlFor="annotation-tag">Tag (optional)</Label>
+          <Label htmlFor="annotation-tag">
+            <UiText message="Tag (optional)" />
+          </Label>
           <Input
             id="annotation-tag"
-            placeholder="wave"
+            placeholder={uiLabel("wave")}
             value={tag}
             onChange={(event) => setTag(event.target.value)}
           />
@@ -294,7 +310,11 @@ function AddAnnotationForm({ id }: { id: string }) {
           aria-disabled={mutation.isPending || !addable || undefined}
         >
           {mutation.isPending ? <Loader2 className="animate-spin" /> : <Plus />}
-          {mutation.isPending ? "Adding…" : "Add annotation"}
+          {mutation.isPending ? (
+            <UiText message="Adding…" />
+          ) : (
+            <UiText message="Add annotation" />
+          )}
         </Button>
       </div>
       {error ? (
@@ -310,8 +330,12 @@ export function AnnotationsCard({ id }: { id: string }) {
   return (
     <Card>
       <CardHeader>
-        <CardDescription>Event markers</CardDescription>
-        <CardTitle>Annotations</CardTitle>
+        <CardDescription>
+          <UiText message="Event markers" />
+        </CardDescription>
+        <CardTitle>
+          <UiText message="Annotations" />
+        </CardTitle>
       </CardHeader>
       <CardContent className="flex flex-col gap-4">
         <AnnotationsList id={id} />

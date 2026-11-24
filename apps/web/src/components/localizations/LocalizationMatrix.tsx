@@ -1,3 +1,5 @@
+import { UiCountry } from "@/components/language/UiFormat";
+import { UiText } from "@/components/language/UiLanguage";
 import Link from "next/link";
 import {
   Table,
@@ -24,7 +26,9 @@ function NotRead() {
       <span aria-hidden className="text-muted-foreground">
         ·
       </span>
-      <span className="sr-only">Not read</span>
+      <span className="sr-only">
+        <UiText message="Not read" />
+      </span>
     </>
   );
 }
@@ -44,13 +48,20 @@ export function LocalizationMatrix({
       <div className="min-w-0 rounded-lg border border-border">
         <Table scrollLabel="Localization matrix" scrollFocus="overflow">
           <TableCaption className="sr-only">
-            {grid.suggested.length > 0
-              ? `Which of your markets read each localization, and up to ${formatNumber(SUGGESTED_COLUMNS)} suggested markets`
-              : "Which of your markets read each localization"}
+            {grid.suggested.length > 0 ? (
+              <UiText
+                message="Which of your markets read each localization, and up to {0} suggested markets"
+                values={[formatNumber(SUGGESTED_COLUMNS)]}
+              />
+            ) : (
+              <UiText message="Which of your markets read each localization" />
+            )}
           </TableCaption>
           <TableHeader>
             <TableRow>
-              <TableHead scope="col">Read in your markets</TableHead>
+              <TableHead scope="col">
+                <UiText message="Read in your markets" />
+              </TableHead>
               {grid.markets.map((country) => (
                 <TableHead
                   key={country}
@@ -58,7 +69,10 @@ export function LocalizationMatrix({
                   title={formatCountry(country)}
                 >
                   {country.toUpperCase()}
-                  <span className="sr-only"> {formatCountry(country)}</span>
+                  <span className="sr-only">
+                    {" "}
+                    <UiCountry code={country} />
+                  </span>
                 </TableHead>
               ))}
               {grid.suggested.map((country) => (
@@ -69,8 +83,13 @@ export function LocalizationMatrix({
                   className={SUGGESTED_COLUMN}
                 >
                   {country.toUpperCase()}{" "}
-                  <span className="font-normal normal-case">suggested</span>
-                  <span className="sr-only"> {formatCountry(country)}</span>
+                  <span className="font-normal normal-case">
+                    <UiText message="suggested" />
+                  </span>
+                  <span className="sr-only">
+                    {" "}
+                    <UiCountry code={country} />
+                  </span>
                 </TableHead>
               ))}
             </TableRow>

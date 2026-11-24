@@ -1,3 +1,4 @@
+import { UiText } from "@/components/language/UiLanguage";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import type { ClosedAdminAccess } from "@/lib/admin-access";
@@ -26,18 +27,22 @@ export function AdminAccessNotice({ access }: { access: ClosedAdminAccess }) {
     >
       <div className="flex flex-col gap-1">
         <h2 id="admin-access-title" className="font-medium">
-          {title}
+          <UiText message={title} />
         </h2>
         <p className="max-w-lg text-body text-muted-foreground">{body}</p>
       </div>
       <div className="flex flex-wrap justify-center gap-2">
         <Button asChild>
-          <Link href={action.href}>{action.label}</Link>
+          <Link href={action.href}>
+            <UiText message={action.label} />
+          </Link>
         </Button>
         <Button asChild variant="outline">
           <a href={GUIDE_URL} target="_blank" rel="noreferrer">
-            Read the guide
-            <span className="sr-only"> (opens in a new tab)</span>
+            <UiText message="Read the guide" />
+            <span className="sr-only">
+              <UiText message="(opens in a new tab)" />
+            </span>
           </a>
         </Button>
       </div>

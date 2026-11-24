@@ -1,3 +1,4 @@
+import { UiText } from "@/components/language/UiLanguage";
 import type { ReactNode } from "react";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
@@ -74,7 +75,9 @@ export function MoverList<T extends KeywordMover>({
         <p className="text-sm font-medium text-muted-foreground">{title}</p>
       ) : null}
       {movers.length === 0 ? (
-        <p className="text-sm text-muted-foreground">No movement this week.</p>
+        <p className="text-sm text-muted-foreground">
+          <UiText message="No movement this week." />
+        </p>
       ) : (
         <ul className="flex flex-col gap-0.5">
           {movers.map((mover) => {

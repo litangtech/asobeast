@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText, useUiLanguage } from "@/components/language/UiLanguage";
 import { useState } from "react";
 import type { FormEvent } from "react";
 import {
@@ -25,6 +26,7 @@ const STORE_URL_EXAMPLES: Record<Store, string> = {
 };
 
 export function AddCompetitorForm({ id }: { id: string }) {
+  const { text: uiLabel } = useUiLanguage();
   const queryClient = useQueryClient();
   const { data: detail } = useSuspenseQuery(appDetailOptions(id));
   const [url, setUrl] = useState("");
@@ -37,7 +39,7 @@ export function AddCompetitorForm({ id }: { id: string }) {
     onSuccess: (competitor) => {
       invalidateCompetitorMutation(queryClient, id);
       setUrl("");
-      toast.success(`Added ${competitor.name ?? "competitor"}`);
+      toast.success(uiLabel("Added {0}", [competitor.name ?? "competitor"]));
     },
     onError: (err) => {
       if (err instanceof ApiError) {
@@ -88,8 +90,12 @@ export function AddCompetitorForm({ id }: { id: string }) {
     <form onSubmit={submit}>
       <StoreSearchField
         id="competitor-search"
-        label={`Competitor name or ${storeLabel(detail.store)} URL`}
-        hint="Type a name to search, or paste a store URL. A new competitor gets positions on the next keyword check."
+        label={uiLabel("Competitor name or {0} URL", [
+          storeLabel(detail.store),
+        ])}
+        hint={uiLabel(
+          "Type a name to search, or paste a store URL. A new competitor gets positions on the next keyword check.",
+        )}
         placeholder={STORE_URL_EXAMPLES[detail.store]}
         store={detail.store}
         country={detail.country}
@@ -102,7 +108,11 @@ export function AddCompetitorForm({ id }: { id: string }) {
       >
         <Button type="submit" aria-disabled={inert || undefined}>
           {mutation.isPending ? <Loader2 className="animate-spin" /> : <Plus />}
-          {mutation.isPending ? "Adding…" : "Add competitor"}
+          {mutation.isPending ? (
+            <UiText message="Adding…" />
+          ) : (
+            <UiText message="Add competitor" />
+          )}
         </Button>
       </StoreSearchField>
     </form>

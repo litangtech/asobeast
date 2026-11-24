@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText } from "@/components/language/UiLanguage";
 import { useState } from "react";
 import type {
   AppAuditResult,
@@ -58,7 +59,8 @@ function BucketPanel({
               className="w-fit"
               onClick={() => setExpanded(true)}
             >
-              Show all {items.length}
+              <UiText message="Show all" trailing />
+              {items.length}
             </Button>
           ) : null}
         </>
@@ -83,7 +85,7 @@ export function AuditActionPlan({
       className="flex flex-col gap-3"
     >
       <h2 id="action-plan-heading" className="text-lg font-medium">
-        Action plan
+        <UiText message="Action plan" />
       </h2>
       <Tabs defaultValue="quickWins">
         <TabsList scrollable>

@@ -1,3 +1,4 @@
+import { UiText } from "@/components/language/UiLanguage";
 import Link from "next/link";
 import type { AppAuditResult } from "@asobeast/shared";
 import { Badge } from "@/components/ui/badge";
@@ -29,7 +30,7 @@ export function AuditScoreHero({
       <CardContent className="flex flex-col gap-4">
         <section aria-labelledby="aso-score-heading" className="contents">
           <h2 id="aso-score-heading" className="sr-only">
-            ASO score
+            <UiText message="ASO score" />
           </h2>
           <div className="flex items-center gap-4">
             <ScoreRing
@@ -85,7 +86,9 @@ export function AuditScoreHero({
               {unlocks.map((unlock) => (
                 <li key={unlock.kind}>
                   <Link href={unlockHref(appId, unlock.kind)}>
-                    <Badge variant="outline">{unlock.label}</Badge>
+                    <Badge variant="outline">
+                      <UiText message={unlock.label} />
+                    </Badge>
                   </Link>
                 </li>
               ))}

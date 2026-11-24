@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText, useUiLanguage } from "@/components/language/UiLanguage";
 import { useEffect, useRef } from "react";
 import { useQuery } from "@tanstack/react-query";
 import Link from "next/link";
@@ -67,15 +68,14 @@ function LocalizationsPanel({
       <CardContent className="flex flex-col gap-4">
         <div className="flex flex-col gap-1">
           <p className="text-body text-muted-foreground">
-            A keyword field belongs to a language. Search in every storefront on
-            its list reads it, and words combine only within one localization.{" "}
+            <UiText message="A keyword field belongs to a language. Search in every storefront on its list reads it, and words combine only within one localization." />{" "}
             <a
               href={APPLE_LOCALIZATIONS_URL}
               target="_blank"
               rel="noreferrer"
               className="inline-flex items-center gap-1 font-medium text-foreground underline underline-offset-4"
             >
-              Apple&rsquo;s localization table
+              <UiText message="Apple&amp;rsquo;s localization table" />
               <ExternalLink className="size-3.5" aria-hidden />
             </a>
           </p>
@@ -101,6 +101,7 @@ export function AppLocalizationsSection({
   id: string;
   canDraft: boolean;
 }) {
+  const { text: uiLabel } = useUiLanguage();
   const { isOwner } = useAuth();
   const { data, error, isError, refetch } = useQuery({
     ...appLocalizationsOptions(id),
@@ -122,7 +123,7 @@ export function AppLocalizationsSection({
     >
       <div className="flex flex-wrap items-center justify-between gap-2">
         <h2 id={HEADING_ID} className="text-lg font-medium">
-          App Store localizations
+          <UiText message="App Store localizations" />
         </h2>
         {data ? (
           <div ref={controls} className="flex flex-wrap items-center gap-2">
@@ -143,16 +144,14 @@ export function AppLocalizationsSection({
       </div>
       {data?.storeImport === "paused" ? (
         <p className="text-body text-muted-foreground">
-          Importing from App Store Connect is paused because the connection
-          needs attention in{" "}
+          <UiText message="Importing from App Store Connect is paused because the connection needs attention in" />{" "}
           <Link
             href={STORE_CONNECTIONS_PATH}
             className="font-medium text-foreground underline underline-offset-4"
           >
-            Integrations
+            <UiText message="Integrations" />
           </Link>
-          . The fields are editable here again and follow the store once the key
-          works.
+          <UiText message=". The fields are editable here again and follow the store once the key works." />
         </p>
       ) : null}
       {data ? (
@@ -161,7 +160,7 @@ export function AppLocalizationsSection({
         <ErrorState
           error={error}
           retry={() => void refetch()}
-          title="Localizations could not be loaded."
+          title={uiLabel("Localizations could not be loaded.")}
         />
       ) : (
         <Skeleton className="h-64 w-full rounded-xl" />

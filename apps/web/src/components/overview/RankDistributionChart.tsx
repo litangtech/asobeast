@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText, useUiLanguage } from "@/components/language/UiLanguage";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { Bar, BarChart, Cell, LabelList, XAxis, YAxis } from "recharts";
 import {
@@ -34,6 +35,7 @@ const chartConfig = {
 } satisfies ChartConfig;
 
 export function RankDistributionChart({ id }: { id: string }) {
+  const { text: uiLabel } = useUiLanguage();
   const { country } = useKeywordScope(id);
   const { data: summary } = useSuspenseQuery(appSummaryOptions(id, country));
   const data = BUCKETS.map((bucket) => ({
@@ -47,14 +49,18 @@ export function RankDistributionChart({ id }: { id: string }) {
   return (
     <Card>
       <CardHeader>
-        <CardDescription>Rank distribution</CardDescription>
-        <CardTitle>Where your keywords rank</CardTitle>
+        <CardDescription>
+          <UiText message="Rank distribution" />
+        </CardDescription>
+        <CardTitle>
+          <UiText message="Where your keywords rank" />
+        </CardTitle>
       </CardHeader>
       <CardContent>
         {total === 0 ? (
           <ChartNotice
             height={CHART_HEIGHT.compact}
-            title="No keywords tracked yet"
+            title={uiLabel("No keywords tracked yet")}
             body="Add keywords to see where this app ranks."
           />
         ) : (
@@ -62,7 +68,7 @@ export function RankDistributionChart({ id }: { id: string }) {
             config={chartConfig}
             className={`${CHART_HEIGHT.compact} w-full`}
             role="region"
-            aria-label="Keyword rank distribution"
+            aria-label={uiLabel("Keyword rank distribution")}
           >
             <BarChart
               accessibilityLayer

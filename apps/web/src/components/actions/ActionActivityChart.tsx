@@ -1,5 +1,6 @@
 "use client";
 
+import { useUiLanguage } from "@/components/language/UiLanguage";
 import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from "recharts";
 import type { ActionActivity } from "@asobeast/shared";
 import { ChartNotice, MIN_TREND_POINTS } from "@/components/charts/ChartStates";
@@ -41,11 +42,12 @@ export function ActionActivityChart({
 }: {
   activity: ActionActivity;
 }) {
+  const { text: uiLabel } = useUiLanguage();
   if (activeDays(activity) < MIN_TREND_POINTS) {
     return (
       <ChartNotice
         height={CHART_HEIGHT.compact}
-        title="Not enough activity yet"
+        title={uiLabel("Not enough activity yet")}
         body="The chart fills in as actions open and close."
       />
     );
@@ -56,7 +58,7 @@ export function ActionActivityChart({
       config={chartConfig}
       className={`${CHART_HEIGHT.compact} w-full`}
       role="region"
-      aria-label="Actions opened and closed per day"
+      aria-label={uiLabel("Actions opened and closed per day")}
     >
       <BarChart
         accessibilityLayer

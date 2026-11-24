@@ -1,6 +1,6 @@
 "use client";
 
-import { UiText } from "@/components/language/UiLanguage";
+import { UiText, useUiLanguage } from "@/components/language/UiLanguage";
 import { Suspense } from "react";
 import Link from "next/link";
 import type { ListingMarket } from "@asobeast/shared";
@@ -37,27 +37,27 @@ function RatingsTable({
   markets: readonly ListingMarket[];
   selected: string | undefined;
 }) {
+  const { text: uiLabel } = useUiLanguage();
   const rows = marketRatingRows(markets);
   const total = ratingTotal(rows);
   return (
     <Table scrollLabel="Market ratings table" scrollFocus="overflow">
       <TableCaption>
-        Rating and number of ratings on the newest listing captured in each
-        market
+        <UiText message="Rating and number of ratings on the newest listing captured in each market" />
       </TableCaption>
       <TableHeader>
         <TableRow>
           <TableHead scope="col">
-            <UiText message={"Market"} />
+            <UiText message="Market" />
           </TableHead>
           <TableHead scope="col" className="text-right">
-            Average
+            <UiText message="Average" />
           </TableHead>
           <TableHead scope="col" className="text-right">
-            <UiText message={"Ratings"} />
+            <UiText message="Ratings" />
           </TableHead>
           <TableHead scope="col" className="text-right">
-            Captured
+            <UiText message="Captured" />
           </TableHead>
         </TableRow>
       </TableHeader>
@@ -73,12 +73,14 @@ function RatingsTable({
       {total ? (
         <TableFooter>
           <TableRow>
-            <TableCell>All listed markets</TableCell>
+            <TableCell>
+              <UiText message="All listed markets" />
+            </TableCell>
             <TableCell className="text-right">
               <GradedNumber
                 value={formatRating(total.average)}
                 grade={grade("rating", total.average)}
-                label="Rating across the listed markets"
+                label={uiLabel("Rating across the listed markets")}
               />
             </TableCell>
             <TableCell className="numeric text-right font-mono">
@@ -95,16 +97,17 @@ function RatingsTable({
 }
 
 function SingleMarket({ id, canTrack }: { id: string; canTrack: boolean }) {
+  const { text: uiLabel } = useUiLanguage();
   return (
     <EmptyState
       className="py-8"
-      title="Only one market so far"
+      title={uiLabel("Only one market so far")}
       body="The App Store keeps a rating for each storefront. Track a keyword in another market and the daily run captures the listing there, so its rating appears next to this one."
       action={
         canTrack ? (
           <Button asChild variant="outline">
             <Link href={`/apps/${id}/keywords`}>
-              Track keywords in another market
+              <UiText message="Track keywords in another market" />
             </Link>
           </Button>
         ) : undefined
@@ -137,12 +140,13 @@ export function RatingsByMarketCard({
   canTrack: boolean;
   collapsed: readonly string[];
 }) {
+  const { text: uiLabel } = useUiLanguage();
   return (
     <CollapsedSectionsProvider initial={collapsed} known={KNOWN_SECTIONS}>
       <CollapsibleCard
         section={OVERVIEW_SECTION.ratingsByMarket}
         eyebrow="Store ratings"
-        title="Ratings by market"
+        title={uiLabel("Ratings by market")}
         actions={<RatingsByMarketHelp />}
       >
         <Suspense fallback={<RatingsByMarketSkeleton />}>

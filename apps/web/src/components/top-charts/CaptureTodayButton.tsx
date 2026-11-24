@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText, useUiLanguage } from "@/components/language/UiLanguage";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Download, Loader2 } from "lucide-react";
 import { useQueryStates } from "nuqs";
@@ -26,6 +27,7 @@ export function CaptureTodayButton({
 }: {
   chart: ChartKey;
 } & Pick<ComponentProps<typeof Button>, "variant" | "size">) {
+  const { text: uiLabel } = useUiLanguage();
   const queryClient = useQueryClient();
   const [, setSearch] = useQueryStates(chartParsers);
   const mutation = useMutation({
@@ -39,7 +41,7 @@ export function CaptureTodayButton({
       toast.success(
         listsNoApps(page)
           ? noAppsToast(page.chart.store)
-          : "Captured today's chart",
+          : uiLabel("Captured today's chart"),
       );
       void setSearch({ date: null });
     },
@@ -62,7 +64,7 @@ export function CaptureTodayButton({
       ) : (
         <Download aria-hidden />
       )}
-      Capture today
+      <UiText message="Capture today" />
     </Button>
   );
 }

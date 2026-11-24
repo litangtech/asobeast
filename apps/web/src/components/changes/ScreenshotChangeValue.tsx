@@ -1,3 +1,4 @@
+import { UiText } from "@/components/language/UiLanguage";
 import type { ChangeEventItem, ScreenshotRef } from "@asobeast/shared";
 import { ScreenshotThumb } from "@/components/screenshots/ScreenshotThumb";
 import { cn } from "@/lib/utils";
@@ -19,7 +20,7 @@ function Strip({
   return (
     <span className="flex flex-col gap-1">
       <span className="text-label text-muted-foreground uppercase">
-        {label}
+        <UiText message={label} />
       </span>
       <span
         role="group"
@@ -54,7 +55,7 @@ function CaptionList({
   return (
     <span className={cn("flex flex-col gap-0.5 rounded-md px-2 py-1", tone)}>
       <span className="text-label text-muted-foreground uppercase">
-        {label}
+        <UiText message={label} />
       </span>
       {captions.map((caption, index) => (
         <span key={`${index}-${caption}`} className="font-medium break-words">

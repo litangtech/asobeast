@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText, useUiLanguage } from "@/components/language/UiLanguage";
 import { useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Download } from "lucide-react";
@@ -53,6 +54,7 @@ export function ImportFromStoreButton({
   id: string;
   result: AppLocalizationsResult;
 }) {
+  const { text: uiLabel } = useUiLanguage();
   const queryClient = useQueryClient();
   const [open, setOpen] = useState(false);
   const claimFocus = useFocusClaim(STORE_IMPORT_FOCUS_KEY);
@@ -80,12 +82,14 @@ export function ImportFromStoreButton({
       <AlertDialogTrigger asChild>
         <Button ref={claimFocus} variant="outline" size="sm">
           <Download aria-hidden />
-          Import from App Store Connect
+          <UiText message="Import from App Store Connect" />
         </Button>
       </AlertDialogTrigger>
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>Import from App Store Connect?</AlertDialogTitle>
+          <AlertDialogTitle>
+            <UiText message="Import from App Store Connect?" />
+          </AlertDialogTitle>
           <AlertDialogDescription>{replaces}</AlertDialogDescription>
         </AlertDialogHeader>
         {error ? (
@@ -95,7 +99,7 @@ export function ImportFromStoreButton({
         ) : null}
         <ConfirmActionFooter
           pending={start.isPending}
-          label="Import"
+          label={uiLabel("Import")}
           pendingLabel="Importing…"
           variant="default"
           onConfirm={() => {

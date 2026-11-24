@@ -1,5 +1,6 @@
+import { UiDate } from "@/components/language/UiFormat";
+import { UiText } from "@/components/language/UiLanguage";
 import { Badge } from "@/components/ui/badge";
-import { formatDate } from "@/lib/format";
 import { cn } from "@/lib/utils";
 import {
   RELEASE_KINDS,
@@ -28,14 +29,19 @@ function ChangeGroup({
       <h3 id={headingId}>
         <Badge variant={badge}>
           <Icon aria-hidden />
-          <span>{label}</span>
+          <UiText message={label} />
         </Badge>
       </h3>
       <ul className="flex flex-col gap-3">
         {changes.map((change) => (
           <li key={change.title} className="text-body wrap-anywhere">
-            <span className="font-medium text-foreground">{`${change.title}. `}</span>
-            <span className="text-muted-foreground">{change.text}</span>
+            <span className="font-medium text-foreground">
+              <UiText message={change.title} />
+              <UiText message="." trailing />
+            </span>
+            <span className="text-muted-foreground">
+              <UiText message={change.text} />
+            </span>
           </li>
         ))}
       </ul>
@@ -74,9 +80,13 @@ export function ReleaseEntry({
             dateTime={release.date}
             className="text-caption text-muted-foreground"
           >
-            {formatDate(release.date)}
+            <UiDate value={release.date} />
           </time>
-          {latest ? <Badge variant="info">Latest</Badge> : null}
+          {latest ? (
+            <Badge variant="info">
+              <UiText message="Latest" />
+            </Badge>
+          ) : null}
         </header>
         <div className="relative flex min-w-0 flex-col gap-4 pb-8 sm:border-l sm:border-border sm:pl-8">
           <span
@@ -88,9 +98,11 @@ export function ReleaseEntry({
           />
           <div className="flex flex-col gap-1.5">
             <p className="text-subtitle font-semibold text-balance text-foreground">
-              {release.title}
+              <UiText message={release.title} />
             </p>
-            <p className="text-body text-muted-foreground">{release.summary}</p>
+            <p className="text-body text-muted-foreground">
+              <UiText message={release.summary} />
+            </p>
           </div>
           {RELEASE_KINDS.map((kind) => (
             <ChangeGroup key={kind} release={release} kind={kind} />

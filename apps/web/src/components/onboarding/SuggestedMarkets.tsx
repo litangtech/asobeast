@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText, useUiLanguage } from "@/components/language/UiLanguage";
 import { useState } from "react";
 import { Loader2 } from "lucide-react";
 import {
@@ -88,7 +89,10 @@ export function SuggestedMarkets({
   return (
     <div className="flex flex-col gap-4">
       <div className="flex flex-col gap-2">
-        <p className="text-body">Your listing ships {formatList(languages)}.</p>
+        <p className="text-body">
+          <UiText message="Your listing ships" trailing />
+          {formatList(languages)}.
+        </p>
         <div className="flex flex-wrap gap-1.5">
           {languages.map((language) => (
             <Badge key={language} variant="secondary">
@@ -128,7 +132,7 @@ export function SuggestedMarkets({
           {seedButtonLabel(pending.length, plan.seed.length)}
         </Button>
         <p className="flex items-center gap-1 text-caption text-muted-foreground">
-          Each country adds requests a day to the daily run.
+          <UiText message="Each country adds requests a day to the daily run." />
           <MarketCostTip store={store} />
         </p>
       </div>
@@ -137,10 +141,11 @@ export function SuggestedMarkets({
 }
 
 export function MarketCostTip({ store }: { store: Store }) {
+  const { text: uiLabel } = useUiLanguage();
   return (
     <InfoTip
-      label="About market costs"
-      title="What a market costs"
+      label={uiLabel("About market costs")}
+      title={uiLabel("What a market costs")}
       summary={marketCostSummary(store)}
     >
       <a
@@ -149,7 +154,7 @@ export function MarketCostTip({ store }: { store: Store }) {
         rel="noreferrer"
         className="font-medium text-foreground underline decoration-primary underline-offset-4 hover:decoration-2"
       >
-        Read what a market costs
+        <UiText message="Read what a market costs" />
       </a>
     </InfoTip>
   );
@@ -190,7 +195,11 @@ function SuggestedMarket({
           {name} ({market.country.toUpperCase()})
         </Label>
         <ReadRoleBadge role={market.role} />
-        {market.tracked ? <Badge variant="outline">Tracked</Badge> : null}
+        {market.tracked ? (
+          <Badge variant="outline">
+            <UiText message="Tracked" />
+          </Badge>
+        ) : null}
         <span className="text-caption text-muted-foreground">
           {marketCostText(market)}
         </span>
@@ -206,8 +215,10 @@ function SuggestedMarket({
             htmlFor={seedId}
             className="text-caption font-normal text-muted-foreground"
           >
-            Seed with its listing
-            <span className="sr-only"> for {name}</span>
+            <UiText message="Seed with its listing" />
+            <span className="sr-only">
+              <UiText message="for {0}" values={[name]} leading />
+            </span>
           </Label>
         </div>
       ) : null}

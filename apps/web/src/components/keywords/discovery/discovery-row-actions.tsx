@@ -1,6 +1,6 @@
 "use client";
 
-import { UiText } from "@/components/language/UiLanguage";
+import { useUiLanguage, UiText } from "@/components/language/UiLanguage";
 import { createContext, useContext, type RefObject } from "react";
 import type { KeywordDiscoveryItem } from "@asobeast/shared";
 import { Button } from "@/components/ui/button";
@@ -26,6 +26,7 @@ const holds = (ids: readonly string[] | undefined, id: string): boolean =>
   ids?.includes(id) ?? false;
 
 export function DiscoveryRowActions({ item }: { item: KeywordDiscoveryItem }) {
+  const { text: uiLabel } = useUiLanguage();
   const context = useContext(DiscoveryRowActionsContext);
   if (!context) return null;
   const { actions, handOffFocus, heading } = context;
@@ -49,7 +50,7 @@ export function DiscoveryRowActions({ item }: { item: KeywordDiscoveryItem }) {
         size="sm"
         variant="outline"
         data-discovery-track
-        aria-label={`Track ${item.text}`}
+        aria-label={uiLabel("Track {0}", [item.text])}
         aria-disabled={busy || undefined}
         aria-busy={tracking || undefined}
         onClick={(event) => {
@@ -58,13 +59,13 @@ export function DiscoveryRowActions({ item }: { item: KeywordDiscoveryItem }) {
           actions.trackOnce({ request: { keywordIds: ids }, removes: ids });
         }}
       >
-        <UiText message={"Track"} />
+        <UiText message="Track" />
       </Button>
       <Button
         size="sm"
         variant="ghost"
         data-discovery-dismiss
-        aria-label={`Dismiss ${item.text}`}
+        aria-label={uiLabel("Dismiss {0}", [item.text])}
         aria-disabled={busy || undefined}
         aria-busy={dismissing || undefined}
         onClick={(event) => {
@@ -73,7 +74,7 @@ export function DiscoveryRowActions({ item }: { item: KeywordDiscoveryItem }) {
           actions.dismissOnce(ids);
         }}
       >
-        <UiText message={"Dismiss"} />
+        <UiText message="Dismiss" />
       </Button>
     </span>
   );

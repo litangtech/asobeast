@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText } from "@/components/language/UiLanguage";
 import { useState, type ComponentProps, type RefObject } from "react";
 import { ListFilter } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
@@ -40,7 +41,7 @@ export function KeywordFiltersSheet({
       <SheetTrigger asChild>
         <Button variant="outline" size="sm">
           <ListFilter aria-hidden />
-          Filters
+          <UiText message="Filters" />
           {active > 0 ? (
             <Badge variant="secondary" className="numeric font-mono">
               {active}
@@ -54,10 +55,11 @@ export function KeywordFiltersSheet({
         onCloseAutoFocus={onCloseAutoFocus}
       >
         <SheetHeader>
-          <SheetTitle>Filters</SheetTitle>
+          <SheetTitle>
+            <UiText message="Filters" />
+          </SheetTitle>
           <SheetDescription>
-            Narrow the keywords by source, bucket, status, type, grade and
-            position.
+            <UiText message="Narrow the keywords by source, bucket, status, type, grade and position." />
           </SheetDescription>
         </SheetHeader>
         <div className="flex flex-col items-start gap-2">

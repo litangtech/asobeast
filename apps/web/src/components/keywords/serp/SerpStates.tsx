@@ -1,3 +1,4 @@
+import { UiText } from "@/components/language/UiLanguage";
 import type { ReactNode } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { formatDate } from "@/lib/format";
@@ -15,7 +16,7 @@ function Panel({ children }: { children: ReactNode }) {
 export function SerpNeverChecked() {
   return (
     <Panel>
-      Not checked yet. The search results appear after the next daily check.
+      <UiText message="Not checked yet. The search results appear after the next daily check." />
     </Panel>
   );
 }
@@ -23,7 +24,10 @@ export function SerpNeverChecked() {
 export function SerpNothingCaptured({ date }: { date: string }) {
   return (
     <Panel>
-      {`Nothing was captured on ${formatDate(date)}. Pick a captured day.`}
+      <UiText
+        message="Nothing was captured on {0}. Pick a captured day."
+        values={[formatDate(date)]}
+      />
     </Panel>
   );
 }
@@ -31,7 +35,10 @@ export function SerpNothingCaptured({ date }: { date: string }) {
 export function SerpNoApps({ date }: { date: string }) {
   return (
     <Panel>
-      {`The store showed no apps for this keyword on ${formatDate(date)}.`}
+      <UiText
+        message="The store showed no apps for this keyword on {0}."
+        values={[formatDate(date)]}
+      />
     </Panel>
   );
 }
@@ -39,7 +46,7 @@ export function SerpNoApps({ date }: { date: string }) {
 export function SerpKeptShort() {
   return (
     <p className="px-4 pt-3 text-caption text-muted-foreground">
-      Positions below the top 10 are not kept for this day.
+      <UiText message="Positions below the top 10 are not kept for this day." />
     </p>
   );
 }

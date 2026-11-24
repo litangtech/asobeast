@@ -1,6 +1,6 @@
 "use client";
 
-import { UiText } from "@/components/language/UiLanguage";
+import { UiText, useUiLanguage } from "@/components/language/UiLanguage";
 import { useId, useState } from "react";
 import { SlidersHorizontal } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -40,7 +40,9 @@ function ThresholdField({
   const invalid = draft !== null && parseThresholdInput(draft) === null;
   return (
     <div className="flex flex-col gap-1.5">
-      <Label htmlFor={id}>{label}</Label>
+      <Label htmlFor={id}>
+        <UiText message={label} />
+      </Label>
       <Input
         id={id}
         type="number"
@@ -70,6 +72,7 @@ function ThresholdField({
 }
 
 export function ThresholdsPopover() {
+  const { text: uiLabel } = useUiLanguage();
   const titleId = useId();
   const { thresholds, setThresholds, resetThresholds, isDefault } =
     useZoneThresholds();
@@ -80,7 +83,9 @@ export function ThresholdsPopover() {
       <PopoverTrigger asChild>
         <Button variant="outline" size="sm" className="print:hidden">
           <SlidersHorizontal aria-hidden />
-          <span>Thresholds</span>
+          <span>
+            <UiText message="Thresholds" />
+          </span>
         </Button>
       </PopoverTrigger>
       <PopoverContent
@@ -91,9 +96,11 @@ export function ThresholdsPopover() {
       >
         <div className="flex items-start justify-between gap-3">
           <PopoverHeader>
-            <PopoverTitle id={titleId}>Zone thresholds</PopoverTitle>
+            <PopoverTitle id={titleId}>
+              <UiText message="Zone thresholds" />
+            </PopoverTitle>
             <PopoverDescription>
-              The two numbers that cut the map into zones. Kept in this browser.
+              <UiText message="The two numbers that cut the map into zones. Kept in this browser." />
             </PopoverDescription>
           </PopoverHeader>
           <Button
@@ -104,21 +111,24 @@ export function ThresholdsPopover() {
               if (!isDefault) resetThresholds();
             }}
           >
-            <UiText message={"Reset"} />
+            <UiText message="Reset" />
           </Button>
         </div>
         <ThresholdField
-          label="Popularity at least"
+          label={uiLabel("Popularity at least")}
           value={thresholds.popularity}
           onValid={update("popularity")}
         />
         <ThresholdField
-          label="Difficulty at most"
+          label={uiLabel("Difficulty at most")}
           value={thresholds.difficulty}
           onValid={update("difficulty")}
         />
         <p className="text-caption text-muted-foreground">
-          {`Quick wins are ${zoneRule("quickWins", thresholds).toLowerCase()}.`}
+          <UiText
+            message="Quick wins are {0}."
+            values={[zoneRule("quickWins", thresholds).toLowerCase()]}
+          />
         </p>
       </PopoverContent>
     </Popover>

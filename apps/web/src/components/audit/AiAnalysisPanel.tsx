@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText, useUiLanguage } from "@/components/language/UiLanguage";
 import { type RefObject, useEffect, useRef, useSyncExternalStore } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Loader2, Sparkles } from "lucide-react";
@@ -75,6 +76,7 @@ function useFocusWhenQueued(
 }
 
 function useRunTransitions(appId: string, audit: AppAuditResult): void {
+  const { text: uiLabel } = useUiLanguage();
   const queryClient = useQueryClient();
   const previous = useRef(audit.ai.run?.state ?? null);
   const overall = useRef(audit.overall);
@@ -89,14 +91,14 @@ function useRunTransitions(appId: string, audit: AppAuditResult): void {
       return;
     }
     if (state === "completed") {
-      toast.success("Creative analysis finished", {
+      toast.success(uiLabel("Creative analysis finished"), {
         description: `Score ${overall.current ?? "—"} to ${audit.overall ?? "—"}`,
       });
       void invalidateAudit(queryClient, appId);
       invalidateAiUsage(queryClient);
     }
     if (state === "failed") {
-      toast.error("Creative analysis failed", {
+      toast.error(uiLabel("Creative analysis failed"), {
         description: audit.ai.run?.error ?? undefined,
       });
       invalidateAiUsage(queryClient);
@@ -164,23 +166,37 @@ function AnalysisIntro({
         tabIndex={-1}
         className="flex items-center gap-2 text-body font-medium"
       >
-        AI creative analysis
+        <UiText message="AI creative analysis" />
         {state === "current" ? (
-          <Badge variant="success">Up to date</Badge>
+          <Badge variant="success">
+            <UiText message="Up to date" />
+          </Badge>
         ) : null}
-        {state === "stale" ? <Badge variant="warning">Outdated</Badge> : null}
+        {state === "stale" ? (
+          <Badge variant="warning">
+            <UiText message="Outdated" />
+          </Badge>
+        ) : null}
       </h2>
       <p className="text-sm text-muted-foreground">
-        {state === "current" && audit.creative
-          ? `Analyzed ${formatDateTime(audit.creative.analyzedAt)} with ${audit.creative.model}`
-          : ANALYSIS_COPY[state]}
+        {state === "current" && audit.creative ? (
+          <UiText
+            message="Analyzed {0} with {1}"
+            values={[
+              formatDateTime(audit.creative.analyzedAt),
+              audit.creative.model,
+            ]}
+          />
+        ) : (
+          ANALYSIS_COPY[state]
+        )}
       </p>
       {state === "unconfigured" ? (
         <a
           href={AI_FEATURES_GUIDE}
           className="w-fit text-sm font-medium underline-offset-4 hover:underline"
         >
-          Read the AI features guide
+          <UiText message="Read the AI features guide" />
         </a>
       ) : null}
       {sendsImageLinks(state) ? (
@@ -202,6 +218,7 @@ export function AiAnalysisPanel({
   appId: string;
   audit: AppAuditResult;
 }) {
+  const { text: uiLabel } = useUiLanguage();
   const queryClient = useQueryClient();
   const spent = useAiAllowanceSpent();
   const failAi = useAiFailureToast();
@@ -210,7 +227,7 @@ export function AiAnalysisPanel({
     mutationFn: () => requestAiAuditRun(appId),
     onSuccess: async (result) => {
       if (result.reused) {
-        toast.info("Already up to date", {
+        toast.info(uiLabel("Already up to date"), {
           description: "Your icon and screenshots have not changed.",
         });
         return;

@@ -1,3 +1,4 @@
+import { UiText } from "@/components/language/UiLanguage";
 import type { ReactNode } from "react";
 import { Star } from "lucide-react";
 import type { SerpEntryItem } from "@asobeast/shared";
@@ -49,12 +50,14 @@ function RoleBadge({ role }: { role: SerpRole }) {
   if (role === "you") {
     return (
       <Badge variant="outline" className="border-info text-info">
-        You
+        <UiText message="You" />
       </Badge>
     );
   }
   return role === "competitor" ? (
-    <Badge variant="secondary">Competitor</Badge>
+    <Badge variant="secondary">
+      <UiText message="Competitor" />
+    </Badge>
   ) : null;
 }
 

@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText, useUiLanguage } from "@/components/language/UiLanguage";
 import { useRef, useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Trash2 } from "lucide-react";
@@ -49,6 +50,7 @@ function CompetitorCard({
   id: string;
   competitor: CompetitorItem;
 }) {
+  const { text: uiLabel } = useUiLanguage();
   const queryClient = useQueryClient();
   const [confirmOpen, setConfirmOpen] = useState(false);
   const card = useRef<HTMLDivElement>(null);
@@ -62,10 +64,10 @@ function CompetitorCard({
       invalidateCompetitorMutation(queryClient, id);
       handOff(removalSuccessor(card.current));
       setConfirmOpen(false);
-      toast.success(`Removed ${name}`);
+      toast.success(uiLabel("Removed {0}", [name]));
     },
     onError: () => {
-      toast.error(`Could not remove ${name}`);
+      toast.error(uiLabel("Could not remove {0}", [name]));
     },
   });
   const removeOnce = useSingleFlight(mutation);
@@ -96,7 +98,11 @@ function CompetitorCard({
               </span>
             ) : null}
             {snapshot?.price !== null && snapshot !== null ? (
-              <span>{formatPrice(snapshot.price, snapshot.currency)}</span>
+              <span>
+                <UiText
+                  message={formatPrice(snapshot.price, snapshot.currency)}
+                />
+              </span>
             ) : null}
             {snapshot?.version ? <span>v{snapshot.version}</span> : null}
           </div>
@@ -109,22 +115,26 @@ function CompetitorCard({
             <Button
               variant="ghost"
               size="icon-sm"
-              aria-label={`Remove ${name}`}
+              aria-label={uiLabel("Remove {0}", [name])}
             >
               <Trash2 />
             </Button>
           </AlertDialogTrigger>
           <AlertDialogContent onCloseAutoFocus={onCloseAutoFocus}>
             <AlertDialogHeader>
-              <AlertDialogTitle>Remove {name}?</AlertDialogTitle>
+              <AlertDialogTitle>
+                <UiText message="Remove" trailing />
+                {name}?
+              </AlertDialogTitle>
               <AlertDialogDescription>
-                This removes {name} from the comparison. Its keyword positions
-                are recaptured only if you add it back.
+                <UiText message="This removes" trailing />
+                {name}
+                <UiText message="from the comparison. Its keyword positions are recaptured only if you add it back." />
               </AlertDialogDescription>
             </AlertDialogHeader>
             <ConfirmActionFooter
               pending={mutation.isPending}
-              label="Remove"
+              label={uiLabel("Remove")}
               pendingLabel="Removing…"
               onConfirm={removeOnce}
             />
@@ -147,7 +157,10 @@ export function CompetitorList({
     <div className="flex flex-col gap-3">
       <div className="flex items-center justify-between gap-2">
         <p className="text-body text-muted-foreground">
-          {`${count} tracked ${count === 1 ? "competitor" : "competitors"}`}
+          <UiText
+            message="{0} tracked {1}"
+            values={[count, count === 1 ? "competitor" : "competitors"]}
+          />
         </p>
         <ExportCsvButton
           subject="competitors"

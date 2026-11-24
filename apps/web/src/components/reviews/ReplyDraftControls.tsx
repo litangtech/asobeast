@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText, useUiLanguage } from "@/components/language/UiLanguage";
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Loader2, Sparkles } from "lucide-react";
@@ -45,12 +46,18 @@ function DraftNotice({
     <div aria-live="polite" className="flex flex-col gap-1">
       {result ? (
         <p className="text-caption text-muted-foreground">
-          {`Drafted in ${replyLanguageName(result.language)}`}
+          <UiText
+            message="Drafted in {0}"
+            values={[replyLanguageName(result.language)]}
+          />
         </p>
       ) : null}
       {result?.truncated ? (
         <p className="text-caption text-warning">
-          {`Shortened to fit ${storeLabel(store)}'s ${REVIEW_REPLY_LIMITS[store]} characters; read it before you copy.`}
+          <UiText
+            message="Shortened to fit {0}'s {1} characters; read it before you copy."
+            values={[storeLabel(store), REVIEW_REPLY_LIMITS[store]]}
+          />
         </p>
       ) : null}
     </div>
@@ -70,6 +77,7 @@ export function ReplyDraftControls({
   draft: ReplyDraft;
   text: string;
 }) {
+  const { text: uiLabel } = useUiLanguage();
   const { data: status } = useQuery(aiStatusOptions);
   const spent = useAiAllowanceSpent();
   const [tone, setTone] = useState<ReviewReplyTone>(
@@ -90,7 +98,10 @@ export function ReplyDraftControls({
             if (picked) setTone(picked);
           }}
         >
-          <SelectTrigger className="w-[130px] bg-card" aria-label="Tone">
+          <SelectTrigger
+            className="w-[130px] bg-card"
+            aria-label={uiLabel("Tone")}
+          >
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
@@ -102,8 +113,10 @@ export function ReplyDraftControls({
           </SelectContent>
         </Select>
         <Input
-          aria-label="Instructions (optional)"
-          placeholder="Instructions (optional), e.g. mention the new widgets"
+          aria-label={uiLabel("Instructions (optional)")}
+          placeholder={uiLabel(
+            "Instructions (optional), e.g. mention the new widgets",
+          )}
           value={instructions}
           maxLength={REVIEW_REPLY_INSTRUCTIONS_MAX}
           onChange={(event) => setInstructions(event.target.value)}
@@ -119,7 +132,11 @@ export function ReplyDraftControls({
           disabled={drafting || spent || busy}
         >
           {drafting ? <Loader2 className="animate-spin" /> : <Sparkles />}
-          {review.reply?.text ? "Draft again" : "Draft with AI"}
+          {review.reply?.text ? (
+            <UiText message="Draft again" />
+          ) : (
+            <UiText message="Draft with AI" />
+          )}
         </Button>
       </div>
       <AiCallsLeft />

@@ -1,5 +1,7 @@
 "use client";
 
+import { UiDate } from "@/components/language/UiFormat";
+import { UiText, useUiLanguage } from "@/components/language/UiLanguage";
 import { createContext, useContext } from "react";
 import { ChartLine, LoaderCircle, StickyNote } from "lucide-react";
 import type { PlayAcquisitions, TrackedKeywordItem } from "@asobeast/shared";
@@ -16,7 +18,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { formatDate, formatMonth, formatNumber, pluralize } from "@/lib/format";
+import { formatMonth, formatNumber, pluralize } from "@/lib/format";
 import { isChecking, lostPosition, staleCheckDay } from "@/lib/keyword-checks";
 import { tagsLabel, visibleTags } from "@/lib/keyword-tags";
 import { PositionReadout } from "./PositionReadout";
@@ -62,6 +64,7 @@ export function PositionCell({
   today: string;
   history: PositionHistoryContext;
 }) {
+  const { text: uiLabel } = useUiLanguage();
   const label = formatCheckedPosition(
     keyword.latestPosition,
     keyword.latestDepth,
@@ -71,16 +74,15 @@ export function PositionCell({
       <Tooltip>
         <TooltipTrigger asChild>
           <span
-            aria-label="Position: checking"
+            aria-label={uiLabel("Position: checking")}
             className="inline-flex items-center gap-1.5 text-muted-foreground"
           >
             <LoaderCircle aria-hidden className="size-3.5 animate-spin" />
-            Checking…
+            <UiText message="Checking…" />
           </span>
         </TooltipTrigger>
         <TooltipContent>
-          Queued for its first check. Scores can land first; the table updates
-          on its own.
+          <UiText message="Queued for its first check. Scores can land first; the table updates on its own." />
         </TooltipContent>
       </Tooltip>
     );
@@ -90,13 +92,15 @@ export function PositionCell({
       <Tooltip>
         <TooltipTrigger asChild>
           <span
-            aria-label="Position: not checked yet"
+            aria-label={uiLabel("Position: not checked yet")}
             className="text-muted-foreground"
           >
             —
           </span>
         </TooltipTrigger>
-        <TooltipContent>This keyword has not been checked yet</TooltipContent>
+        <TooltipContent>
+          <UiText message="This keyword has not been checked yet" />
+        </TooltipContent>
       </Tooltip>
     );
   }
@@ -120,13 +124,16 @@ export function PositionCell({
 }
 
 export function VolatilityCell({ value }: { value: number | null }) {
+  const { text: uiLabel } = useUiLanguage();
   if (value === null) {
     return (
       <Tooltip>
         <TooltipTrigger asChild>
           <span className="text-muted-foreground">—</span>
         </TooltipTrigger>
-        <TooltipContent>Not enough snapshots yet</TooltipContent>
+        <TooltipContent>
+          <UiText message="Not enough snapshots yet" />
+        </TooltipContent>
       </Tooltip>
     );
   }
@@ -137,10 +144,13 @@ export function VolatilityCell({ value }: { value: number | null }) {
         "inline-flex items-center gap-1.5 text-sm font-medium",
         band.text,
       )}
-      aria-label={`${band.label} volatility, ${value} out of 100`}
+      aria-label={uiLabel("{0} volatility, {1} out of 100", [
+        band.label,
+        value,
+      ])}
     >
       <span className={cn("size-2 rounded-full", band.dot)} aria-hidden />
-      {band.label}
+      <UiText message={band.label} />
       <span className="numeric font-mono text-xs text-muted-foreground">
         {value}
       </span>
@@ -153,18 +163,21 @@ export function PlayAcquisitionsCell({
 }: {
   value: PlayAcquisitions | null;
 }) {
+  const { text: uiLabel } = useUiLanguage();
   if (!value) {
     return (
       <Tooltip>
         <TooltipTrigger asChild>
           <span
             className="text-muted-foreground"
-            aria-label="No Play Console data"
+            aria-label={uiLabel("No Play Console data")}
           >
             —
           </span>
         </TooltipTrigger>
-        <TooltipContent>No Play Console data</TooltipContent>
+        <TooltipContent>
+          <UiText message="No Play Console data" />
+        </TooltipContent>
       </Tooltip>
     );
   }
@@ -176,14 +189,20 @@ export function PlayAcquisitionsCell({
       <TooltipTrigger asChild>
         <span
           className="numeric font-mono text-sm whitespace-nowrap"
-          aria-label={`${acquisitions} acquisitions from ${visitors} store listing visitors in ${month}`}
+          aria-label={uiLabel(
+            "{0} acquisitions from {1} store listing visitors in {2}",
+            [acquisitions, visitors, month],
+          )}
         >
           <span>{acquisitions}</span>
           <span className="text-muted-foreground">{` · ${visitors}`}</span>
         </span>
       </TooltipTrigger>
       <TooltipContent>
-        {`Store listing acquisitions and visitors from this search term in ${month}`}
+        <UiText
+          message="Store listing acquisitions and visitors from this search term in {0}"
+          values={[month]}
+        />
       </TooltipContent>
     </Tooltip>
   );
@@ -215,12 +234,13 @@ export function TagBadges({ tags }: { tags: readonly string[] }) {
 }
 
 export function NoteButton({ note }: { note: string }) {
+  const { text: uiLabel } = useUiLanguage();
   return (
     <Popover>
       <PopoverTrigger asChild>
         <button
           type="button"
-          aria-label={`Note: ${note}`}
+          aria-label={uiLabel("Note: {0}", [note])}
           className="flex size-6 shrink-0 items-center justify-center rounded-sm text-muted-foreground outline-none hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background data-[state=open]:text-foreground"
         >
           <StickyNote className="size-3.5" aria-hidden />
@@ -228,7 +248,7 @@ export function NoteButton({ note }: { note: string }) {
       </PopoverTrigger>
       <PopoverContent
         align="start"
-        aria-label="Keyword note"
+        aria-label={uiLabel("Keyword note")}
         className="w-auto max-w-[min(24rem,calc(100vw-2rem))] font-normal break-words whitespace-pre-line"
       >
         {note}
@@ -253,7 +273,11 @@ export function KeywordCell({ keyword }: { keyword: TrackedKeywordItem }) {
           segments={marks ? keyword.matchedIn : null}
           fallback={keyword.text}
         />
-        {onChart ? <span className="sr-only">, on the chart</span> : null}
+        {onChart ? (
+          <span className="sr-only">
+            <UiText message=", on the chart" />
+          </span>
+        ) : null}
       </span>
       {onChart ? (
         <ChartLine
@@ -268,7 +292,7 @@ export function KeywordCell({ keyword }: { keyword: TrackedKeywordItem }) {
       {keyword.note ? <NoteButton note={keyword.note} /> : null}
       {!keyword.active ? (
         <Badge variant="secondary" className="shrink-0">
-          Paused
+          <UiText message="Paused" />
         </Badge>
       ) : null}
     </span>
@@ -276,34 +300,39 @@ export function KeywordCell({ keyword }: { keyword: TrackedKeywordItem }) {
 }
 
 export function AddedCell({ trackedAt }: { trackedAt: string | null }) {
+  const { text: uiLabel } = useUiLanguage();
   if (trackedAt === null) {
     return (
-      <span className="text-muted-foreground" aria-label="Added: unknown">
+      <span
+        className="text-muted-foreground"
+        aria-label={uiLabel("Added: unknown")}
+      >
         —
       </span>
     );
   }
   return (
     <time dateTime={trackedAt} className="numeric text-sm whitespace-nowrap">
-      {formatDate(trackedAt)}
+      <UiDate value={trackedAt} />
     </time>
   );
 }
 
 export function CompetitorsInTop10Cell({ value }: { value: number | null }) {
+  const { text: uiLabel } = useUiLanguage();
   if (value === null) {
     return (
       <Tooltip>
         <TooltipTrigger asChild>
           <span
             className="text-muted-foreground"
-            aria-label="Competitors in top 10: not available"
+            aria-label={uiLabel("Competitors in top 10: not available")}
           >
             —
           </span>
         </TooltipTrigger>
         <TooltipContent className="max-w-xs">
-          No competitors tracked, or no top 10 snapshot from today or yesterday
+          <UiText message="No competitors tracked, or no top 10 snapshot from today or yesterday" />
         </TooltipContent>
       </Tooltip>
     );
@@ -311,7 +340,9 @@ export function CompetitorsInTop10Cell({ value }: { value: number | null }) {
   return (
     <span
       className="numeric font-mono text-sm"
-      aria-label={`${pluralize(value, "competitor")} in the top 10`}
+      aria-label={uiLabel("{0} in the top 10", [
+        pluralize(value, "competitor"),
+      ])}
     >
       {value}
     </span>

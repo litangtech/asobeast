@@ -1,4 +1,5 @@
-import { gradeLabel, type Grade } from "@/lib/grade";
+import { UiGradedNumber } from "@/components/language/UiGradedNumber";
+import { type Grade } from "@/lib/grade";
 import { cn } from "@/lib/utils";
 
 const GRADE_TEXT: Record<Grade, string> = {
@@ -41,17 +42,12 @@ export function GradedNumber({
   label: string;
   className?: string;
 }) {
-  const spoken = grade
-    ? `${label} ${value}, ${gradeLabel(grade)}`
-    : `${label} ${value}`;
   return (
-    <span
-      data-grade={grade ?? undefined}
-      title={spoken}
+    <UiGradedNumber
+      value={value}
+      grade={grade}
+      label={label}
       className={cn("numeric font-mono", grade && GRADE_TEXT[grade], className)}
-    >
-      <span aria-hidden>{value}</span>
-      <span className="sr-only">{spoken}</span>
-    </span>
+    />
   );
 }

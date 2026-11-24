@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText } from "@/components/language/UiLanguage";
 import Link from "next/link";
 import type { ChartEntryItem } from "@asobeast/shared";
 import { Badge } from "@/components/ui/badge";
@@ -31,7 +32,9 @@ export function RowActions({
           className="max-w-40 min-w-0 shrink"
         >
           <Link ref={claimFocus} href={link.href} title={link.label}>
-            <span className="truncate">{link.label}</span>
+            <span className="truncate">
+              <UiText message={link.label} />
+            </span>
           </Link>
         </Badge>
       ) : (

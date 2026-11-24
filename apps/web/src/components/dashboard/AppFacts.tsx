@@ -32,7 +32,7 @@ function AuditFact({ audit }: { audit: PortfolioAppInsight["audit"] }) {
   return (
     <span className="inline-flex items-center gap-1">
       <span aria-hidden>
-        <UiText message={"Audit"} />
+        <UiText message="Audit" />
       </span>
       <GradedNumber
         value={String(audit.current)}
@@ -44,7 +44,12 @@ function AuditFact({ audit }: { audit: PortfolioAppInsight["audit"] }) {
 }
 
 function ForApp({ app }: { app: PortfolioApp }) {
-  return <span className="sr-only"> for {app.name ?? "this app"}</span>;
+  return (
+    <span className="sr-only">
+      <UiText message="for" trailing />
+      {app.name ?? <UiText message="this app" />}
+    </span>
+  );
 }
 
 function ActionsFact({
@@ -62,7 +67,8 @@ function ActionsFact({
       {actions.critical > 0 ? (
         <span className="text-priority-critical">
           {" "}
-          · {actions.critical} critical
+          · {actions.critical}
+          <UiText message="critical" />
         </span>
       ) : null}
     </Link>

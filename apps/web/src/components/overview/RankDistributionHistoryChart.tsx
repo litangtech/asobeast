@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText, useUiLanguage } from "@/components/language/UiLanguage";
 import { Suspense, useDeferredValue } from "react";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { useQueryState } from "nuqs";
@@ -58,6 +59,7 @@ function RankDistributionHistoryBody({
   id: string;
   range: VisibilityRange;
 }) {
+  const { text: uiLabel } = useUiLanguage();
   const { country } = useKeywordScope(id);
   const { data } = useSuspenseQuery(
     rankDistributionHistoryOptions(id, presetToRange(range), country),
@@ -68,7 +70,7 @@ function RankDistributionHistoryBody({
     return (
       <ChartNotice
         height={CHART_HEIGHT.compact}
-        title="No rank history yet"
+        title={uiLabel("No rank history yet")}
         body="Bands appear once the daily pipeline has checked your keywords."
       />
     );
@@ -78,7 +80,7 @@ function RankDistributionHistoryBody({
     return (
       <ChartStat
         height={CHART_HEIGHT.compact}
-        label="Keywords in the top 10"
+        label={uiLabel("Keywords in the top 10")}
         value={String(latest.rank1 + latest.rank2to3 + latest.rank4to10)}
         note="A trend needs a few more daily checks."
       />
@@ -90,7 +92,7 @@ function RankDistributionHistoryBody({
       config={chartConfig}
       className={`${CHART_HEIGHT.compact} w-full`}
       role="region"
-      aria-label="Tracked keywords by rank band"
+      aria-label={uiLabel("Tracked keywords by rank band")}
     >
       <AreaChart accessibilityLayer data={data.points} margin={CHART_MARGIN}>
         <CartesianGrid {...GRID_PROPS} />
@@ -123,8 +125,12 @@ export function RankDistributionHistoryChart({ id }: { id: string }) {
   return (
     <Card>
       <CardHeader>
-        <CardDescription>Rank distribution history</CardDescription>
-        <CardTitle>Tracked keywords by rank band</CardTitle>
+        <CardDescription>
+          <UiText message="Rank distribution history" />
+        </CardDescription>
+        <CardTitle>
+          <UiText message="Tracked keywords by rank band" />
+        </CardTitle>
         <CardAction>
           <RangePicker
             presets={VISIBILITY_RANGES}

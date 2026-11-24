@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText } from "@/components/language/UiLanguage";
 import { useState } from "react";
 import type { FormEvent } from "react";
 import { Loader2, Pencil } from "lucide-react";
@@ -100,15 +101,17 @@ export function EditEventsDialog({
       <DialogTrigger asChild>
         <Button variant="ghost" size="xs">
           <Pencil />
-          Edit rules
+          <UiText message="Edit rules" />
         </Button>
       </DialogTrigger>
       <DialogContent>
         <form onSubmit={submit} className="flex min-h-0 flex-col gap-4">
           <DialogHeader>
-            <DialogTitle>Edit rules</DialogTitle>
+            <DialogTitle>
+              <UiText message="Edit rules" />
+            </DialogTitle>
             <DialogDescription>
-              Choose the rules that deliver alerts to{" "}
+              <UiText message="Choose the rules that deliver alerts to" />{" "}
               <span className="break-all text-foreground">{label}</span>.
             </DialogDescription>
           </DialogHeader>
@@ -126,7 +129,7 @@ export function EditEventsDialog({
             <ConfirmDropsField checked={confirming} onChange={setConfirming} />
             {selected.length === 0 ? (
               <p className="text-sm text-muted-foreground">
-                Switch on at least one rule to save.
+                <UiText message="Switch on at least one rule to save." />
               </p>
             ) : null}
           </DialogBody>
@@ -136,7 +139,7 @@ export function EditEventsDialog({
               aria-disabled={pending || blocked || undefined}
             >
               {pending ? <Loader2 className="animate-spin" /> : null}
-              Save rules
+              <UiText message="Save rules" />
             </Button>
           </DialogFooter>
         </form>

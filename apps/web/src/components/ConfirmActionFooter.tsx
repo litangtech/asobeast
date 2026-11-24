@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText } from "@/components/language/UiLanguage";
 import {
   AlertDialogAction,
   AlertDialogCancel,
@@ -33,7 +34,7 @@ export function ConfirmActionFooter({
           if (pending) event.preventDefault();
         }}
       >
-        Cancel
+        <UiText message="Cancel" />
       </AlertDialogCancel>
       <AlertDialogAction
         variant={variant}

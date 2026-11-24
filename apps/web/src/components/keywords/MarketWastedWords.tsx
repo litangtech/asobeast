@@ -1,3 +1,4 @@
+import { UiText } from "@/components/language/UiLanguage";
 import type { ReactNode } from "react";
 import { Copy, Unlink } from "lucide-react";
 import type { SplitPhrase, WastedWord } from "@asobeast/shared";
@@ -25,7 +26,9 @@ function WasteNote({
   return (
     <Alert role="note" variant="warning">
       {icon}
-      <AlertTitle>{title}</AlertTitle>
+      <AlertTitle>
+        <UiText message={title} />
+      </AlertTitle>
       <AlertDescription>
         <p>{intro}</p>
         <ul className="flex flex-col gap-1">

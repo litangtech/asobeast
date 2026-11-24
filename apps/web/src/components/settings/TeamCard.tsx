@@ -1,6 +1,7 @@
 "use client";
 
-import { UiText } from "@/components/language/UiLanguage";
+import { UiDate } from "@/components/language/UiFormat";
+import { UiText, useUiLanguage } from "@/components/language/UiLanguage";
 import { useState } from "react";
 import type { FormEvent } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -39,7 +40,6 @@ import {
 } from "@/components/ui/table";
 import { useAuth } from "@/components/auth/use-auth";
 import { ApiError, inviteMember, removeMember, revokeInvite } from "@/lib/api";
-import { formatDate } from "@/lib/format";
 import {
   invalidateWorkspaceTeamMutation,
   workspaceTeamOptions,
@@ -91,14 +91,16 @@ function InviteDialog() {
       <DialogTrigger asChild>
         <Button size="sm" variant="outline">
           <UserPlus />
-          Invite member
+          <UiText message="Invite member" />
         </Button>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Invite a member</DialogTitle>
+          <DialogTitle>
+            <UiText message="Invite a member" />
+          </DialogTitle>
           <DialogDescription>
-            They join this workspace and see everything in it except billing.
+            <UiText message="They join this workspace and see everything in it except billing." />
           </DialogDescription>
         </DialogHeader>
         {outcome ? (
@@ -115,7 +117,7 @@ function InviteDialog() {
             <DialogBody>
               <div className="flex flex-col gap-2">
                 <Label htmlFor="invite-email">
-                  <UiText message={"Email"} />
+                  <UiText message="Email" />
                 </Label>
                 <Input
                   id="invite-email"
@@ -138,7 +140,7 @@ function InviteDialog() {
                 {mutation.isPending ? (
                   <Loader2 className="animate-spin" />
                 ) : null}
-                Send invitation
+                <UiText message="Send invitation" />
               </Button>
             </DialogFooter>
           </form>
@@ -149,6 +151,7 @@ function InviteDialog() {
 }
 
 export function TeamCard() {
+  const { text: uiLabel } = useUiLanguage();
   const queryClient = useQueryClient();
   const { user } = useAuth();
   const { data: team } = useQuery(workspaceTeamOptions);
@@ -157,7 +160,7 @@ export function TeamCard() {
   const revoke = useMutation({
     mutationFn: revokeInvite,
     onSuccess: () => {
-      toast.success("Invitation revoked");
+      toast.success(uiLabel("Invitation revoked"));
       invalidateWorkspaceTeamMutation(queryClient);
     },
     onError: (err) =>
@@ -168,7 +171,7 @@ export function TeamCard() {
   const remove = useMutation({
     mutationFn: removeMember,
     onSuccess: () => {
-      toast.success("Member removed");
+      toast.success(uiLabel("Member removed"));
       invalidateWorkspaceTeamMutation(queryClient);
     },
     onError: (err) =>
@@ -183,28 +186,34 @@ export function TeamCard() {
       <CardHeader className="flex-row items-start justify-between gap-4">
         <div className="flex flex-col gap-1">
           <CardTitle>
-            <UiText message={"Team"} />
+            <UiText message="Team" />
           </CardTitle>
           <CardDescription>
-            Everyone who can sign in to this workspace.
+            <UiText message="Everyone who can sign in to this workspace." />
           </CardDescription>
         </div>
         {isOwner ? <InviteDialog /> : null}
       </CardHeader>
       <CardContent className="flex flex-col gap-4">
         <Table>
-          <TableCaption>Members of this workspace</TableCaption>
+          <TableCaption>
+            <UiText message="Members of this workspace" />
+          </TableCaption>
           <TableHeader>
             <TableRow>
               <TableHead>
-                <UiText message={"Email"} />
+                <UiText message="Email" />
               </TableHead>
-              <TableHead>Role</TableHead>
-              <TableHead className="hidden sm:table-cell">Joined</TableHead>
+              <TableHead>
+                <UiText message="Role" />
+              </TableHead>
+              <TableHead className="hidden sm:table-cell">
+                <UiText message="Joined" />
+              </TableHead>
               {isOwner ? (
                 <TableHead className="w-10">
                   <span className="sr-only">
-                    <UiText message={"Actions"} />
+                    <UiText message="Actions" />
                   </span>
                 </TableHead>
               ) : null}
@@ -218,7 +227,7 @@ export function TeamCard() {
                 </TableCell>
                 <TableCell className="capitalize">{member.role}</TableCell>
                 <TableCell className="hidden sm:table-cell">
-                  {formatDate(member.createdAt)}
+                  <UiDate value={member.createdAt} />
                 </TableCell>
                 {isOwner ? (
                   <TableCell>
@@ -226,7 +235,7 @@ export function TeamCard() {
                       <Button
                         size="icon"
                         variant="ghost"
-                        aria-label={`Remove ${member.email}`}
+                        aria-label={uiLabel("Remove {0}", [member.email])}
                         disabled={remove.isPending}
                         onClick={() => removeOnce(member.id)}
                       >
@@ -242,17 +251,21 @@ export function TeamCard() {
 
         {team.invites.length > 0 ? (
           <Table>
-            <TableCaption>Invitations waiting to be accepted</TableCaption>
+            <TableCaption>
+              <UiText message="Invitations waiting to be accepted" />
+            </TableCaption>
             <TableHeader>
               <TableRow>
                 <TableHead>
-                  <UiText message={"Email"} />
+                  <UiText message="Email" />
                 </TableHead>
-                <TableHead>Expires</TableHead>
+                <TableHead>
+                  <UiText message="Expires" />
+                </TableHead>
                 {isOwner ? (
                   <TableHead className="w-10">
                     <span className="sr-only">
-                      <UiText message={"Actions"} />
+                      <UiText message="Actions" />
                     </span>
                   </TableHead>
                 ) : null}
@@ -266,7 +279,7 @@ export function TeamCard() {
                   </TableCell>
                   <TableCell>
                     <Badge variant="secondary">
-                      {formatDate(invite.expiresAt)}
+                      <UiDate value={invite.expiresAt} />
                     </Badge>
                   </TableCell>
                   {isOwner ? (
@@ -274,7 +287,9 @@ export function TeamCard() {
                       <Button
                         size="icon"
                         variant="ghost"
-                        aria-label={`Revoke the invitation for ${invite.email}`}
+                        aria-label={uiLabel("Revoke the invitation for {0}", [
+                          invite.email,
+                        ])}
                         disabled={revoke.isPending}
                         onClick={() => revokeOnce(invite.id)}
                       >

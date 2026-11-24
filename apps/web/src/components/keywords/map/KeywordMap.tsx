@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText, useUiLanguage } from "@/components/language/UiLanguage";
 import { useCallback, useId, useMemo, useRef } from "react";
 import { useQueryState } from "nuqs";
 import type { TrackedKeywordItem } from "@asobeast/shared";
@@ -40,6 +41,7 @@ function unplottedCaption(count: number): string {
 }
 
 function ShapeKey({ points }: { points: readonly MapPoint[] }) {
+  const { text: uiLabel } = useUiLanguage();
   const items = [
     { key: "ranked", ranked: true, floor: false, label: "Ranking" },
     { key: "unranked", ranked: false, floor: false, label: "Not ranking" },
@@ -56,7 +58,7 @@ function ShapeKey({ points }: { points: readonly MapPoint[] }) {
   ];
   return (
     <ul
-      aria-label="Dot shapes"
+      aria-label={uiLabel("Dot shapes")}
       className="flex flex-wrap gap-x-4 gap-y-1 text-caption text-muted-foreground"
     >
       {items.map((item) => (
@@ -64,7 +66,9 @@ function ShapeKey({ points }: { points: readonly MapPoint[] }) {
           <svg aria-hidden width="14" height="14" viewBox="-7 -7 14 14">
             <DotGlyph ranked={item.ranked} floor={item.floor} />
           </svg>
-          <span>{item.label}</span>
+          <span>
+            <UiText message={item.label} />
+          </span>
         </li>
       ))}
     </ul>
@@ -94,9 +98,10 @@ function MapNotice({
   narrowed: boolean;
   onClearFilters: () => void;
 }) {
+  const { text: uiLabel } = useUiLanguage();
   const clearButton = (
     <Button variant="outline" size="sm" onClick={onClearFilters}>
-      Clear filters
+      <UiText message="Clear filters" />
     </Button>
   );
   const clear = narrowed ? clearButton : undefined;
@@ -104,7 +109,7 @@ function MapNotice({
     return (
       <ChartNotice
         height={CHART_HEIGHT.hero}
-        title="No keywords match these filters"
+        title={uiLabel("No keywords match these filters")}
         action={clearButton}
       />
     );
@@ -113,14 +118,14 @@ function MapNotice({
     return narrowed ? (
       <ChartNotice
         height={CHART_HEIGHT.hero}
-        title="No scored keywords match these filters"
+        title={uiLabel("No scored keywords match these filters")}
         body={unscoredBody(keywords.length)}
         action={clear}
       />
     ) : (
       <ChartNotice
         height={CHART_HEIGHT.hero}
-        title="Nothing to map yet"
+        title={uiLabel("Nothing to map yet")}
         body="No tracked keyword has both a popularity and a difficulty yet. Scores arrive with the weekly scoring run."
       />
     );
@@ -128,7 +133,7 @@ function MapNotice({
   return (
     <ChartNotice
       height={CHART_HEIGHT.hero}
-      title="Too few scored keywords"
+      title={uiLabel("Too few scored keywords")}
       body={`The map needs at least ${MIN_TREND_POINTS} keywords with both scores. ${tooFewDetail(narrowed, points.length)}`}
       action={clear}
     />
@@ -176,8 +181,12 @@ export function KeywordMap({
   return (
     <Card className="print:break-inside-avoid">
       <CardHeader>
-        <CardDescription>Opportunity map</CardDescription>
-        <CardTitle>Popularity by difficulty</CardTitle>
+        <CardDescription>
+          <UiText message="Opportunity map" />
+        </CardDescription>
+        <CardTitle>
+          <UiText message="Popularity by difficulty" />
+        </CardTitle>
       </CardHeader>
       <CardContent className="flex flex-col gap-3">
         {ready ? (

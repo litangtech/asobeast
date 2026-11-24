@@ -1,6 +1,6 @@
 "use client";
 
-import { UiText } from "@/components/language/UiLanguage";
+import { UiText, useUiLanguage } from "@/components/language/UiLanguage";
 import { useId, type ReactNode, type Ref } from "react";
 import { Info } from "lucide-react";
 import type { Store, StoreSearchResult } from "@asobeast/shared";
@@ -80,6 +80,7 @@ function StoreSearchResults({
   search: StoreSearch;
   onPick: (result: StoreSearchResult) => void;
 }) {
+  const { text: uiLabel } = useUiLanguage();
   if (search.error) {
     return (
       <div className="flex items-center justify-between gap-3">
@@ -93,7 +94,7 @@ function StoreSearchResults({
             size="sm"
             onClick={search.retry}
           >
-            <UiText message={"Retry"} />
+            <UiText message="Retry" />
           </Button>
         ) : null}
       </div>
@@ -111,7 +112,10 @@ function StoreSearchResults({
   if (search.settled && search.results.length === 0) {
     return (
       <p role="status" className="text-body text-muted-foreground">
-        {`No listing named “${search.q}” in ${formatCountry(country)}.`}
+        <UiText
+          message="No listing named “{0}” in {1}."
+          values={[search.q, formatCountry(country)]}
+        />
       </p>
     );
   }
@@ -119,7 +123,10 @@ function StoreSearchResults({
     <ul
       id={listId}
       role="list"
-      aria-label={`Results from ${storeLabel(store)} in ${formatCountry(country)}`}
+      aria-label={uiLabel("Results from {0} in {1}", [
+        storeLabel(store),
+        formatCountry(country),
+      ])}
       aria-busy={search.pending}
       className="flex max-h-64 flex-col gap-1 overflow-y-auto"
     >

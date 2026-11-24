@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText } from "@/components/language/UiLanguage";
 import { useId, useState } from "react";
 import {
   countChars,
@@ -69,7 +70,9 @@ export function MetadataFieldCard({
           ))}
         </ul>
       ) : (
-        <p className="text-body text-success">No issues.</p>
+        <p className="text-body text-success">
+          <UiText message="No issues." />
+        </p>
       )}
     </div>
   );

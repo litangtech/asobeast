@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText } from "@/components/language/UiLanguage";
 import type { ComponentProps, ReactNode } from "react";
 import type { SortDirection } from "@tanstack/react-table";
 import { ArrowDown, ArrowUp, ArrowUpDown } from "lucide-react";
@@ -33,7 +34,7 @@ export function SortableHeader({
         className,
       )}
     >
-      {label}
+      {typeof label === "string" ? <UiText message={label} /> : label}
       <Icon className={cn("size-3.5", !sorted && "opacity-40")} aria-hidden />
     </button>
   );

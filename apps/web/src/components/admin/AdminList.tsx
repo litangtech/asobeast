@@ -1,5 +1,6 @@
 "use client";
 
+import { useUiLanguage } from "@/components/language/UiLanguage";
 import type { ReactNode } from "react";
 import type { RowData, Table as TableInstance } from "@tanstack/react-table";
 import type { Options } from "nuqs";
@@ -42,6 +43,7 @@ export function AdminList<TData extends RowData>({
   onClearFilters: () => void;
   filters?: ReactNode;
 }) {
+  const { text: uiLabel } = useUiLanguage();
   const shown = table.getRowModel().rows.length;
   const filtered = search !== "" || chips.length > 0;
   const hideable = table
@@ -52,7 +54,7 @@ export function AdminList<TData extends RowData>({
     <div className="flex min-w-0 flex-col gap-3">
       <div className="flex flex-wrap items-center gap-2">
         <SearchInput
-          label={`Search ${noun}s`}
+          label={uiLabel("Search {0}s", [noun])}
           value={search}
           onSearch={onSearch}
         />
@@ -68,11 +70,11 @@ export function AdminList<TData extends RowData>({
         <AdminTable table={table} caption={caption} />
       ) : filtered ? (
         <FilteredEmpty
-          title={`No ${noun}s match these filters`}
+          title={uiLabel("No {0}s match these filters", [noun])}
           onClear={onClearFilters}
         />
       ) : (
-        <EmptyState title={`No ${noun}s on this instance yet`} />
+        <EmptyState title={uiLabel("No {0}s on this instance yet", [noun])} />
       )}
     </div>
   );

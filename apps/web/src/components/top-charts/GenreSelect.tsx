@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText, useUiLanguage } from "@/components/language/UiLanguage";
 import {
   chartGenreName,
   chartGenresOf,
@@ -42,19 +43,24 @@ export function GenreSelect({
   value: string;
   onChange: (genre: string) => void;
 }) {
+  const { text: uiLabel } = useUiLanguage();
   return (
     <Select value={value} onValueChange={onChange}>
-      <SelectTrigger aria-label="Category" className="w-[220px]">
-        <SelectValue>{chartGenreName(store, value) ?? value}</SelectValue>
+      <SelectTrigger aria-label={uiLabel("Category")} className="w-[220px]">
+        <SelectValue>
+          {uiLabel(chartGenreName(store, value) ?? value)}
+        </SelectValue>
       </SelectTrigger>
       <SelectContent>
-        <SelectItem value={OVERALL_GENRE}>Overall</SelectItem>
+        <SelectItem value={OVERALL_GENRE}>
+          <UiText message="Overall" />
+        </SelectItem>
         {groupsOf(store).map(([group, genres]) => (
           <SelectGroup key={group}>
-            <SelectLabel>{GROUP_LABELS[group]}</SelectLabel>
+            <SelectLabel>{uiLabel(GROUP_LABELS[group])}</SelectLabel>
             {genres.map((genre) => (
               <SelectItem key={genre.id} value={genre.id}>
-                {genre.name}
+                {uiLabel(genre.name)}
               </SelectItem>
             ))}
           </SelectGroup>

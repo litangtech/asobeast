@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText } from "@/components/language/UiLanguage";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { AppIcon } from "@/components/AppIcon";
 import { useMarket } from "@/components/app-detail/use-market";
@@ -50,7 +51,7 @@ export function SnapshotFacts({ id }: { id: string }) {
         </div>
       ) : (
         <p className="text-body text-muted-foreground">
-          No store snapshot yet. Refresh to capture one.
+          <UiText message="No store snapshot yet. Refresh to capture one." />
         </p>
       )}
     </div>

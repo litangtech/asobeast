@@ -1,5 +1,6 @@
 "use client";
 
+import { useUiLanguage } from "@/components/language/UiLanguage";
 import { keywordLabel, type TrackedKeywordItem } from "@asobeast/shared";
 import { X } from "lucide-react";
 import type { RankingChartData } from "@/components/charts/pivot";
@@ -18,13 +19,14 @@ export function DynamicsChips({
   chart: RankingChartData;
   onRemove: (keywordId: string, trigger: HTMLElement) => void;
 }) {
+  const { text: uiLabel } = useUiLanguage();
   const labels = new Map(
     tracked.map((item) => [item.keywordId, keywordLabel(item)]),
   );
   return (
     <div
       role="group"
-      aria-label="Selected keywords"
+      aria-label={uiLabel("Selected keywords")}
       className="flex flex-wrap items-center gap-2"
     >
       {selected.map((keywordId) => (
@@ -32,7 +34,9 @@ export function DynamicsChips({
           key={keywordId}
           type="button"
           id={dynamicsChipId(keywordId)}
-          aria-label={`Remove ${labels.get(keywordId) ?? keywordId} from the chart`}
+          aria-label={uiLabel("Remove {0} from the chart", [
+            labels.get(keywordId) ?? keywordId,
+          ])}
           onClick={(event) => onRemove(keywordId, event.currentTarget)}
           className="inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-xs hover:bg-muted"
         >

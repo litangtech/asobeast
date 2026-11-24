@@ -1,6 +1,6 @@
 "use client";
 
-import { UiText } from "@/components/language/UiLanguage";
+import { UiText, useUiLanguage } from "@/components/language/UiLanguage";
 import { useState } from "react";
 import type { FormEvent } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -60,6 +60,7 @@ import {
 const DOCS_URL = "https://docs.asobeast.com/mcp/setup";
 
 function CopyBlock({ snippet }: { snippet: ConnectSnippet }) {
+  const { text: uiLabel } = useUiLanguage();
   const { label, location, value } = snippet;
   const [copied, setCopied] = useState(false);
 
@@ -68,21 +69,25 @@ function CopyBlock({ snippet }: { snippet: ConnectSnippet }) {
       if (!navigator.clipboard) throw new Error("clipboard unavailable");
       await navigator.clipboard.writeText(value);
       setCopied(true);
-      toast.success(`${label} copied`);
+      toast.success(uiLabel("{0} copied", [label]));
     } catch {
-      toast.error("Copy failed — select the text and copy it manually.");
+      toast.error(
+        uiLabel("Copy failed — select the text and copy it manually."),
+      );
     }
   }
 
   return (
     <div className="flex flex-col gap-2">
       <div className="flex items-center justify-between gap-2">
-        <Label className="text-xs font-medium">{label}</Label>
+        <Label className="text-xs font-medium">
+          <UiText message={label} />
+        </Label>
         <Button
           type="button"
           variant="outline"
           size="icon-sm"
-          aria-label={`Copy ${label}`}
+          aria-label={uiLabel("Copy {0}", [label])}
           onClick={() => void copy()}
         >
           {copied ? <Check /> : <Copy />}
@@ -114,7 +119,9 @@ function AgentSnippets({
   return (
     <>
       <div className="flex flex-col gap-2">
-        <Label htmlFor={id}>Agent</Label>
+        <Label htmlFor={id}>
+          <UiText message="Agent" />
+        </Label>
         <Select
           value={client}
           onValueChange={(next) => {
@@ -144,18 +151,22 @@ function ConnectionSnippets({ token }: { token: string }) {
   return (
     <Tabs defaultValue="remote">
       <TabsList>
-        <TabsTrigger value="remote">Hosted endpoint</TabsTrigger>
-        <TabsTrigger value="stdio">Local server</TabsTrigger>
+        <TabsTrigger value="remote">
+          <UiText message="Hosted endpoint" />
+        </TabsTrigger>
+        <TabsTrigger value="stdio">
+          <UiText message="Local server" />
+        </TabsTrigger>
       </TabsList>
       <TabsContent value="remote" className="flex flex-col gap-4">
         <p className="text-sm text-muted-foreground">
-          Your client connects straight to this instance. Nothing to install.
+          <UiText message="Your client connects straight to this instance. Nothing to install." />
         </p>
         <AgentSnippets id="mcp-hosted-agent" snippets={hostedSnippets(token)} />
       </TabsContent>
       <TabsContent value="stdio" className="flex flex-col gap-4">
         <p className="text-sm text-muted-foreground">
-          For a checkout of the repository. Hosted users need nothing here.
+          <UiText message="For a checkout of the repository. Hosted users need nothing here." />
         </p>
         <AgentSnippets id="mcp-local-agent" snippets={localSnippets(token)} />
       </TabsContent>
@@ -164,6 +175,7 @@ function ConnectionSnippets({ token }: { token: string }) {
 }
 
 function ConnectDialog() {
+  const { text: uiLabel } = useUiLanguage();
   const queryClient = useQueryClient();
   const [open, setOpen] = useState(false);
   const [name, setName] = useState("");
@@ -216,14 +228,16 @@ function ConnectDialog() {
       <DialogTrigger asChild>
         <Button variant="outline" size="sm">
           <Plug />
-          Connect an agent
+          <UiText message="Connect an agent" />
         </Button>
       </DialogTrigger>
       <DialogContent size={created ? "lg" : "default"}>
         {created ? (
           <>
             <DialogHeader>
-              <DialogTitle>Connect AsoBeast</DialogTitle>
+              <DialogTitle>
+                <UiText message="Connect AsoBeast" />
+              </DialogTitle>
               <DialogDescription>
                 {mcpTokenNotice(created.scope)}
               </DialogDescription>
@@ -233,27 +247,30 @@ function ConnectDialog() {
             </DialogBody>
             <DialogFooter>
               <Button type="button" onClick={() => reset(false)}>
-                <UiText message={"Done"} />
+                <UiText message="Done" />
               </Button>
             </DialogFooter>
           </>
         ) : (
           <form onSubmit={submit} className="flex min-h-0 flex-col gap-4">
             <DialogHeader>
-              <DialogTitle>Connect an agent</DialogTitle>
+              <DialogTitle>
+                <UiText message="Connect an agent" />
+              </DialogTitle>
               <DialogDescription>
-                Name a token for this agent. We mint it read-only unless you
-                allow changes, and show you the ready-to-paste connect snippets.
+                <UiText message="Name a token for this agent. We mint it read-only unless you allow changes, and show you the ready-to-paste connect snippets." />
               </DialogDescription>
             </DialogHeader>
             <DialogBody>
               <div className="flex flex-col gap-2">
-                <Label htmlFor="mcp-token-name">Token name</Label>
+                <Label htmlFor="mcp-token-name">
+                  <UiText message="Token name" />
+                </Label>
                 <Input
                   id="mcp-token-name"
                   value={name}
                   onChange={(event) => setName(event.target.value)}
-                  placeholder="Claude Desktop"
+                  placeholder={uiLabel("Claude Desktop")}
                   aria-invalid={error !== null}
                 />
               </div>
@@ -269,7 +286,7 @@ function ConnectDialog() {
                 />
                 <div className="flex flex-col gap-1">
                   <Label htmlFor="mcp-allow-changes">
-                    Allow this agent to make changes
+                    <UiText message="Allow this agent to make changes" />
                   </Label>
                   <p
                     id="mcp-allow-changes-hint"
@@ -288,7 +305,7 @@ function ConnectDialog() {
                 {mutation.isPending ? (
                   <Loader2 className="animate-spin" />
                 ) : null}
-                Mint token
+                <UiText message="Mint token" />
               </Button>
             </DialogFooter>
           </form>
@@ -307,29 +324,32 @@ export function McpServerCard() {
     <Card>
       <CardHeader className="flex-row items-start justify-between gap-4">
         <div className="flex flex-col gap-1.5">
-          <CardDescription>Automation</CardDescription>
-          <CardTitle>MCP server</CardTitle>
+          <CardDescription>
+            <UiText message="Automation" />
+          </CardDescription>
+          <CardTitle>
+            <UiText message="MCP server" />
+          </CardTitle>
         </div>
         <ConnectDialog />
       </CardHeader>
       <CardContent className="flex flex-col gap-4">
         <p className="text-sm text-muted-foreground">
-          Point any MCP client at this instance to ask about your apps,
-          keywords, rankings and audits in plain language. Tools are read-only
-          unless you allow an agent to make changes when you connect it, and
-          every connection is authenticated with a personal API token.{" "}
+          <UiText message="Point any MCP client at this instance to ask about your apps, keywords, rankings and audits in plain language. Tools are read-only unless you allow an agent to make changes when you connect it, and every connection is authenticated with a personal API token." />{" "}
           <a
             href={DOCS_URL}
             target="_blank"
             rel="noreferrer"
             className="font-medium text-foreground underline underline-offset-4"
           >
-            Read the setup guide
+            <UiText message="Read the setup guide" />
           </a>
           .
         </p>
         <div className="flex flex-col gap-1.5">
-          <Label className="text-xs font-medium">Endpoint</Label>
+          <Label className="text-xs font-medium">
+            <UiText message="Endpoint" />
+          </Label>
           <code
             translate="no"
             className="block overflow-x-auto rounded-lg border bg-muted px-3 py-2 font-mono text-xs"

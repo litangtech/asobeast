@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText, useUiLanguage } from "@/components/language/UiLanguage";
 import { Check, ListFilter } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -38,6 +39,7 @@ export function FacetFilter<T extends string>({
   counts?: ReadonlyMap<unknown, number>;
   onChange: (next: T[]) => void;
 }) {
+  const { text: uiLabel } = useUiLanguage();
   const toggle = (value: T) =>
     onChange(
       selected.includes(value)
@@ -54,8 +56,11 @@ export function FacetFilter<T extends string>({
           className="border-dashed"
           aria-label={
             selected.length > 0
-              ? `Filter by ${title.toLowerCase()}, ${selected.length} selected`
-              : `Filter by ${title.toLowerCase()}`
+              ? uiLabel("Filter by {0}, {1} selected", [
+                  title.toLowerCase(),
+                  selected.length,
+                ])
+              : uiLabel("Filter by {0}", [title.toLowerCase()])
           }
         >
           <ListFilter aria-hidden />
@@ -69,16 +74,18 @@ export function FacetFilter<T extends string>({
       </PopoverTrigger>
       <PopoverContent
         align="start"
-        aria-label={`Filter by ${title.toLowerCase()}`}
+        aria-label={uiLabel("Filter by {0}", [title.toLowerCase()])}
         className="w-60 p-0"
       >
         <Command>
           <CommandInput
             placeholder={title}
-            aria-label={`Search ${title.toLowerCase()}`}
+            aria-label={uiLabel("Search {0}", [title.toLowerCase()])}
           />
           <CommandList>
-            <CommandEmpty>No matches</CommandEmpty>
+            <CommandEmpty>
+              <UiText message="No matches" />
+            </CommandEmpty>
             <CommandGroup>
               {options.map((option) => {
                 const checked = selected.includes(option.value);
@@ -123,7 +130,7 @@ export function FacetFilter<T extends string>({
                     onSelect={() => onChange([])}
                     className="justify-center"
                   >
-                    Clear
+                    <UiText message="Clear" />
                   </CommandItem>
                 </CommandGroup>
               </>

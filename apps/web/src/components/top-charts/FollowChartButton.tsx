@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText } from "@/components/language/UiLanguage";
 import { useRef, useState, type RefCallback } from "react";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { BellPlus, Check, Loader2 } from "lucide-react";
@@ -52,7 +53,7 @@ function Following({
       <AlertDialogTrigger asChild>
         <Button ref={claimRef} variant="outline">
           <Check aria-hidden />
-          Following
+          <UiText message="Following" />
         </Button>
       </AlertDialogTrigger>
       <AlertDialogContent
@@ -61,15 +62,16 @@ function Following({
         }}
       >
         <AlertDialogHeader>
-          <AlertDialogTitle>Stop following this category?</AlertDialogTitle>
+          <AlertDialogTitle>
+            <UiText message="Stop following this category?" />
+          </AlertDialogTitle>
           <AlertDialogDescription>
-            The daily run stops capturing its free, paid and grossing charts;
-            stored days stay.
+            <UiText message="The daily run stops capturing its free, paid and grossing charts; stored days stay." />
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel disabled={mutation.isPending}>
-            Cancel
+            <UiText message="Cancel" />
           </AlertDialogCancel>
           <AlertDialogAction
             disabled={mutation.isPending}
@@ -79,7 +81,7 @@ function Following({
               unfollowOnce(follows.map((follow) => follow.id));
             }}
           >
-            Stop following
+            <UiText message="Stop following" />
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>
@@ -118,7 +120,7 @@ function Follow({
       ) : (
         <BellPlus aria-hidden />
       )}
-      Follow category
+      <UiText message="Follow category" />
     </Button>
   );
 }

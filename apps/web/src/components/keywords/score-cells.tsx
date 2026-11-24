@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText, useUiLanguage } from "@/components/language/UiLanguage";
 import type { ReactNode } from "react";
 import { ArrowDownToLine } from "lucide-react";
 import type {
@@ -47,18 +48,21 @@ function ScoreButton({
   floorAnswer?: boolean;
   children: ReactNode;
 }) {
+  const { text: uiLabel } = useUiLanguage();
   if (value === null) {
     return (
       <Tooltip>
         <TooltipTrigger asChild>
           <span
-            aria-label={`${label}: not scored yet`}
+            aria-label={uiLabel("{0}: not scored yet", [label])}
             className="text-muted-foreground"
           >
             —
           </span>
         </TooltipTrigger>
-        <TooltipContent>Not scored yet</TooltipContent>
+        <TooltipContent>
+          <UiText message="Not scored yet" />
+        </TooltipContent>
       </Tooltip>
     );
   }
@@ -71,7 +75,12 @@ function ScoreButton({
         <button
           type="button"
           data-grade={graded ?? undefined}
-          aria-label={`${label} ${valueLabel}${gradeWords}. ${summary}. Show scoring details`}
+          aria-label={uiLabel("{0} {1}{2}. {3}. Show scoring details", [
+            label,
+            valueLabel,
+            gradeWords,
+            summary,
+          ])}
           className={cn(
             "flex w-14 flex-col items-end gap-1 rounded-sm numeric font-mono outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background",
             emphasize
@@ -172,6 +181,7 @@ export function DerivedScoreCell({
   details?: string[];
   lowerConfidence?: boolean;
 }) {
+  const { text: uiLabel } = useUiLanguage();
   return (
     <ScoreButton
       value={value}
@@ -179,7 +189,9 @@ export function DerivedScoreCell({
       metric={metric}
       emphasize={emphasize}
       summary={
-        lowerConfidence ? "Derived score, lower confidence" : "Derived score"
+        lowerConfidence
+          ? uiLabel("Derived score, lower confidence")
+          : uiLabel("Derived score")
       }
     >
       <span>{DERIVED_SCORE_DETAIL}</span>
@@ -215,17 +227,27 @@ function ScoreProvenanceDetails({
   provenance: ScoreProvenance | null;
 }) {
   if (!provenance) {
-    return <span>Legacy score — provenance unavailable</span>;
+    return (
+      <span>
+        <UiText message="Legacy score — provenance unavailable" />
+      </span>
+    );
   }
   const confidence = SCORING_CONFIDENCE_LABELS[provenance.confidence];
   return (
     <>
       <span>{SCORING_SOURCE_LABELS[provenance.source]}</span>
-      <span>Formula {provenance.formulaVersion}</span>
+      <span>
+        <UiText message="Formula" trailing />
+        {provenance.formulaVersion}
+      </span>
       <span>{capturedAtLabel(provenance.capturedAt)}</span>
-      <Badge variant="secondary">{confidence} confidence</Badge>
+      <Badge variant="secondary">
+        {confidence}
+        <UiText message="confidence" />
+      </Badge>
       <span className="max-w-xs text-background">
-        Confidence measures input completeness, not ranking accuracy.
+        <UiText message="Confidence measures input completeness, not ranking accuracy." />
       </span>
     </>
   );

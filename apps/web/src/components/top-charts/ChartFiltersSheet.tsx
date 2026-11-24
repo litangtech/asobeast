@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText, useUiLanguage } from "@/components/language/UiLanguage";
 import type { ReactNode } from "react";
 import { ListFilter } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
@@ -27,7 +28,7 @@ function Field({ label, children }: { label: string; children: ReactNode }) {
   return (
     <div className="flex flex-col gap-1.5">
       <span aria-hidden className="text-caption text-muted-foreground">
-        {label}
+        <UiText message={label} />
       </span>
       {children}
     </div>
@@ -38,12 +39,13 @@ export function ChartFiltersSheet({
   active,
   ...filters
 }: ChartFilterProps & { active: number }) {
+  const { text: uiLabel } = useUiLanguage();
   return (
     <Sheet>
       <SheetTrigger asChild>
         <Button variant="outline" size="sm">
           <ListFilter aria-hidden />
-          Filters
+          <UiText message="Filters" />
           {active > 0 ? (
             <Badge variant="secondary" className="numeric font-mono">
               {active}
@@ -53,32 +55,34 @@ export function ChartFiltersSheet({
       </SheetTrigger>
       <SheetContent side="bottom" className="max-h-[80svh]">
         <SheetHeader>
-          <SheetTitle>Filters</SheetTitle>
+          <SheetTitle>
+            <UiText message="Filters" />
+          </SheetTitle>
           <SheetDescription>
-            Pick the country, category and comparison of the charts.
+            <UiText message="Pick the country, category and comparison of the charts." />
           </SheetDescription>
         </SheetHeader>
         <div className="flex flex-col items-start gap-4">
-          <Field label="Country">
+          <Field label={uiLabel("Country")}>
             <ChartCountryFilter {...filters} />
           </Field>
-          <Field label="Category">
+          <Field label={uiLabel("Category")}>
             <ChartGenreFilter {...filters} />
           </Field>
           {showsDevice(filters.chart.store) ? (
-            <Field label="Device">
+            <Field label={uiLabel("Device")}>
               <ChartDeviceFilter {...filters} />
             </Field>
           ) : null}
           {filters.view === "table" ? (
-            <Field label="Chart">
+            <Field label={uiLabel("Chart")}>
               <ChartKindFilter {...filters} />
             </Field>
           ) : null}
-          <Field label="Compare">
+          <Field label={uiLabel("Compare")}>
             <ChartCompareFilter {...filters} />
           </Field>
-          <Field label="Layout">
+          <Field label={uiLabel("Layout")}>
             <ChartLayoutFilter {...filters} />
           </Field>
         </div>

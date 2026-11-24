@@ -1,3 +1,4 @@
+import { uiText, type UiLanguage } from "@/lib/ui-language";
 import type { ChartMovement } from "@asobeast/shared";
 
 export interface Moved {
@@ -9,10 +10,16 @@ export interface Moved {
 export function movementText(
   { movement, delta, previous }: Moved,
   noneText = "No earlier capture",
+  language: UiLanguage = "en",
 ): string {
-  if (movement === "up") return `Up ${Math.abs(delta ?? 0)} from #${previous}`;
-  if (movement === "down") return `Down ${delta} from #${previous}`;
-  if (movement === "same") return "No change";
-  if (movement === "new") return "New entry";
-  return noneText;
+  if (movement === "up")
+    return uiText(language, "Up {0} from #{1}", [
+      Math.abs(delta ?? 0),
+      previous,
+    ]);
+  if (movement === "down")
+    return uiText(language, "Down {0} from #{1}", [delta, previous]);
+  if (movement === "same") return uiText(language, "No change");
+  if (movement === "new") return uiText(language, "New entry");
+  return uiText(language, noneText);
 }

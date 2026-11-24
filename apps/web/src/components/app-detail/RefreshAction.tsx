@@ -1,6 +1,6 @@
 "use client";
 
-import { UiText } from "@/components/language/UiLanguage";
+import { useUiLanguage, UiText } from "@/components/language/UiLanguage";
 import { useId, useRef, useState } from "react";
 import {
   useIsMutating,
@@ -24,6 +24,7 @@ interface RefreshedListing {
 }
 
 export function RefreshAction({ appId }: { appId: string }) {
+  const { text: uiLabel } = useUiLanguage();
   const queryClient = useQueryClient();
   const { market: country, refreshable } = useCachedMarket(appId);
   const reasonId = useId();
@@ -43,7 +44,9 @@ export function RefreshAction({ appId }: { appId: string }) {
         invalidateAppListing(queryClient, appId);
       }
       toast.error(
-        error instanceof ApiError ? error.envelope.message : "Refresh failed",
+        error instanceof ApiError
+          ? error.envelope.message
+          : uiLabel("Refresh failed"),
       );
     },
   });
@@ -62,8 +65,8 @@ export function RefreshAction({ appId }: { appId: string }) {
         }}
         aria-label={
           country === undefined
-            ? "Refresh"
-            : `Refresh ${formatCountry(country)} listing`
+            ? uiLabel("Refresh")
+            : uiLabel("Refresh {0} listing", [formatCountry(country)])
         }
       >
         {mutation.isPending ? (
@@ -72,7 +75,7 @@ export function RefreshAction({ appId }: { appId: string }) {
           <RefreshCw />
         )}
         <span className="hidden lg:inline">
-          <UiText message={"Refresh"} />
+          <UiText message="Refresh" />
         </span>
       </Button>
       {refreshable ? null : (

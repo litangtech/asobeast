@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText, useUiLanguage } from "@/components/language/UiLanguage";
 import { useId, useState } from "react";
 import { Tag } from "lucide-react";
 import {
@@ -37,6 +38,7 @@ export function BulkTagPopover({
   disabled: boolean;
   onApply: (changes: BulkTagChange[], mode: BulkTagMode) => void;
 }) {
+  const { text: uiLabel } = useUiLanguage();
   const inputId = useId();
   const [open, setOpen] = useState(false);
   const [input, setInput] = useState("");
@@ -66,16 +68,18 @@ export function BulkTagPopover({
           aria-disabled={disabled || undefined}
         >
           <Tag />
-          Tag
+          <UiText message="Tag" />
         </Button>
       </PopoverTrigger>
       <PopoverContent
         align="start"
-        aria-label="Tag keywords"
+        aria-label={uiLabel("Tag keywords")}
         className="flex w-72 flex-col gap-3"
       >
         <div className="flex flex-col gap-2">
-          <Label htmlFor={inputId}>Tag to add or remove</Label>
+          <Label htmlFor={inputId}>
+            <UiText message="Tag to add or remove" />
+          </Label>
           <Input
             id={inputId}
             value={input}
@@ -97,7 +101,14 @@ export function BulkTagPopover({
         </div>
         {valid && add.atLimit.length > 0 ? (
           <p className="text-caption text-muted-foreground">
-            {`Skips ${keywordsCount(add.atLimit.length)} at the ${KEYWORD_TAGS_MAX} tag limit: ${add.atLimit.join(", ")}`}
+            <UiText
+              message="Skips {0} at the {1} tag limit: {2}"
+              values={[
+                keywordsCount(add.atLimit.length),
+                KEYWORD_TAGS_MAX,
+                add.atLimit.join(", "),
+              ]}
+            />
           </p>
         ) : null}
         <div className="flex flex-wrap gap-2">
@@ -106,7 +117,8 @@ export function BulkTagPopover({
             disabled={!valid || add.changes.length === 0}
             onClick={() => apply(add.changes, "add")}
           >
-            Add to {keywordsCount(add.changes.length)}
+            <UiText message="Add to" trailing />
+            {keywordsCount(add.changes.length)}
           </Button>
           <Button
             size="sm"
@@ -114,7 +126,8 @@ export function BulkTagPopover({
             disabled={!valid || remove.changes.length === 0}
             onClick={() => apply(remove.changes, "remove")}
           >
-            Remove from {keywordsCount(remove.changes.length)}
+            <UiText message="Remove from" trailing />
+            {keywordsCount(remove.changes.length)}
           </Button>
         </div>
       </PopoverContent>

@@ -1,3 +1,5 @@
+import { UiCountry } from "@/components/language/UiFormat";
+import { UiText } from "@/components/language/UiLanguage";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { ACTION_RULE_TITLES, type ActionItem } from "@asobeast/shared";
@@ -8,9 +10,9 @@ import {
   SheetHeader,
   SheetTitle,
 } from "@/components/ui/sheet";
-import { formatCountry, storeLabel } from "@/lib/format";
+import { storeLabel } from "@/lib/format";
 import { ACTION_CATEGORY_LABEL, ACTION_STATUS_LABEL } from "./action-copy";
-import { actionHeadline } from "./action-headline";
+import { LocalizedActionHeadline } from "./LocalizedActionHeadline";
 import { actionHref, actionSection } from "./action-links";
 import { ActionPriorityBadge } from "./ActionPriorityBadge";
 import { ActionStateControls } from "./ActionStateControls";
@@ -24,24 +26,28 @@ export function ActionDetailHeader({ item }: { item: ActionItem }) {
       <div className="flex flex-wrap items-center gap-2">
         <ActionPriorityBadge priority={item.priority} />
         <Badge variant="secondary">
-          {ACTION_CATEGORY_LABEL[item.category]}
+          <UiText message={ACTION_CATEGORY_LABEL[item.category]} />
         </Badge>
         <Badge variant="outline">
           <StatusIcon status={item.status} />
-          <span>{ACTION_STATUS_LABEL[item.status]}</span>
+          <span>
+            <UiText message={ACTION_STATUS_LABEL[item.status]} />
+          </span>
         </Badge>
       </div>
       <SheetTitle className="text-title text-balance">
-        {actionHeadline(item)}
+        <LocalizedActionHeadline item={item} />
       </SheetTitle>
       <SheetDescription>
-        {ACTION_RULE_TITLES[item.rule]} · {item.scope.appName ?? "An app"} ·{" "}
-        {storeLabel(item.scope.store)} · {formatCountry(item.scope.country)}
+        <UiText message={ACTION_RULE_TITLES[item.rule]} /> ·{" "}
+        {item.scope.appName ?? <UiText message="An app" />} ·{" "}
+        {storeLabel(item.scope.store)} · <UiCountry code={item.scope.country} />
       </SheetDescription>
       <div className="flex flex-wrap items-center gap-2">
         <Button asChild size="sm">
           <Link href={href}>
-            Fix it in {actionSection(href)}
+            <UiText message="Fix it in" trailing />
+            <UiText message={actionSection(href)} />
             <ArrowRight aria-hidden />
           </Link>
         </Button>

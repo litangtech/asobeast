@@ -1,3 +1,4 @@
+import { UiText } from "@/components/language/UiLanguage";
 import Link from "next/link";
 import type { ReviewItem, Store } from "@asobeast/shared";
 import { storeLabel } from "@/lib/format";
@@ -18,7 +19,7 @@ export function ReplyFooter({
   if (access.kind === "off") {
     return (
       <p className="text-caption text-muted-foreground">
-        AsoBeast never writes to the store. Paste the reply in{" "}
+        <UiText message="AsoBeast never writes to the store. Paste the reply in" />{" "}
         {consoleLabel(store)}.
       </p>
     );
@@ -40,7 +41,7 @@ export function ReplyFooter({
               href={STORE_CONNECTIONS_PATH}
               className="font-medium text-foreground underline decoration-primary underline-offset-4 hover:decoration-2"
             >
-              Open store connections
+              <UiText message="Open store connections" />
             </Link>
           </>
         )}
@@ -62,8 +63,8 @@ export function StoreReplyNotice({
   if (!review.replyText || review.reply?.post) return null;
   return (
     <p className="text-caption text-muted-foreground">
-      {storeLabel(store)} already shows a reply. A new text here replaces it
-      once posted.
+      {storeLabel(store)}
+      <UiText message="already shows a reply. A new text here replaces it once posted." />
     </p>
   );
 }

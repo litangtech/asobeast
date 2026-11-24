@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText, useUiLanguage } from "@/components/language/UiLanguage";
 import type { ReactNode } from "react";
 import {
   CheckIcon,
@@ -55,7 +56,7 @@ function RowAction({
         ) : (
           <MailCheck />
         )}
-        Resend confirmation
+        <UiText message="Resend confirmation" />
       </Button>
     );
   }
@@ -67,7 +68,7 @@ function RowAction({
       onClick={onTest}
     >
       {testPending ? <Loader2 className="animate-spin" /> : <Send />}
-      Send test
+      <UiText message="Send test" />
     </Button>
   );
 }
@@ -89,7 +90,9 @@ function ConfirmationNotice({ awaiting }: { awaiting?: AwaitingConfirmation }) {
     <p className="flex items-center gap-1.5 text-sm text-muted-foreground">
       <Icon className="size-4 shrink-0" aria-hidden />
       <span>
-        <strong className="font-medium text-foreground">{title}</strong>{" "}
+        <strong className="font-medium text-foreground">
+          <UiText message={title} />
+        </strong>{" "}
         {detail}
       </span>
     </p>
@@ -143,17 +146,18 @@ export function AlertChannelRow({
   eventsPending: boolean;
   onEventsSave: (change: AlertSubscriptionChange) => Promise<unknown>;
 }) {
+  const { text: uiLabel } = useUiLanguage();
   return (
     <li className="flex flex-col gap-3 p-4">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <span className="min-w-0 flex-1 basis-48 font-medium wrap-anywhere">
-          {label}
+          <UiText message={label} />
         </span>
         <div className="flex items-center gap-2">
           <Switch
             checked={active}
             aria-disabled={activePending || undefined}
-            aria-label={`Toggle ${label}`}
+            aria-label={uiLabel("Toggle {0}", [label])}
             onCheckedChange={(next) => {
               if (!activePending) onActiveChange(next);
             }}

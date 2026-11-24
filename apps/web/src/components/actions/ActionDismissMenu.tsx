@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText } from "@/components/language/UiLanguage";
 import { X } from "lucide-react";
 import {
   ACTION_DISMISS_REASONS,
@@ -30,7 +31,7 @@ function DismissItems({ onDismiss }: { onDismiss: OnDismiss }) {
       ))}
       <DropdownMenuSeparator />
       <DropdownMenuItem onSelect={() => onDismiss()}>
-        Dismiss without a reason
+        <UiText message="Dismiss without a reason" />
       </DropdownMenuItem>
     </>
   );
@@ -39,7 +40,9 @@ function DismissItems({ onDismiss }: { onDismiss: OnDismiss }) {
 export function ActionDismissSubMenu({ onDismiss }: { onDismiss: OnDismiss }) {
   return (
     <DropdownMenuSub>
-      <DropdownMenuSubTrigger>Dismiss</DropdownMenuSubTrigger>
+      <DropdownMenuSubTrigger>
+        <UiText message="Dismiss" />
+      </DropdownMenuSubTrigger>
       <DropdownMenuSubContent>
         <DismissItems onDismiss={onDismiss} />
       </DropdownMenuSubContent>
@@ -67,7 +70,7 @@ export function ActionDismissMenu({
           className={className}
         >
           <X aria-hidden />
-          Dismiss
+          <UiText message="Dismiss" />
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">

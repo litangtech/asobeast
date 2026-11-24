@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText, useUiLanguage } from "@/components/language/UiLanguage";
 import { useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Loader2, Plus } from "lucide-react";
@@ -31,19 +32,20 @@ export function AddAsCompetitor({
   title: string;
   apps: readonly AppListItem[];
 }) {
+  const { text: uiLabel } = useUiLanguage();
   const queryClient = useQueryClient();
   const mutation = useMutation({
     mutationFn: (appId: string) => addCompetitor(appId, storeAppId),
     onSuccess: (competitor, appId) => {
       invalidateCompetitorMutation(queryClient, appId);
       invalidateChartMutation(queryClient);
-      toast.success(`Now tracking ${competitor.name ?? title}`);
+      toast.success(uiLabel("Now tracking {0}", [competitor.name ?? title]));
     },
     onError: (error) =>
       toast.error(
         error instanceof ApiError
           ? error.envelope.message
-          : `Could not track ${title}`,
+          : uiLabel("Could not track {0}", [title]),
       ),
   });
   const [open, setOpen] = useState(false);
@@ -65,7 +67,7 @@ export function AddAsCompetitor({
       <Button
         variant="ghost"
         size="icon-sm"
-        aria-label={`Add ${title} to ${app.name ?? "your app"}`}
+        aria-label={uiLabel("Add {0} to {1}", [title, app.name ?? "your app"])}
         aria-busy={mutation.isPending}
         aria-disabled={mutation.isPending || undefined}
         onClick={() => add(app.id)}
@@ -83,7 +85,7 @@ export function AddAsCompetitor({
         <Button
           variant="ghost"
           size="icon-sm"
-          aria-label={`Add ${title} as competitor`}
+          aria-label={uiLabel("Add {0} as competitor", [title])}
           aria-busy={mutation.isPending}
           aria-disabled={mutation.isPending || undefined}
         >
@@ -91,7 +93,9 @@ export function AddAsCompetitor({
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
-        <DropdownMenuLabel>Add as competitor to</DropdownMenuLabel>
+        <DropdownMenuLabel>
+          <UiText message="Add as competitor to" />
+        </DropdownMenuLabel>
         {apps.map((app) => (
           <DropdownMenuItem key={app.id} onSelect={() => add(app.id)}>
             {app.name ?? app.id}

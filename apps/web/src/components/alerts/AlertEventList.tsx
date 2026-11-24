@@ -1,5 +1,7 @@
 "use client";
 
+import { UiText, useUiLanguage } from "@/components/language/UiLanguage";
+import { uiDate } from "@/lib/ui-formats";
 import { useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { isNewSince } from "@/lib/alerts-seen";
@@ -14,6 +16,7 @@ export function AlertEventList({
   groups: readonly DayGroup[];
   seenAt: string | null;
 }) {
+  const { language, text } = useUiLanguage();
   return (
     <div className="flex flex-col gap-6">
       {groups.map((group, index) => {
@@ -28,7 +31,7 @@ export function AlertEventList({
               id={headingId}
               className="text-label text-muted-foreground uppercase"
             >
-              {`${group.label} · ${group.events.length}`}
+              {`${group.label === "Today" || group.label === "Yesterday" ? text(group.label) : uiDate(language, `${group.key}T00:00:00.000Z`, "date")} · ${group.events.length}`}
             </h2>
             <ul className="flex list-none flex-col gap-2 p-0">
               {group.events.map((item) => (
@@ -76,7 +79,7 @@ export function AlertFeedEnd({
     >
       {failed && !loading ? (
         <p role="alert" className="text-caption text-destructive">
-          More events could not be loaded. Try again.
+          <UiText message="More events could not be loaded. Try again." />
         </p>
       ) : null}
       {hasMore ? (
@@ -86,11 +89,11 @@ export function AlertFeedEnd({
           aria-disabled={loading || undefined}
           onClick={loadMore}
         >
-          Load more
+          <UiText message="Load more" />
         </Button>
       ) : (
         <p className="text-caption text-muted-foreground">
-          That is every event of the last 30 days.
+          <UiText message="That is every event of the last 30 days." />
         </p>
       )}
     </div>

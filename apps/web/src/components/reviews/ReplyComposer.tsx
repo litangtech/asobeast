@@ -1,6 +1,6 @@
 "use client";
 
-import { UiText } from "@/components/language/UiLanguage";
+import { UiText, useUiLanguage } from "@/components/language/UiLanguage";
 import { useId, useRef, useState, type RefObject } from "react";
 import { Copy, ExternalLink } from "lucide-react";
 import { toast } from "sonner";
@@ -69,9 +69,12 @@ function ReplyCounter({
     >
       <span>{`${length} / ${limit}`}</span>
       <span aria-live="polite">
-        {over
-          ? ` · ${storeLabel(store)} allows at most ${limit} characters`
-          : null}
+        {over ? (
+          <UiText
+            message=" · {0} allows at most {1} characters"
+            values={[storeLabel(store), limit]}
+          />
+        ) : null}
       </span>
     </p>
   );
@@ -92,9 +95,9 @@ function ClearedReplyHint({
       aria-live="polite"
       className="text-caption text-muted-foreground empty:hidden"
     >
-      {kept
-        ? "Emptying the field keeps the saved reply. Press Discard to remove it."
-        : null}
+      {kept ? (
+        <UiText message="Emptying the field keeps the saved reply. Press Discard to remove it." />
+      ) : null}
     </p>
   );
 }
@@ -110,16 +113,20 @@ function DiscardReplyButton({
   textRef: RefObject<HTMLTextAreaElement | null>;
   onDiscard: () => void;
 }) {
+  const { text: uiLabel } = useUiLanguage();
   return (
     <ReplyConfirmDialog
       trigger={
         <Button variant="outline" size="sm" disabled={disabled}>
-          Discard
+          <UiText message="Discard" />
         </Button>
       }
-      title="Discard this reply?"
-      description={`The text and the replied mark kept for this review are removed. ${notice}`}
-      cancelLabel="Keep it"
+      title={uiLabel("Discard this reply?")}
+      description={uiLabel(
+        "The text and the replied mark kept for this review are removed. {0}",
+        [notice],
+      )}
+      cancelLabel={uiLabel("Keep it")}
       actionLabel="Discard"
       destructive
       textRef={textRef}
@@ -147,13 +154,14 @@ function ReplyTextField({
   onChange: (text: string) => void;
   onBlur: () => void;
 }) {
+  const { text: uiLabel } = useUiLanguage();
   const counterId = useId();
   return (
     <div className="flex flex-col gap-1">
       <Textarea
         ref={textRef}
         autoFocus
-        aria-label="Reply text"
+        aria-label={uiLabel("Reply text")}
         dir="auto"
         aria-describedby={counterId}
         aria-invalid={measure.over || undefined}
@@ -164,8 +172,8 @@ function ReplyTextField({
         onBlur={onBlur}
         placeholder={
           drafting
-            ? "Drafting a reply…"
-            : "Write the reply the store will show under this review"
+            ? uiLabel("Drafting a reply…")
+            : uiLabel("Write the reply the store will show under this review")
         }
         className="min-h-24 bg-card"
       />
@@ -195,6 +203,7 @@ export function ReplyComposer({
   storeAppId,
   onClose,
 }: ReplyComposerProps) {
+  const { text: uiLabel } = useUiLanguage();
   const saved = review.reply?.text ?? "";
   const [text, setText] = useReplyText(saved);
   const { save, mark, discard, post, withdraw, pending } = useReviewReply(
@@ -226,9 +235,9 @@ export function ReplyComposer({
     void saveIfChanged().catch(() => null);
     try {
       await copied;
-      toast.success(`Reply copied. Paste it in ${consoleName}.`);
+      toast.success(uiLabel("Reply copied. Paste it in {0}.", [consoleName]));
     } catch {
-      toast.error("Couldn't copy — select and copy it manually");
+      toast.error(uiLabel("Couldn't copy — select and copy it manually"));
     }
   };
 
@@ -241,7 +250,7 @@ export function ReplyComposer({
 
   return (
     <section
-      aria-label="Reply to review"
+      aria-label={uiLabel("Reply to review")}
       className="flex flex-col gap-3 rounded-lg border bg-muted/40 p-3"
     >
       <StoreReplyNotice review={review} store={store} />
@@ -281,7 +290,7 @@ export function ReplyComposer({
           onClick={() => void copy()}
         >
           <Copy />
-          Copy
+          <UiText message="Copy" />
         </Button>
         <Button variant="outline" size="sm" asChild>
           <a
@@ -290,7 +299,8 @@ export function ReplyComposer({
             rel="noreferrer"
           >
             <ExternalLink />
-            Open {consoleName}
+            <UiText message="Open" trailing />
+            {consoleName}
           </a>
         </Button>
         {actions.mark ? (
@@ -329,7 +339,7 @@ export function ReplyComposer({
           />
         ) : null}
         <Button variant="ghost" size="sm" className="ml-auto" onClick={onClose}>
-          <UiText message={"Close"} />
+          <UiText message="Close" />
         </Button>
       </div>
       <ReplyFooter access={access} store={store} posted={posted} />

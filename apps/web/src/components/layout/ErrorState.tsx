@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText } from "@/components/language/UiLanguage";
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import {
@@ -47,31 +48,35 @@ export function ErrorState({
       className="flex flex-col items-center gap-4 rounded-xl border border-dashed py-16 text-center"
     >
       <div className="flex flex-col gap-1">
-        <p className="font-medium">{title ?? recovery.title}</p>
+        <p className="font-medium">
+          <UiText message={title ?? recovery.title} />
+        </p>
         <p className="max-w-md text-body text-muted-foreground">
-          {recovery.body}
+          <UiText message={recovery.body} />
         </p>
       </div>
       {recovery.action.kind === "retry" ? (
         <Button variant="outline" onClick={tryAgain}>
           <RotateCw />
-          Try again
+          <UiText message="Try again" />
         </Button>
       ) : (
         <Button asChild variant="outline">
-          <Link href={recovery.action.href}>{recovery.action.label}</Link>
+          <Link href={recovery.action.href}>
+            <UiText message={recovery.action.label} />
+          </Link>
         </Button>
       )}
       {statusPage ? (
         <p className="text-caption text-muted-foreground">
-          If this keeps happening,{" "}
+          <UiText message="If this keeps happening," />{" "}
           <a
             href={statusPage}
             target="_blank"
             rel="noreferrer"
             className="font-medium underline"
           >
-            check the status page
+            <UiText message="check the status page" />
           </a>
           .
         </p>

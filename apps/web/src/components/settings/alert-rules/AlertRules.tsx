@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText } from "@/components/language/UiLanguage";
 import { useId } from "react";
 import { useQuery } from "@tanstack/react-query";
 import type { WebhookEvent } from "@asobeast/shared";
@@ -45,7 +46,9 @@ function RuleControlField({
   }
   if (control === "rank-follows") {
     return (
-      <p className="text-sm text-muted-foreground">Uses the rank drop value.</p>
+      <p className="text-sm text-muted-foreground">
+        <UiText message="Uses the rank drop value." />
+      </p>
     );
   }
   if (control === "review-stars") {
@@ -80,7 +83,9 @@ export function AlertRules(props: AlertRulesProps) {
       className="flex flex-col gap-3"
     >
       <div className="flex items-baseline justify-between gap-3">
-        <Label id={labelId}>Alert rules</Label>
+        <Label id={labelId}>
+          <UiText message="Alert rules" />
+        </Label>
         <span id={summaryId} className="text-sm text-muted-foreground">
           {ruleSummary(props.events)}
         </span>

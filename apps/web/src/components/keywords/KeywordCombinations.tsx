@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText } from "@/components/language/UiLanguage";
 import { Suspense } from "react";
 import { ChevronDown } from "lucide-react";
 import { useQueryState, useQueryStates } from "nuqs";
@@ -57,7 +58,7 @@ export function KeywordCombinations({
               onClick={() => void setParams({ open: !params.open })}
               className="flex w-full items-center justify-between gap-4 text-left"
             >
-              Keyword combinations
+              <UiText message="Keyword combinations" />
               <ChevronDown
                 aria-hidden
                 className={cn(
@@ -69,11 +70,9 @@ export function KeywordCombinations({
           </h3>
         </CardTitle>
         <CardDescription>
-          Every phrase of one to three words that the words in your{" "}
-          {LISTING_FIELDS[store]} can form, in any order, and whether you track
-          it in your home market. Coverage on the metadata page checks the
-          reverse: whether each tracked keyword appears word for word in one
-          field.
+          <UiText message="Every phrase of one to three words that the words in your" />{" "}
+          {LISTING_FIELDS[store]}
+          <UiText message="can form, in any order, and whether you track it in your home market. Coverage on the metadata page checks the reverse: whether each tracked keyword appears word for word in one field." />
         </CardDescription>
       </CardHeader>
       {params.open ? (
@@ -91,14 +90,19 @@ export function KeywordCombinations({
           ) : (
             <div className="flex flex-wrap items-center justify-between gap-3 rounded-lg border border-dashed p-4">
               <p className="text-sm text-muted-foreground">
-                Combinations come from the listing in your home market, {home}.
+                <UiText
+                  message="Combinations come from the listing in your home market,"
+                  trailing
+                />
+                {home}.
               </p>
               <Button
                 variant="outline"
                 size="sm"
                 onClick={() => void setCountry(null)}
               >
-                Switch to {home}
+                <UiText message="Switch to" trailing />
+                {home}
               </Button>
             </div>
           )}

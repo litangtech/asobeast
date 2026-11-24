@@ -1,6 +1,6 @@
 "use client";
 
-import { UiText } from "@/components/language/UiLanguage";
+import { UiText, useUiLanguage } from "@/components/language/UiLanguage";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { ListChecks } from "lucide-react";
 import Link from "next/link";
@@ -25,6 +25,7 @@ export function OnboardingBanner() {
 }
 
 function SetupBanner({ app, more }: { app: AppInSetup; more: number }) {
+  const { text: uiLabel } = useUiLanguage();
   const dismiss = useSetupDismissal(app.id);
 
   return (
@@ -50,14 +51,16 @@ function SetupBanner({ app, more }: { app: AppInSetup; more: number }) {
         </span>
         <Progress
           value={progressPercent(app.setup)}
-          aria-label="Setup progress"
+          aria-label={uiLabel("Setup progress")}
           getValueLabel={() => progressValueLabel(app.setup)}
           className="max-w-xs"
         />
       </AlertDescription>
       <div className="col-span-full flex flex-wrap gap-2 sm:col-span-1 sm:col-start-3 sm:row-span-2">
         <Button asChild size="sm">
-          <Link href={`/apps/${app.id}/setup`}>Resume setup</Link>
+          <Link href={`/apps/${app.id}/setup`}>
+            <UiText message="Resume setup" />
+          </Link>
         </Button>
         <Button
           size="sm"
@@ -65,7 +68,7 @@ function SetupBanner({ app, more }: { app: AppInSetup; more: number }) {
           disabled={dismiss.isPending}
           onClick={() => dismiss.mutate()}
         >
-          <UiText message={"Dismiss"} />
+          <UiText message="Dismiss" />
         </Button>
       </div>
     </Alert>

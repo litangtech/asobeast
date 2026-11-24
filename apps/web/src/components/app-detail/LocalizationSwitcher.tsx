@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText } from "@/components/language/UiLanguage";
 import {
   isAppStoreLocalization,
   storefrontLocalizations,
@@ -26,7 +27,9 @@ export function LocalizationSwitcher({ id }: { id: string }) {
 
   return (
     <div className="flex flex-wrap items-center gap-2 print:hidden">
-      <Label htmlFor={`localization-${id}`}>Localization</Label>
+      <Label htmlFor={`localization-${id}`}>
+        <UiText message="Localization" />
+      </Label>
       <Select
         value={value}
         onValueChange={(next) =>

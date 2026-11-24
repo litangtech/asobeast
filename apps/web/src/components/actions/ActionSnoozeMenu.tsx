@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText } from "@/components/language/UiLanguage";
 import { Clock } from "lucide-react";
 import type { ActionStatus } from "@asobeast/shared";
 import { Button } from "@/components/ui/button";
@@ -38,7 +39,11 @@ export function ActionSnoozeMenu({
     return (
       <Button variant="outline" size="sm" disabled={disabled} onClick={onWake}>
         <Clock aria-hidden className="size-4" />
-        {snoozedUntil ? `Wakes ${formatDate(snoozedUntil)}` : "Wake now"}
+        {snoozedUntil ? (
+          <UiText message="Wakes {0}" values={[formatDate(snoozedUntil)]} />
+        ) : (
+          <UiText message="Wake now" />
+        )}
       </Button>
     );
   }
@@ -53,7 +58,7 @@ export function ActionSnoozeMenu({
           data-command="snooze"
         >
           <Clock aria-hidden className="size-4" />
-          Snooze
+          <UiText message="Snooze" />
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
@@ -62,7 +67,8 @@ export function ActionSnoozeMenu({
             key={days}
             onSelect={() => onSnooze(snoozeUntil(days))}
           >
-            {days} days
+            {days}
+            <UiText message="days" />
           </DropdownMenuItem>
         ))}
       </DropdownMenuContent>

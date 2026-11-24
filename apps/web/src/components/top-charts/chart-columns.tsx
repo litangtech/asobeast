@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText } from "@/components/language/UiLanguage";
 import { createColumnHelper } from "@tanstack/react-table";
 import type { ChartEntryItem } from "@asobeast/shared";
 import { AppIcon } from "@/components/AppIcon";
@@ -15,7 +16,11 @@ const columnHelper = createColumnHelper<DataTableFeatures, ChartEntryItem>();
 
 function PriceCell({ free }: { free: boolean | null }) {
   if (free === null) return <span className="text-muted-foreground">—</span>;
-  return <Badge variant="outline">{free ? "Free" : "Paid"}</Badge>;
+  return (
+    <Badge variant="outline">
+      {free ? <UiText message="Free" /> : <UiText message="Paid" />}
+    </Badge>
+  );
 }
 
 function genreColumn() {
@@ -98,7 +103,11 @@ export function chartColumns(
     columnHelper.display({
       id: "actions",
       enableHiding: false,
-      header: () => <span className="sr-only">Actions</span>,
+      header: () => (
+        <span className="sr-only">
+          <UiText message="Actions" />
+        </span>
+      ),
       cell: ({ row }) => <RowActions entry={row.original} context={context} />,
     }),
   ]);

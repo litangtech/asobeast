@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText } from "@/components/language/UiLanguage";
 import type { FormEvent, ReactNode } from "react";
 import { Loader2, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -43,15 +44,23 @@ export function AlertChannelDialog({
         {trigger ?? (
           <Button variant="outline" size="sm">
             <Plus />
-            {label}
+            <UiText message={label} />
           </Button>
         )}
       </DialogTrigger>
       <DialogContent>
         <form onSubmit={onSubmit} className="flex min-h-0 flex-col gap-4">
           <DialogHeader>
-            <DialogTitle>{label}</DialogTitle>
-            <DialogDescription>{description}</DialogDescription>
+            <DialogTitle>
+              <UiText message={label} />
+            </DialogTitle>
+            <DialogDescription>
+              {typeof description === "string" ? (
+                <UiText message={description} />
+              ) : (
+                description
+              )}
+            </DialogDescription>
           </DialogHeader>
 
           <DialogBody>

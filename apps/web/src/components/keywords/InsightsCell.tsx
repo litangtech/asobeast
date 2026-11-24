@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText, useUiLanguage } from "@/components/language/UiLanguage";
 import { useId } from "react";
 import { keywordLabel, type TrackedKeywordItem } from "@asobeast/shared";
 import { Badge } from "@/components/ui/badge";
@@ -38,6 +39,7 @@ export function InsightsCell({
   today: string;
   multiMarket: boolean;
 }) {
+  const { text: uiLabel } = useUiLanguage();
   const titleId = useId();
   const subjectId = useId();
   const insights = shownInsights(insightsOf(keyword, today));
@@ -47,14 +49,17 @@ export function InsightsCell({
   return (
     <span
       role="group"
-      aria-label="Insights"
+      aria-label={uiLabel("Insights")}
       className="flex items-center whitespace-nowrap"
     >
       <Popover>
         <PopoverTrigger asChild>
           <button
             type="button"
-            aria-label={`${labels.join(", ")}: reasons for ${subject}`}
+            aria-label={uiLabel("{0}: reasons for {1}", [
+              labels.join(", "),
+              subject,
+            ])}
             className="-my-1 inline-flex items-center gap-1 rounded-md py-1 outline-none focus-visible:ring-2 focus-visible:ring-ring"
           >
             {insights.map((insight) => (
@@ -76,7 +81,9 @@ export function InsightsCell({
           className="w-80 max-w-(--radix-popover-content-available-width) text-body"
         >
           <PopoverHeader>
-            <PopoverTitle id={titleId}>Insights</PopoverTitle>
+            <PopoverTitle id={titleId}>
+              <UiText message="Insights" />
+            </PopoverTitle>
             <PopoverDescription id={subjectId} className="wrap-anywhere">
               {subject}
             </PopoverDescription>

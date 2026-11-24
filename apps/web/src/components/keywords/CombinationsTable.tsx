@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText, useUiLanguage } from "@/components/language/UiLanguage";
 import { useMemo, useState } from "react";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { useTable, type RowSelectionState } from "@tanstack/react-table";
@@ -63,6 +64,7 @@ function ListingCombinations({
   setParams,
   keywordField,
 }: CombinationsProps & { keywordField: readonly string[] }) {
+  const { text: uiLabel } = useUiLanguage();
   const { data: app } = useSuspenseQuery(appDetailOptions(id));
   const { data: tracked } = useSuspenseQuery(keywordsOptions(id, homeCountry));
   const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
@@ -106,7 +108,7 @@ function ListingCombinations({
   if (result.words.length === 0) {
     return (
       <EmptyState
-        title="No listing words to combine yet"
+        title={uiLabel("No listing words to combine yet")}
         body="Combinations appear once AsoBeast has captured a listing with words in the fields this store indexes."
       />
     );
@@ -116,7 +118,13 @@ function ListingCombinations({
     <div className="flex flex-col gap-3">
       {result.truncated ? (
         <p role="note" className="text-caption text-muted-foreground">
-          {`Your listing forms ${formatNumber(result.total)} combinations. The first ${formatNumber(COMBINATION_LIMIT)}, shortest first, are listed.`}
+          <UiText
+            message="Your listing forms {0} combinations. The first {1}, shortest first, are listed."
+            values={[
+              formatNumber(result.total),
+              formatNumber(COMBINATION_LIMIT),
+            ]}
+          />
         </p>
       ) : null}
       <CombinationFilters

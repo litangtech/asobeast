@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText, useUiLanguage } from "@/components/language/UiLanguage";
 import { useState } from "react";
 import type { TrackedKeywordItem } from "@asobeast/shared";
 import { Check, ChevronsUpDown } from "lucide-react";
@@ -30,6 +31,7 @@ export function KeywordPicker({
   value: string[];
   onChange: (next: string[]) => void;
 }) {
+  const { text: uiLabel } = useUiLanguage();
   const [open, setOpen] = useState(false);
   const label = pickerLabel(tracked);
 
@@ -48,19 +50,22 @@ export function KeywordPicker({
           variant="outline"
           className="justify-between gap-2 print:hidden"
         >
-          {value.length} selected
+          {value.length}
+          <UiText message="selected" />
           <ChevronsUpDown className="size-4 opacity-50" />
         </Button>
       </PopoverTrigger>
       <PopoverContent
-        aria-label="Choose keywords"
+        aria-label={uiLabel("Choose keywords")}
         className="w-72 p-0"
         align="start"
       >
         <Command>
-          <CommandInput placeholder="Search keywords…" />
+          <CommandInput placeholder={uiLabel("Search keywords…")} />
           <CommandList>
-            <CommandEmpty>No keywords found.</CommandEmpty>
+            <CommandEmpty>
+              <UiText message="No keywords found." />
+            </CommandEmpty>
             <CommandGroup>
               {tracked.map((keyword) => (
                 <CommandItem
@@ -87,9 +92,13 @@ export function KeywordPicker({
                   onChange(topByOpportunity(tracked, DEFAULT_SELECTION))
                 }
               >
-                Top {DEFAULT_SELECTION} by opportunity
+                <UiText message="Top" trailing />
+                {DEFAULT_SELECTION}
+                <UiText message="by opportunity" />
               </CommandItem>
-              <CommandItem onSelect={() => onChange([])}>Clear</CommandItem>
+              <CommandItem onSelect={() => onChange([])}>
+                <UiText message="Clear" />
+              </CommandItem>
             </CommandGroup>
           </CommandList>
         </Command>

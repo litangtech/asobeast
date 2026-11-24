@@ -1,6 +1,6 @@
 "use client";
 
-import { UiText } from "@/components/language/UiLanguage";
+import { UiText, useUiLanguage } from "@/components/language/UiLanguage";
 import { useEffect, useState, type ReactNode } from "react";
 import {
   useMutation,
@@ -105,6 +105,7 @@ function useConnectionAction<T>(
 }
 
 function DisconnectButton({ store }: { store: Store }) {
+  const { text: uiLabel } = useUiLanguage();
   const [open, setOpen] = useState(false);
   const copy = STORE_CONSOLES[store];
   const disconnect = useConnectionAction(
@@ -121,17 +122,22 @@ function DisconnectButton({ store }: { store: Store }) {
     >
       <AlertDialogTrigger asChild>
         <Button variant="outline" size="sm">
-          Disconnect
+          <UiText message="Disconnect" />
         </Button>
       </AlertDialogTrigger>
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>Disconnect {copy.name}?</AlertDialogTitle>
-          <AlertDialogDescription>{copy.disconnect}</AlertDialogDescription>
+          <AlertDialogTitle>
+            <UiText message="Disconnect" trailing />
+            {copy.name}?
+          </AlertDialogTitle>
+          <AlertDialogDescription>
+            <UiText message={copy.disconnect} />
+          </AlertDialogDescription>
         </AlertDialogHeader>
         <ConfirmActionFooter
           pending={disconnect.pending}
-          label="Disconnect"
+          label={uiLabel("Disconnect")}
           pendingLabel="Disconnecting…"
           onConfirm={disconnect.run}
         />
@@ -162,7 +168,7 @@ function ConnectionActions({ item }: { item: StoreConnectionItem }) {
         aria-disabled={verify.pending || undefined}
         onClick={() => verify.run()}
       >
-        Verify
+        <UiText message="Verify" />
       </Button>
       {rejected ? null : (
         <Button
@@ -171,7 +177,7 @@ function ConnectionActions({ item }: { item: StoreConnectionItem }) {
           aria-disabled={sync.pending || undefined}
           onClick={() => sync.run()}
         >
-          Sync now
+          <UiText message="Sync now" />
         </Button>
       )}
       <ConnectDialog
@@ -206,7 +212,9 @@ function ConnectionDetails({
             </dd>
           </div>
         ))}
-        <dt className="text-muted-foreground">Review replies</dt>
+        <dt className="text-muted-foreground">
+          <UiText message="Review replies" />
+        </dt>
         <dd
           className={cn(
             "min-w-0",
@@ -245,15 +253,21 @@ function BeforeYouStart({
   return (
     <div className="flex flex-col gap-2">
       <p id={labelId} className="text-label text-foreground">
-        <span>Before you start</span>
-        <span className="sr-only">{` with ${copy.name}`}</span>
+        <span>
+          <UiText message="Before you start" />
+        </span>
+        <span className="sr-only">
+          <UiText message=" with {0}" values={[copy.name]} />
+        </span>
       </p>
       <ul
         aria-labelledby={labelId}
         className="flex list-disc flex-col gap-1 pl-4 text-body text-muted-foreground"
       >
         {copy.before.map((line) => (
-          <li key={line}>{line}</li>
+          <li key={line}>
+            <UiText message={line} />
+          </li>
         ))}
       </ul>
     </div>
@@ -282,7 +296,9 @@ function StoreConsoleCard({
         className="flex-row items-start justify-between gap-4"
       >
         <div className="flex flex-col gap-1.5">
-          <CardDescription>Store console</CardDescription>
+          <CardDescription>
+            <UiText message="Store console" />
+          </CardDescription>
           <CardTitle>{copy.name}</CardTitle>
         </div>
         {owner && !connection ? (
@@ -300,7 +316,9 @@ function StoreConsoleCard({
           />
         ) : (
           <>
-            <p className="text-body text-muted-foreground">{copy.empty}</p>
+            <p className="text-body text-muted-foreground">
+              <UiText message={copy.empty} />
+            </p>
             {owner ? <BeforeYouStart store={store} copy={copy} /> : null}
           </>
         )}
@@ -327,13 +345,17 @@ export function StoreConnectionsCard() {
     return (
       <Card>
         <CardHeader>
-          <CardDescription>Store console</CardDescription>
+          <CardDescription>
+            <UiText message="Store console" />
+          </CardDescription>
           <CardTitle>
-            <UiText message={"Store connections"} />
+            <UiText message="Store connections" />
           </CardTitle>
         </CardHeader>
         <CardContent className="flex flex-col gap-3">
-          <p className="text-body text-muted-foreground">{STORE_CONNECT_OFF}</p>
+          <p className="text-body text-muted-foreground">
+            <UiText message={STORE_CONNECT_OFF} />
+          </p>
           <GuideLink
             href={STORE_CONNECT_SETTING_GUIDE}
             subject="store connections"

@@ -1,5 +1,6 @@
 "use client";
 
+import { useUiLanguage } from "@/components/language/UiLanguage";
 import { useQuery, useSuspenseQuery } from "@tanstack/react-query";
 import type { AppAnnotationItem } from "@asobeast/shared";
 import {
@@ -116,13 +117,14 @@ function ShareTooltip({
 }
 
 function NoShare({ id, country }: { id: string; country?: string }) {
+  const { text: uiLabel } = useUiLanguage();
   const { data: summary } = useQuery(appSummaryOptions(id, country));
   const reason = summary?.shareOfVoice?.reason;
   if (reason === "noCompetitors") {
     return (
       <ChartNotice
         height={CHART_HEIGHT.compact}
-        title="Add a competitor to chart share of voice"
+        title={uiLabel("Add a competitor to chart share of voice")}
         body="Track one on the competitors page and its share is charted from its first daily check."
       />
     );
@@ -130,7 +132,7 @@ function NoShare({ id, country }: { id: string; country?: string }) {
   return (
     <ChartNotice
       height={CHART_HEIGHT.compact}
-      title="No share of voice recorded yet"
+      title={uiLabel("No share of voice recorded yet")}
       body={`${shareReason(reason)}.`}
     />
   );
@@ -143,6 +145,7 @@ export function ShareOfVoiceChart({
   id: string;
   range: VisibilityRange;
 }) {
+  const { text: uiLabel } = useUiLanguage();
   const { country } = useKeywordScope(id);
   const { data } = useSuspenseQuery(
     visibilityOptions(id, presetToRange(range), country, "competitors"),
@@ -164,7 +167,7 @@ export function ShareOfVoiceChart({
     return (
       <ChartStat
         height={CHART_HEIGHT.compact}
-        label="Latest share of voice"
+        label={uiLabel("Latest share of voice")}
         value={latest.share === undefined ? "—" : formatShare(latest.share)}
         note="A trend line needs a few more daily checks."
       />
@@ -176,7 +179,7 @@ export function ShareOfVoiceChart({
       config={shareConfig}
       className={`${CHART_HEIGHT.compact} w-full`}
       role="region"
-      aria-label="Share of voice over time"
+      aria-label={uiLabel("Share of voice over time")}
     >
       <LineChart accessibilityLayer data={rows} margin={CHART_MARGIN}>
         <CartesianGrid {...GRID_PROPS} />

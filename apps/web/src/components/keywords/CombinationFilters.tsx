@@ -1,5 +1,6 @@
 "use client";
 
+import { useUiLanguage } from "@/components/language/UiLanguage";
 import type { ReactNode } from "react";
 import type { Row, Table } from "@tanstack/react-table";
 import type { inferParserType, SetValues } from "nuqs";
@@ -55,6 +56,7 @@ export function CombinationFilters({
   setParams: SetCombinationParams;
   actions: ReactNode;
 }) {
+  const { text: uiLabel } = useUiLanguage();
   const statuses = params.status.map(
     (value) => COMBINATION_STATUS_LABELS[value],
   );
@@ -86,12 +88,12 @@ export function CombinationFilters({
     <div className="flex flex-col gap-2">
       <div className="flex flex-wrap items-center gap-2">
         <SearchInput
-          label="Search combinations"
+          label={uiLabel("Search combinations")}
           value={params.q}
           onSearch={(q, options) => void setParams({ q }, options)}
         />
         <FacetFilter
-          title="Words"
+          title={uiLabel("Words")}
           options={WORD_OPTIONS}
           selected={params.words}
           counts={facetCounts(table, "words", (row) =>
@@ -100,7 +102,7 @@ export function CombinationFilters({
           onChange={(words) => void setParams({ words })}
         />
         <FacetFilter
-          title="Status"
+          title={uiLabel("Status")}
           options={STATUS_OPTIONS}
           selected={params.status}
           counts={facetCounts(table, "status", (row) => row.original.status)}

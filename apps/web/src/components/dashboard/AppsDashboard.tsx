@@ -1,5 +1,6 @@
 "use client";
 
+import { useUiLanguage } from "@/components/language/UiLanguage";
 import { useDeferredValue } from "react";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { useQueryStates } from "nuqs";
@@ -11,6 +12,7 @@ import { PortfolioTable } from "./PortfolioTable";
 import { filterRows, matchesQuery, sortRows, toRows } from "./portfolio-rows";
 
 export function AppsDashboard() {
+  const { text: uiLabel } = useUiLanguage();
   const { data } = useSuspenseQuery(portfolioOptions);
   const { data: insights } = useSuspenseQuery(portfolioInsightsOptions);
   const [{ q, sort, dir, view }, setList] = useQueryStates(appListParsers);
@@ -28,7 +30,7 @@ export function AppsDashboard() {
   if (rows.length === 0) {
     return (
       <FilteredEmpty
-        title={`No apps match "${q}"`}
+        title={uiLabel('No apps match "{0}"', [q])}
         onClear={() => void setList({ q: null })}
       />
     );

@@ -1,5 +1,6 @@
 "use client";
 
+import { useUiLanguage } from "@/components/language/UiLanguage";
 import {
   CartesianGrid,
   Line,
@@ -36,6 +37,7 @@ export function ActionTrendChart({
   trend: ActionTrend;
   item: ActionItem;
 }) {
+  const { text: uiLabel } = useUiLanguage();
   const data = trendChartData(trend, item);
   const state = trendState(data.plotted);
   if (state !== "ready") {
@@ -44,8 +46,8 @@ export function ActionTrendChart({
         height={CHART_HEIGHT.compact}
         title={
           state === "empty"
-            ? "No history for this action"
-            : "Not enough history yet"
+            ? uiLabel("No history for this action")
+            : uiLabel("Not enough history yet")
         }
         body={data.summary}
       />
@@ -64,7 +66,7 @@ export function ActionTrendChart({
         config={config}
         className={`${CHART_HEIGHT.compact} w-full`}
         role="region"
-        aria-label={`${data.metricLabel} over time`}
+        aria-label={uiLabel("{0} over time", [data.metricLabel])}
       >
         <LineChart accessibilityLayer data={data.rows} margin={CHART_MARGIN}>
           <CartesianGrid {...GRID_PROPS} />

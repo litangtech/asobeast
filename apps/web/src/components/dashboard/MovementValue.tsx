@@ -1,3 +1,4 @@
+import { UiText } from "@/components/language/UiLanguage";
 import type { PortfolioMovement } from "@asobeast/shared";
 import { formatNumber } from "@/lib/format";
 
@@ -11,7 +12,10 @@ export function MovementValue({ movement }: { movement: PortfolioMovement }) {
         <span>{formatNumber(movement.down)}</span>
       </span>
       <span className="sr-only">
-        {`${movement.up} climbing, ${movement.down} falling`}
+        <UiText
+          message="{0} climbing, {1} falling"
+          values={[movement.up, movement.down]}
+        />
       </span>
     </>
   );

@@ -1,3 +1,4 @@
+import { UiText } from "@/components/language/UiLanguage";
 import Link from "next/link";
 import { adminHref } from "@/lib/admin-sections";
 import { formatNumber } from "@/lib/format";
@@ -15,14 +16,18 @@ export function ListLimitNote({
 
   return (
     <p className="text-sm text-muted-foreground">
-      {`Showing the newest ${formatNumber(shown)} of ${formatNumber(total)} ${noun}s.`}{" "}
+      <UiText
+        message="Showing the newest {0} of {1} {2}s."
+        values={[formatNumber(shown), formatNumber(total), noun]}
+      />{" "}
       <Link
         href={adminHref("workspaces")}
         className="font-medium text-foreground underline underline-offset-4"
       >
-        Open a workspace
+        <UiText message="Open a workspace" />
       </Link>{" "}
-      to list all of its {noun}s.
+      <UiText message="to list all of its" trailing />
+      {noun}s.
     </p>
   );
 }

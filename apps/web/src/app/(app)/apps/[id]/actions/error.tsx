@@ -1,5 +1,6 @@
 "use client";
 
+import { useUiLanguage } from "@/components/language/UiLanguage";
 import { ErrorState } from "@/components/layout/ErrorState";
 
 export default function AppActionsError({
@@ -9,11 +10,12 @@ export default function AppActionsError({
   error: Error & { digest?: string };
   retry: () => void;
 }) {
+  const { text: uiLabel } = useUiLanguage();
   return (
     <ErrorState
       error={error}
       retry={retry}
-      title="Actions could not be loaded"
+      title={uiLabel("Actions could not be loaded")}
     />
   );
 }

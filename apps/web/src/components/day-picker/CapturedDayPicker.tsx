@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText, useUiLanguage } from "@/components/language/UiLanguage";
 import {
   useEffect,
   useMemo,
@@ -76,6 +77,7 @@ function DayGrid({
   value: string;
   onSelect: (date: string) => void;
 }) {
+  const { text: uiLabel } = useUiLanguage();
   const start = nearestCaptured(dates, value);
   const [month, setMonth] = useState(() => monthOf(start));
   const [focused, setFocused] = useState(start);
@@ -114,7 +116,7 @@ function DayGrid({
         <Button
           variant="ghost"
           size="icon-sm"
-          aria-label="Previous month"
+          aria-label={uiLabel("Previous month")}
           onClick={() => showMonth(shiftMonth(month, -1))}
         >
           <ChevronLeft aria-hidden />
@@ -125,7 +127,7 @@ function DayGrid({
         <Button
           variant="ghost"
           size="icon-sm"
-          aria-label="Next month"
+          aria-label={uiLabel("Next month")}
           onClick={() => showMonth(shiftMonth(month, 1))}
         >
           <ChevronRight aria-hidden />
@@ -193,6 +195,7 @@ export function CapturedDayPicker({
   value: string | null;
   onSelect: (date: string) => void;
 }) {
+  const { text: uiLabel } = useUiLanguage();
   const [open, setOpen] = useState(false);
   const anchor = value ?? dates[0] ?? null;
   const previous = value ? stepDate(dates, value, -1) : null;
@@ -209,18 +212,20 @@ export function CapturedDayPicker({
           <Button
             variant="outline"
             aria-label={
-              value ? `Captured day, ${formatDate(value)}` : "Captured day"
+              value
+                ? uiLabel("Captured day, {0}", [formatDate(value)])
+                : uiLabel("Captured day")
             }
             disabled={anchor === null}
             className="min-w-36 justify-start"
           >
             <CalendarDays aria-hidden />
-            {value ? formatDate(value) : "No capture yet"}
+            {value ? formatDate(value) : <UiText message="No capture yet" />}
           </Button>
         </PopoverTrigger>
         <PopoverContent
           align="start"
-          aria-label="Choose captured day"
+          aria-label={uiLabel("Choose captured day")}
           className="w-auto"
         >
           {anchor ? (
@@ -231,7 +236,7 @@ export function CapturedDayPicker({
       <Button
         variant="outline"
         size="icon"
-        aria-label="Previous captured day"
+        aria-label={uiLabel("Previous captured day")}
         aria-disabled={previous === null || undefined}
         onClick={() => {
           if (previous) onSelect(previous);
@@ -242,7 +247,7 @@ export function CapturedDayPicker({
       <Button
         variant="outline"
         size="icon"
-        aria-label="Next captured day"
+        aria-label={uiLabel("Next captured day")}
         aria-disabled={next === null || undefined}
         onClick={() => {
           if (next) onSelect(next);

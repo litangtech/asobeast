@@ -1,6 +1,6 @@
 "use client";
 
-import { UiText, useUiLanguage } from "@/components/language/UiLanguage";
+import { useUiLanguage, UiText } from "@/components/language/UiLanguage";
 import { useRef, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { usePathname, useRouter } from "next/navigation";
@@ -84,7 +84,7 @@ function ImportEntry() {
           <SidebarMenuButton size="lg" tooltip={text("Import app")}>
             <Plus />
             <span className="font-medium">
-              <UiText message={"Import app"} />
+              <UiText message="Import app" />
             </span>
           </SidebarMenuButton>
         </ImportAppDialog>
@@ -94,6 +94,7 @@ function ImportEntry() {
 }
 
 export function AppSwitcher() {
+  const { text: uiLabel } = useUiLanguage();
   const { language, text } = useUiLanguage();
   const appLabel = (app: AppListItem) => app.name ?? text("Untitled app");
   const [open, setOpen] = useState(false);
@@ -127,7 +128,7 @@ export function AppSwitcher() {
                 current
                   ? language === "zh-CN"
                     ? `切换应用，当前为 ${appLabel(current)}`
-                    : `Switch app, currently ${appLabel(current)}`
+                    : uiLabel("Switch app, currently {0}", [appLabel(current)])
                   : text("Choose an app")
               }
               tooltip={
@@ -153,7 +154,7 @@ export function AppSwitcher() {
               <CommandInput placeholder={text("Search apps…")} />
               <CommandList>
                 <CommandEmpty>
-                  <UiText message={"No apps match."} />
+                  <UiText message="No apps match." />
                 </CommandEmpty>
                 <CommandGroup heading={text("Apps")}>
                   {(apps ?? []).map((app) => (

@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText, useUiLanguage } from "@/components/language/UiLanguage";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { ScreenshotThumb } from "@/components/screenshots/ScreenshotThumb";
 import { Badge } from "@/components/ui/badge";
@@ -23,6 +24,7 @@ export function ScreenshotCaptionsCard({
   market?: string;
   localization?: string;
 }) {
+  const { text: uiLabel } = useUiLanguage();
   const { data } = useSuspenseQuery(
     screenshotsOptions(id, market, localization),
   );
@@ -30,7 +32,7 @@ export function ScreenshotCaptionsCard({
   return (
     <section aria-labelledby={HEADING_ID} className="flex flex-col gap-3">
       <h2 id={HEADING_ID} className="text-lg font-medium">
-        Screenshot captions
+        <UiText message="Screenshot captions" />
       </h2>
       <Card className="min-w-0">
         <CardContent className="flex flex-col gap-4">
@@ -39,12 +41,12 @@ export function ScreenshotCaptionsCard({
           </p>
           {data.screenshots.length === 0 ? (
             <EmptyState
-              title="No screenshots recorded"
+              title={uiLabel("No screenshots recorded")}
               body="Screenshots are recorded with every snapshot. Refresh the app to capture them."
             />
           ) : (
             <ol
-              aria-label="Screenshots in store order"
+              aria-label={uiLabel("Screenshots in store order")}
               tabIndex={0}
               className="flex gap-4 overflow-x-auto pb-2"
             >
@@ -55,12 +57,12 @@ export function ScreenshotCaptionsCard({
                 >
                   <ScreenshotThumb
                     src={item.url}
-                    alt={`Screenshot ${item.position}`}
+                    alt={uiLabel("Screenshot {0}", [item.position])}
                     height={THUMB_HEIGHT}
                     className="self-start"
                   />
                   <Badge variant="outline" className="self-start">
-                    {CAPTION_STATUS_LABELS[item.status]}
+                    <UiText message={CAPTION_STATUS_LABELS[item.status]} />
                   </Badge>
                   {item.caption !== null ? (
                     <p className="min-w-28 text-body font-medium break-words text-foreground">

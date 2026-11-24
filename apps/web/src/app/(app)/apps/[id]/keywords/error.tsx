@@ -1,5 +1,6 @@
 "use client";
 
+import { useUiLanguage } from "@/components/language/UiLanguage";
 import { ErrorState } from "@/components/layout/ErrorState";
 
 export default function KeywordsError({
@@ -9,11 +10,12 @@ export default function KeywordsError({
   error: Error & { digest?: string };
   retry: () => void;
 }) {
+  const { text: uiLabel } = useUiLanguage();
   return (
     <ErrorState
       error={error}
       retry={retry}
-      title="Keywords could not be loaded"
+      title={uiLabel("Keywords could not be loaded")}
     />
   );
 }

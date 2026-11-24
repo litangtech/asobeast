@@ -1,5 +1,7 @@
 "use client";
 
+import { UiDate } from "@/components/language/UiFormat";
+import { UiText, useUiLanguage } from "@/components/language/UiLanguage";
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import type { ReviewItem, Store } from "@asobeast/shared";
 import { Badge } from "@/components/ui/badge";
@@ -22,6 +24,7 @@ const LINK_BUTTON =
   "rounded-sm text-caption font-medium text-muted-foreground underline-offset-4 hover:text-foreground hover:underline disabled:pointer-events-none";
 
 function Stars({ score }: { score: number }) {
+  const { text: uiLabel } = useUiLanguage();
   const low = score <= LOW_SCORE;
   return (
     <span
@@ -30,7 +33,7 @@ function Stars({ score }: { score: number }) {
         low ? "text-destructive" : "text-foreground",
       )}
       role="img"
-      aria-label={`${score} out of 5 stars`}
+      aria-label={uiLabel("{0} out of 5 stars", [score])}
     >
       <span aria-hidden>
         {"★".repeat(score)}
@@ -81,7 +84,11 @@ function ReviewText({ text, label }: { text: string; label: ActionLabel }) {
           aria-label={label(expanded ? "Show less of" : "Show more of")}
           className={LINK_BUTTON}
         >
-          {expanded ? "Show less" : "Show more"}
+          {expanded ? (
+            <UiText message="Show less" />
+          ) : (
+            <UiText message="Show more" />
+          )}
         </button>
       ) : null}
     </div>
@@ -93,7 +100,7 @@ function DeveloperReply({ review }: { review: ReviewItem }) {
   return (
     <div className="flex flex-col gap-1 border-l-2 border-border pl-3">
       <p className="text-caption text-muted-foreground">
-        Developer reply
+        <UiText message="Developer reply" />
         {review.repliedAt ? ` · ${formatDate(review.repliedAt)}` : null}
       </p>
       <p dir="auto" className="text-body wrap-anywhere whitespace-pre-line">
@@ -195,7 +202,9 @@ export function ReviewCard({
           label={label}
         />
       ) : (
-        <p className="text-body text-muted-foreground">No written review</p>
+        <p className="text-body text-muted-foreground">
+          <UiText message="No written review" />
+        </p>
       )}
       {shown ? (
         <p className="text-caption text-muted-foreground">
@@ -205,8 +214,8 @@ export function ReviewCard({
       <DeveloperReply review={review} />
       <div className="flex flex-wrap items-center gap-2">
         <p className="text-xs text-muted-foreground wrap-anywhere">
-          <bdi>{review.userName ?? "Anonymous"}</bdi> ·{" "}
-          {formatDate(review.reviewedAt)}
+          <bdi>{review.userName ?? <UiText message="Anonymous" />}</bdi> ·{" "}
+          <UiDate value={review.reviewedAt} />
         </p>
         <TranslateButton translation={translation} label={label} />
         {actions}

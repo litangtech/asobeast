@@ -18,13 +18,13 @@ import {
 type LanguageContext = {
   language: UiLanguage;
   setLanguage: (language: UiLanguage) => void;
-  text: (message: string) => string;
+  text: (message: string, values?: readonly unknown[]) => string;
 };
 
 const UiLanguageContext = createContext<LanguageContext>({
   language: "en",
   setLanguage: () => {},
-  text: (message) => message,
+  text: (message, values) => uiText("en", message, values),
 });
 
 export function UiLanguageProvider({
@@ -52,7 +52,8 @@ export function UiLanguageProvider({
   }, []);
 
   const text = useCallback(
-    (message: string) => uiText(language, message),
+    (message: string, values?: readonly unknown[]) =>
+      uiText(language, message, values),
     [language],
   );
 
@@ -67,7 +68,19 @@ export function useUiLanguage(): LanguageContext {
   return useContext(UiLanguageContext);
 }
 
-export function UiText({ message }: { message: string }) {
+export function UiText({
+  message,
+  values,
+  leading,
+  trailing,
+}: {
+  message: string;
+  values?: readonly unknown[];
+  leading?: boolean;
+  trailing?: boolean;
+}) {
   const { text } = useUiLanguage();
-  return <span>{text(message)}</span>;
+  return (
+    <span>{`${leading ? " " : ""}${text(message, values)}${trailing ? " " : ""}`}</span>
+  );
 }

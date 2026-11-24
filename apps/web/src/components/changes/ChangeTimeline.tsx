@@ -1,5 +1,7 @@
 "use client";
 
+import { UiDate } from "@/components/language/UiFormat";
+import { UiText, useUiLanguage } from "@/components/language/UiLanguage";
 import { Suspense } from "react";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { useQueryState } from "nuqs";
@@ -24,12 +26,7 @@ import {
 import { CHANGE_FIELD_LABELS } from "@asobeast/shared";
 import { localizedLabel } from "@/lib/localizations";
 import { changeImpactOptions, changesOptions } from "@/lib/queries";
-import {
-  formatCountry,
-  formatDate,
-  formatNumber,
-  formatPrice,
-} from "@/lib/format";
+import { formatCountry, formatNumber, formatPrice } from "@/lib/format";
 import { queryMarket } from "@/lib/market";
 import { CHANGE_WINDOWS } from "@/lib/ranges";
 import { changeDaysParser, countryParser } from "@/lib/search-params";
@@ -82,7 +79,11 @@ function ChangeValue({
   }
 
   if (field === "icon") {
-    return <span className="text-muted-foreground">Icon updated</span>;
+    return (
+      <span className="text-muted-foreground">
+        <UiText message="Icon updated" />
+      </span>
+    );
   }
 
   if (field === "whatsNew") {
@@ -91,7 +92,8 @@ function ChangeValue({
         <TooltipTrigger asChild>
           <span className="break-words">
             <span className="text-muted-foreground">
-              {CHANGE_FIELD_LABELS.whatsNew} updated:{" "}
+              {CHANGE_FIELD_LABELS.whatsNew}
+              <UiText message="updated:" />{" "}
             </span>
             <span
               className={cn(
@@ -104,7 +106,8 @@ function ChangeValue({
           </span>
         </TooltipTrigger>
         <TooltipContent className="max-w-xs">
-          Previous: {inlineNotes(before)}
+          <UiText message="Previous:" trailing />
+          {inlineNotes(before)}
         </TooltipContent>
       </Tooltip>
     );
@@ -140,13 +143,13 @@ function ChangeValue({
     <span className="grid gap-1 sm:grid-cols-2">
       <span className="flex flex-col gap-0.5 rounded-md bg-muted/50 px-2 py-1">
         <span className="text-label text-muted-foreground uppercase">
-          Before
+          <UiText message="Before" />
         </span>
         <span className="break-words text-muted-foreground">{from}</span>
       </span>
       <span className="flex flex-col gap-0.5 rounded-md bg-success-subtle px-2 py-1">
         <span className="text-label text-muted-foreground uppercase">
-          After
+          <UiText message="After" />
         </span>
         <span className="break-words font-medium">{to}</span>
       </span>
@@ -180,10 +183,14 @@ export function ChangeRow({
       <div className="flex min-w-0 flex-1 flex-col gap-1">
         <div className="flex flex-wrap items-center gap-2">
           <span className="text-body font-medium">
-            {event.appName ?? "Unknown app"}
+            {event.appName ?? <UiText message="Unknown app" />}
           </span>
           <Badge variant={event.isCompetitor ? "secondary" : "outline"}>
-            {event.isCompetitor ? "Competitor" : "Your app"}
+            {event.isCompetitor ? (
+              <UiText message="Competitor" />
+            ) : (
+              <UiText message="Your app" />
+            )}
           </Badge>
           <Badge variant="outline">
             {localizedLabel(
@@ -209,7 +216,10 @@ function ConversionChip({ value }: { value: number }) {
         : "text-muted-foreground";
   return (
     <span className={cn("numeric font-mono normal-case", tone)}>
-      {`Conversion ${value > 0 ? "+" : ""}${value}%`}
+      <UiText
+        message="Conversion {0}{1}%"
+        values={[value > 0 ? "+" : "", value]}
+      />
     </span>
   );
 }
@@ -244,12 +254,13 @@ function ChangeList({
   market?: string;
   homeCountry: string;
 }) {
+  const { text: uiLabel } = useUiLanguage();
   const { data } = useSuspenseQuery(changesOptions(id, days, market));
 
   if (data.events.length === 0) {
     return (
       <EmptyState
-        title={`No changes in the last ${days} days`}
+        title={uiLabel("No changes in the last {0} days", [days])}
         body="Metadata changes appear after a daily refresh finds one. Widen the window to look further back."
       />
     );
@@ -272,7 +283,7 @@ function ChangeList({
         <section key={day} className="flex flex-col gap-2">
           <h2 className="flex items-center gap-2 text-label text-muted-foreground uppercase">
             <span aria-hidden className="size-1.5 rounded-full bg-border" />
-            {formatDate(day)}
+            <UiDate value={day} />
             {market === undefined ? (
               <Suspense fallback={null}>
                 <DayConversion
@@ -325,7 +336,9 @@ export function ChangeTimeline({ id }: { id: string }) {
               <MarketHeading id={id} />
             </Suspense>
           </CardDescription>
-          <CardTitle>Metadata change timeline</CardTitle>
+          <CardTitle>
+            <UiText message="Metadata change timeline" />
+          </CardTitle>
         </div>
         <div className="flex flex-wrap items-center justify-end gap-3">
           <Suspense fallback={null}>

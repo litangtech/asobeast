@@ -1,5 +1,7 @@
 "use client";
 
+import { UiDate } from "@/components/language/UiFormat";
+import { UiText } from "@/components/language/UiLanguage";
 import type { ReactNode } from "react";
 import Link from "next/link";
 import { useSuspenseQuery } from "@tanstack/react-query";
@@ -10,7 +12,7 @@ import type {
   WorkspaceRunStatus,
 } from "@asobeast/shared";
 import { Separated } from "@/components/ui/separated";
-import { formatDate, pluralize } from "@/lib/format";
+import { pluralize } from "@/lib/format";
 import {
   budgetOptions,
   portfolioOptions,
@@ -45,16 +47,19 @@ function freshness(
   return [
     run.lastCaptureAt ? (
       <span>
-        Collected{" "}
+        <UiText message="Collected" />{" "}
         <time dateTime={run.lastCaptureAt}>
-          {formatDate(run.lastCaptureAt)}
+          <UiDate value={run.lastCaptureAt} />
         </time>
       </span>
     ) : null,
     state,
     budget && budget.utilization > 0 ? (
       <Link href="/settings" className="underline-offset-4 hover:underline">
-        {`${budgetShare(budget.utilization)} of the daily request budget`}
+        <UiText
+          message="{0} of the daily request budget"
+          values={[budgetShare(budget.utilization)]}
+        />
       </Link>
     ) : null,
   ].filter((part) => part !== null);

@@ -1,5 +1,6 @@
 "use client";
 
+import { useUiLanguage } from "@/components/language/UiLanguage";
 import { useDeferredValue } from "react";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { useQueryStates } from "nuqs";
@@ -14,6 +15,7 @@ import { useAdminTable } from "./useAdminTable";
 import { workspaceColumns } from "./workspace-columns";
 
 export function AdminWorkspaces() {
+  const { text: uiLabel } = useUiLanguage();
   const { data: workspaces } = useSuspenseQuery(adminWorkspacesOptions);
   const { data: status } = useSuspenseQuery(authStatusOptions);
   const [{ q, sort, dir }, setList] = useQueryStates(adminWorkspaceListParsers);
@@ -37,7 +39,7 @@ export function AdminWorkspaces() {
   return (
     <AdminList
       table={table}
-      caption="Workspaces on this instance"
+      caption={uiLabel("Workspaces on this instance")}
       noun="workspace"
       loaded={workspaces.length}
       total={workspaces.length}

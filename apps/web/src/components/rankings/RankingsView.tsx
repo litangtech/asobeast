@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText, useUiLanguage } from "@/components/language/UiLanguage";
 import { useRef, type RefObject } from "react";
 import { useQuery, useSuspenseQuery } from "@tanstack/react-query";
 import { useQueryState } from "nuqs";
@@ -57,6 +58,7 @@ import { RankingChart } from "@/components/charts/RankingChart";
 import { selectionForMarket } from "./selection";
 
 export function RankingsView({ id }: { id: string }) {
+  const { text: uiLabel } = useUiLanguage();
   const [country] = useQueryState("country", countryParser);
   const [range, setRange] = useQueryState("range", rangeParser);
   const [selected, setSelected] = useQueryState("keywords", keywordIdsParser);
@@ -105,8 +107,12 @@ export function RankingsView({ id }: { id: string }) {
   return (
     <Card>
       <CardHeader>
-        <CardDescription>Ranking history</CardDescription>
-        <CardTitle>Keyword positions over time</CardTitle>
+        <CardDescription>
+          <UiText message="Ranking history" />
+        </CardDescription>
+        <CardTitle>
+          <UiText message="Keyword positions over time" />
+        </CardTitle>
       </CardHeader>
       <CardContent className="flex flex-col gap-4">
         <div className="flex flex-wrap items-center gap-2">
@@ -119,13 +125,15 @@ export function RankingsView({ id }: { id: string }) {
             presets={RANGE_PRESETS}
             value={range}
             onChange={setRange}
-            label="Date range"
+            label={uiLabel("Date range")}
           />
           {effective.map((keywordId) => (
             <button
               key={keywordId}
               type="button"
-              aria-label={`Remove ${labels.get(keywordId) ?? keywordId} from the chart`}
+              aria-label={uiLabel("Remove {0} from the chart", [
+                labels.get(keywordId) ?? keywordId,
+              ])}
               onClick={() =>
                 setSelected(effective.filter((item) => item !== keywordId))
               }
@@ -229,7 +237,10 @@ function RankingsChartBody({
       />
       {chart.totalSeries > MAX_SERIES ? (
         <p className="text-caption text-muted-foreground">
-          {`Showing ${MAX_SERIES} of ${chart.totalSeries} keywords.`}
+          <UiText
+            message="Showing {0} of {1} keywords."
+            values={[MAX_SERIES, chart.totalSeries]}
+          />
         </p>
       ) : null}
     </>

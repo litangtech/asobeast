@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText } from "@/components/language/UiLanguage";
 import { useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import type { ActionItem, ActionListResult } from "@asobeast/shared";
@@ -28,10 +29,18 @@ function PendingHeader({ missing }: { missing: boolean }) {
   return (
     <SheetHeader className="border-b p-4 pr-12">
       <SheetTitle className="text-title">
-        {missing ? "Action not found" : "Loading action"}
+        {missing ? (
+          <UiText message="Action not found" />
+        ) : (
+          <UiText message="Loading action" />
+        )}
       </SheetTitle>
       <SheetDescription>
-        {missing ? ACTION_NOT_FOUND : "Reading the action and its history."}
+        {missing ? (
+          ACTION_NOT_FOUND
+        ) : (
+          <UiText message="Reading the action and its history." />
+        )}
       </SheetDescription>
     </SheetHeader>
   );

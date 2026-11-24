@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText } from "@/components/language/UiLanguage";
 import { useId, useState, type ReactNode } from "react";
 import { ChevronDown } from "lucide-react";
 import {
@@ -45,7 +46,9 @@ export function CollapsibleCard({
       <Card data-slot="card" role="region" aria-labelledby={titleId}>
         <CardHeader className="flex flex-wrap items-start justify-between gap-x-4 gap-y-3">
           <div className="flex min-w-0 flex-col gap-1">
-            <CardDescription>{eyebrow}</CardDescription>
+            <CardDescription>
+              <UiText message={eyebrow} />
+            </CardDescription>
             <CardTitle asChild>
               <h2 id={titleId}>
                 <CollapsibleTrigger asChild>
@@ -54,7 +57,7 @@ export function CollapsibleCard({
                     data-section={section}
                     className="group/section inline-flex max-w-full items-center gap-2 rounded-sm text-left hover:underline hover:decoration-primary hover:underline-offset-4"
                   >
-                    {title}
+                    <UiText message={title} />
                     <ChevronDown
                       aria-hidden
                       className="size-4 shrink-0 text-muted-foreground transition-transform duration-200 group-data-[state=closed]/section:-rotate-90 motion-reduce:transition-none"

@@ -1,5 +1,6 @@
 "use client";
 
+import { useUiLanguage } from "@/components/language/UiLanguage";
 import { ErrorState } from "@/components/layout/ErrorState";
 
 export default function SettingsError({
@@ -9,11 +10,12 @@ export default function SettingsError({
   error: Error & { digest?: string };
   retry: () => void;
 }) {
+  const { text: uiLabel } = useUiLanguage();
   return (
     <ErrorState
       error={error}
       retry={retry}
-      title="Settings could not be loaded"
+      title={uiLabel("Settings could not be loaded")}
     />
   );
 }

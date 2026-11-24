@@ -1,3 +1,4 @@
+import { UiText } from "@/components/language/UiLanguage";
 import Link from "next/link";
 import type { AppAuditResult } from "@asobeast/shared";
 import { AppIconImage } from "@/components/AppIconImage";
@@ -21,12 +22,12 @@ export function CreativeInsights({ audit }: { audit: AppAuditResult }) {
       <Card>
         <CardContent>
           <p className="text-sm text-muted-foreground">
-            Run the analysis to see what AI reads on your icon and screenshots.{" "}
+            <UiText message="Run the analysis to see what AI reads on your icon and screenshots." />{" "}
             <Link
               href="#ai-analysis"
               className="font-medium underline-offset-4 hover:underline"
             >
-              Analyze creative
+              <UiText message="Analyze creative" />
             </Link>
           </p>
         </CardContent>
@@ -44,11 +45,11 @@ export function CreativeInsights({ audit }: { audit: AppAuditResult }) {
           className="flex flex-col gap-4"
         >
           <h2 id="creative-heading" className="text-lg font-medium">
-            Creative
+            <UiText message="Creative" />
           </h2>
           {creative.stale ? (
             <p className="rounded-xl border border-warning/40 bg-warning/10 px-3 py-2 text-sm">
-              These observations describe your previous screenshots.
+              <UiText message="These observations describe your previous screenshots." />
             </p>
           ) : null}
 
@@ -71,16 +72,26 @@ export function CreativeInsights({ audit }: { audit: AppAuditResult }) {
               ))}
               <ul className="flex flex-col gap-1 text-sm text-muted-foreground">
                 <li>
-                  {icon.hasText
-                    ? "The icon contains text"
-                    : "No text in the icon"}
+                  {icon.hasText ? (
+                    <UiText message="The icon contains text" />
+                  ) : (
+                    <UiText message="No text in the icon" />
+                  )}
                 </li>
                 <li>{ELEMENT_COUNT_LABEL[icon.elementCount]}</li>
-                <li>{icon.contrast} contrast</li>
                 <li>
-                  {icon.similarCompetitor
-                    ? `Looks like ${icon.similarCompetitor.name ?? "a competitor"}`
-                    : "Distinct from the competitor icons we sent"}
+                  {icon.contrast}
+                  <UiText message="contrast" />
+                </li>
+                <li>
+                  {icon.similarCompetitor ? (
+                    <UiText
+                      message="Looks like {0}"
+                      values={[icon.similarCompetitor.name ?? "a competitor"]}
+                    />
+                  ) : (
+                    <UiText message="Distinct from the competitor icons we sent" />
+                  )}
                 </li>
               </ul>
             </div>

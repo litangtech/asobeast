@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText, useUiLanguage } from "@/components/language/UiLanguage";
 import { Suspense, useId, useRef, useState } from "react";
 import Link from "next/link";
 import { useQuery, useSuspenseQuery } from "@tanstack/react-query";
@@ -33,6 +34,7 @@ function FollowRow({
   onNavigate: () => void;
   onSettled: (stop: HTMLElement | null) => void;
 }) {
+  const { text: uiLabel } = useUiLanguage();
   const stop = useRef<HTMLButtonElement>(null);
   const handOff = () => onSettled(stop.current);
   const mutation = useUnfollowChart(handOff, handOff);
@@ -58,7 +60,7 @@ function FollowRow({
         ref={stop}
         variant="ghost"
         size="icon-sm"
-        aria-label={`Stop following ${title}`}
+        aria-label={uiLabel("Stop following {0}", [title])}
         aria-disabled={mutation.isPending || undefined}
         onClick={() =>
           unfollowOnce(category.follows.map((follow) => follow.id))
@@ -89,8 +91,7 @@ function FollowList({ onNavigate }: { onNavigate: () => void }) {
       )}
       {categories.length === 0 ? (
         <p className="text-sm text-muted-foreground">
-          No categories followed yet. Follow a category to have the daily run
-          capture its charts.
+          <UiText message="No categories followed yet. Follow a category to have the daily run capture its charts." />
         </p>
       ) : (
         <ul className="-mx-2 flex max-h-80 flex-col gap-0.5 overflow-y-auto">
@@ -120,7 +121,7 @@ export function FollowedCharts() {
       <PopoverTrigger asChild>
         <Button variant="outline">
           <ListChecks aria-hidden />
-          Followed charts
+          <UiText message="Followed charts" />
         </Button>
       </PopoverTrigger>
       <PopoverContent
@@ -130,9 +131,11 @@ export function FollowedCharts() {
         aria-describedby={descriptionId}
       >
         <PopoverHeader>
-          <PopoverTitle id={titleId}>Followed charts</PopoverTitle>
+          <PopoverTitle id={titleId}>
+            <UiText message="Followed charts" />
+          </PopoverTitle>
           <PopoverDescription id={descriptionId}>
-            The daily run captures these every day.
+            <UiText message="The daily run captures these every day." />
           </PopoverDescription>
         </PopoverHeader>
         <Suspense fallback={<Skeleton className="h-16 w-full" />}>

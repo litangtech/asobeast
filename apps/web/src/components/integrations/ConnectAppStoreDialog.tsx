@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText, useUiLanguage } from "@/components/language/UiLanguage";
 import { useState } from "react";
 import type { FormEvent } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -41,6 +42,7 @@ export function ConnectAppStoreDialog({
   label: string;
   variant?: "default" | "outline";
 }) {
+  const { text: uiLabel } = useUiLanguage();
   const queryClient = useQueryClient();
   const [open, setOpen] = useState(false);
   const [issuerId, setIssuerId] = useState("");
@@ -67,7 +69,7 @@ export function ConnectAppStoreDialog({
       }),
     onSuccess: () => {
       invalidateStoreConnectionMutation(queryClient);
-      toast.success("App Store Connect connected");
+      toast.success(uiLabel("App Store Connect connected"));
       reset(false);
     },
     onError: (failure) =>
@@ -98,9 +100,7 @@ export function ConnectAppStoreDialog({
       label={label}
       description={
         <>
-          Create a team key with the Admin role in Users and Access,
-          Integrations, so AsoBeast can ask Apple for the reports. AsoBeast
-          checks it with Apple, stores it encrypted and never shows it again.{" "}
+          <UiText message="Create a team key with the Admin role in Users and Access, Integrations, so AsoBeast can ask Apple for the reports. AsoBeast checks it with Apple, stores it encrypted and never shows it again." />{" "}
           <GuideLink href={CONNECT_GUIDES.appStore} subject="App Store Connect">
             Step by step guide
           </GuideLink>
@@ -111,12 +111,14 @@ export function ConnectAppStoreDialog({
       onSubmit={submit}
       trigger={
         <Button variant={variant} size="sm">
-          {label}
+          <UiText message={label} />
         </Button>
       }
     >
       <div className="flex flex-col gap-2">
-        <Label htmlFor="asc-issuer-id">Issuer ID</Label>
+        <Label htmlFor="asc-issuer-id">
+          <UiText message="Issuer ID" />
+        </Label>
         <Input
           id="asc-issuer-id"
           value={issuerId}
@@ -128,25 +130,29 @@ export function ConnectAppStoreDialog({
         />
       </div>
       <div className="flex flex-col gap-2">
-        <Label htmlFor="asc-key-id">Key ID</Label>
+        <Label htmlFor="asc-key-id">
+          <UiText message="Key ID" />
+        </Label>
         <Input
           id="asc-key-id"
           value={keyId}
           onChange={(event) => setKeyId(event.target.value)}
-          placeholder="2X9R4HXF34"
+          placeholder={uiLabel("2X9R4HXF34")}
           autoComplete="off"
           spellCheck={false}
           className="font-mono text-xs"
         />
       </div>
       <div className="flex flex-col gap-2">
-        <Label htmlFor="asc-private-key">Private key</Label>
+        <Label htmlFor="asc-private-key">
+          <UiText message="Private key" />
+        </Label>
         <Input
           id="asc-private-key"
           type="password"
           value={privateKey}
           onChange={(event) => setPrivateKey(event.target.value)}
-          placeholder="Contents of AuthKey_2X9R4HXF34.p8"
+          placeholder={uiLabel("Contents of AuthKey_2X9R4HXF34.p8")}
           autoComplete="off"
           spellCheck={false}
           data-1p-ignore="true"
@@ -154,7 +160,7 @@ export function ConnectAppStoreDialog({
           data-bwignore="true"
         />
         <Label htmlFor="asc-private-key-file" className="sr-only">
-          Private key file
+          <UiText message="Private key file" />
         </Label>
         <Input
           id="asc-private-key-file"
@@ -164,9 +170,7 @@ export function ConnectAppStoreDialog({
           onChange={(event) => void choose(event.target.files?.[0])}
         />
         <p className="text-xs text-muted-foreground">
-          Paste the key or choose the .p8 file you downloaded. A team key with
-          the Admin role covers reports and replies; Sales and Reports reads
-          reports only, Customer Support replies only.
+          <UiText message="Paste the key or choose the .p8 file you downloaded. A team key with the Admin role covers reports and replies; Sales and Reports reads reports only, Customer Support replies only." />
         </p>
       </div>
     </AlertChannelDialog>

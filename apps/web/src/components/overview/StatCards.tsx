@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText } from "@/components/language/UiLanguage";
 import Link from "next/link";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import type { AppSummary } from "@asobeast/shared";
@@ -30,7 +31,9 @@ export function StatCards({ id }: { id: string }) {
       <Card>
         <CardHeader>
           <CardDescription className="flex items-center gap-1">
-            <span>{`Visibility${label}`}</span>
+            <span>
+              <UiText message="Visibility{0}" values={[label]} />
+            </span>
             <VisibilityHelp />
           </CardDescription>
           <CardTitle className="numeric font-mono text-3xl">
@@ -48,20 +51,29 @@ export function StatCards({ id }: { id: string }) {
 
       <Card>
         <CardHeader>
-          <CardDescription>{`Tracked keywords${label}`}</CardDescription>
+          <CardDescription>
+            <UiText message="Tracked keywords{0}" values={[label]} />
+          </CardDescription>
           <CardTitle className="numeric font-mono text-3xl">
             {summary.trackedKeywords}
           </CardTitle>
         </CardHeader>
         <CardContent className="flex flex-col gap-1 text-xs text-muted-foreground">
-          <span>{`${summary.rankDistribution.top10} in top 10`}</span>
+          <span>
+            <UiText
+              message="{0} in top 10"
+              values={[summary.rankDistribution.top10]}
+            />
+          </span>
           <DiscoveriesLink id={id} country={country} summary={summary} />
         </CardContent>
       </Card>
 
       <Card>
         <CardHeader>
-          <CardDescription>Competitors</CardDescription>
+          <CardDescription>
+            <UiText message="Competitors" />
+          </CardDescription>
           <CardTitle className="numeric font-mono text-3xl">
             {summary.competitors}
           </CardTitle>
@@ -71,18 +83,22 @@ export function StatCards({ id }: { id: string }) {
             href={`/apps/${id}/competitors`}
             className="text-xs font-medium text-muted-foreground hover:text-foreground print:hidden"
           >
-            View comparison
+            <UiText message="View comparison" />
           </Link>
         </CardContent>
       </Card>
 
       <Card>
         <CardHeader>
-          <CardDescription>Last refresh</CardDescription>
+          <CardDescription>
+            <UiText message="Last refresh" />
+          </CardDescription>
           <CardTitle className="text-xl">
-            {summary.lastRefreshAt
-              ? formatDate(summary.lastRefreshAt)
-              : "never"}
+            {summary.lastRefreshAt ? (
+              formatDate(summary.lastRefreshAt)
+            ) : (
+              <UiText message="never" />
+            )}
           </CardTitle>
         </CardHeader>
       </Card>

@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText, useUiLanguage } from "@/components/language/UiLanguage";
 import { useId } from "react";
 import { RefreshCw } from "lucide-react";
 import type { KeywordDiscoveryList } from "@asobeast/shared";
@@ -31,7 +32,7 @@ function BulkTrack({
         if (!inactive) onTrack();
       }}
     >
-      {label}
+      <UiText message={label} />
     </Button>
   );
 }
@@ -47,6 +48,7 @@ export function DiscoveryToolbar({
   selected: readonly string[];
   actions: DiscoveryActions;
 }) {
+  const { text: uiLabel } = useUiLanguage();
   const switchId = useId();
   const hintId = useId();
   const recommended = recommendedIds(list.items);
@@ -73,9 +75,11 @@ export function DiscoveryToolbar({
           }}
         />
         <div className="flex flex-col">
-          <Label htmlFor={switchId}>Auto-track ranked</Label>
+          <Label htmlFor={switchId}>
+            <UiText message="Auto-track ranked" />
+          </Label>
           <span id={hintId} className="text-caption text-muted-foreground">
-            Track every keyword the app ranks for, as soon as it is found
+            <UiText message="Track every keyword the app ranks for, as soon as it is found" />
           </span>
         </div>
       </div>
@@ -83,7 +87,7 @@ export function DiscoveryToolbar({
         <Button
           size="sm"
           variant="outline"
-          aria-label="Refresh discoveries"
+          aria-label={uiLabel("Refresh discoveries")}
           aria-busy={refreshing || undefined}
           aria-disabled={refreshing || undefined}
           onClick={() => {
@@ -94,7 +98,7 @@ export function DiscoveryToolbar({
             aria-hidden
             className={cn(refreshing && "motion-safe:animate-spin")}
           />
-          Refresh
+          <UiText message="Refresh" />
         </Button>
         <BulkTrack
           label={labels.selected}

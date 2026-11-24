@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText } from "@/components/language/UiLanguage";
 import { useId, type ReactNode } from "react";
 import type { WebhookEvent } from "@asobeast/shared";
 import { Label } from "@/components/ui/label";
@@ -36,7 +37,7 @@ export function AlertRuleRow({
         />
         <div className="flex min-w-0 flex-col gap-1">
           <Label id={titleId} htmlFor={switchId}>
-            {rule.title}
+            <UiText message={rule.title} />
           </Label>
           <p id={detailId} className="text-sm text-muted-foreground">
             {rule.detail}

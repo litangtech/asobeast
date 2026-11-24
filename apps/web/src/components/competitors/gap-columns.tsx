@@ -1,5 +1,7 @@
 "use client";
 
+import { UiCountry } from "@/components/language/UiFormat";
+import { useUiLanguage } from "@/components/language/UiLanguage";
 import type { MouseEvent } from "react";
 import { createColumnHelper } from "@tanstack/react-table";
 import { isCheckFresh, type CompetitorGapKeyword } from "@asobeast/shared";
@@ -91,7 +93,9 @@ function ScoreCell({
   label: string;
   value: number | null;
 }) {
-  if (value === null) return <Dash label={`No ${label.toLowerCase()} yet`} />;
+  const { text: uiLabel } = useUiLanguage();
+  if (value === null)
+    return <Dash label={uiLabel("No {0} yet", [label.toLowerCase()])} />;
   return (
     <GradedNumber
       value={String(value)}
@@ -110,13 +114,14 @@ function KeywordButton({
   multiMarket: boolean;
   onOpen: GapColumnScope["onOpenBreakdown"];
 }) {
+  const { text: uiLabel } = useUiLanguage();
   const country = row.country;
   return (
     <div className="flex flex-col gap-0.5">
       <button
         type="button"
         title={row.text}
-        aria-label={`${row.text}, why apps rank`}
+        aria-label={uiLabel("{0}, why apps rank", [row.text])}
         data-breakdown-keyword={row.keywordId}
         onClick={(event: MouseEvent<HTMLButtonElement>) =>
           onOpen(row.keywordId, event.currentTarget)
@@ -131,7 +136,9 @@ function KeywordButton({
           className="font-mono text-xs text-muted-foreground"
         >
           <span aria-hidden>{country.toUpperCase()}</span>
-          <span className="sr-only">{formatCountry(country)}</span>
+          <span className="sr-only">
+            <UiCountry code={country} />
+          </span>
         </span>
       ) : null}
     </div>

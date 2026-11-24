@@ -1,6 +1,6 @@
 "use client";
 
-import { UiText } from "@/components/language/UiLanguage";
+import { UiText, useUiLanguage } from "@/components/language/UiLanguage";
 import { useMemo, useState, type ReactNode } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Loader2 } from "lucide-react";
@@ -55,6 +55,7 @@ export function AddKeywordsDialog({
   country: string;
   children: ReactNode;
 }) {
+  const { text: uiLabel } = useUiLanguage();
   const queryClient = useQueryClient();
   const [open, setOpen] = useState(false);
   const [raw, setRaw] = useState("");
@@ -77,12 +78,15 @@ export function AddKeywordsDialog({
       const duplicates = list.length - added;
       invalidateKeywordMutation(queryClient, appId);
       setOpen(false);
-      toast.success(`Tracking ${added} keyword${added === 1 ? "" : "s"}`, {
-        description:
-          duplicates > 0
-            ? `${duplicates} already tracked`
-            : "Positions arrive within minutes. The table updates as they land.",
-      });
+      toast.success(
+        uiLabel("Tracking {0} keyword{1}", [added, added === 1 ? "" : "s"]),
+        {
+          description:
+            duplicates > 0
+              ? `${duplicates} already tracked`
+              : "Positions arrive within minutes. The table updates as they land.",
+        },
+      );
     },
     onError: (err) =>
       setError(
@@ -120,25 +124,24 @@ export function AddKeywordsDialog({
       <DialogContent>
         <DialogHeader>
           <DialogTitle>
-            <UiText message={"Add keywords"} />
+            <UiText message="Add keywords" />
           </DialogTitle>
           <DialogDescription>
-            Separate phrases with commas or new lines. Each is normalized to
-            lowercase and de-duplicated before tracking.
+            <UiText message="Separate phrases with commas or new lines. Each is normalized to lowercase and de-duplicated before tracking." />
           </DialogDescription>
         </DialogHeader>
 
         <DialogBody className="gap-3">
           <div className="flex flex-col gap-2">
             <Label htmlFor="add-keywords-market">
-              <UiText message={"Market"} />
+              <UiText message="Market" />
             </Label>
             <CountrySelect
               id="add-keywords-market"
               store={store}
               value={market}
               onChange={setMarket}
-              ariaLabel="Keyword market"
+              ariaLabel={uiLabel("Keyword market")}
             />
             <MarketAvailabilityNotice
               appId={appId}
@@ -155,7 +158,7 @@ export function AddKeywordsDialog({
             rows={4}
             spellCheck={false}
             autoComplete="off"
-            placeholder="fitness tracker, workout log…"
+            placeholder={uiLabel("fitness tracker, workout log…")}
             autoFocus
             aria-invalid={error !== null}
           />
@@ -169,7 +172,14 @@ export function AddKeywordsDialog({
             </div>
           ) : null}
           <p className="text-xs text-muted-foreground tabular-nums">
-            {`${chips.length} of ${KEYWORD_BULK_ADD_LIMIT} keyword${chips.length === 1 ? "" : "s"} ready`}
+            <UiText
+              message="{0} of {1} keyword{2} ready"
+              values={[
+                chips.length,
+                KEYWORD_BULK_ADD_LIMIT,
+                chips.length === 1 ? "" : "s",
+              ]}
+            />
           </p>
           {error ? <p className="text-sm text-destructive">{error}</p> : null}
         </DialogBody>
@@ -180,7 +190,11 @@ export function AddKeywordsDialog({
             onClick={submit}
           >
             {mutation.isPending ? <Loader2 className="animate-spin" /> : null}
-            {mutation.isPending ? "Adding…" : "Add keywords"}
+            {mutation.isPending ? (
+              <UiText message="Adding…" />
+            ) : (
+              <UiText message="Add keywords" />
+            )}
           </Button>
         </DialogFooter>
       </DialogContent>

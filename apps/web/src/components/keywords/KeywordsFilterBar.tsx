@@ -1,5 +1,6 @@
 "use client";
 
+import { useUiLanguage } from "@/components/language/UiLanguage";
 import { useRef } from "react";
 import type { SetValues } from "nuqs";
 import type { Table } from "@tanstack/react-table";
@@ -34,6 +35,7 @@ export function KeywordsFilterBar({
   today: string;
   viewOptions: readonly ViewOption[];
 }) {
+  const { text: uiLabel } = useUiLanguage();
   const shown = table.getRowModel().rows;
   const chips = keywordFilterChips(filters);
   const inlineFacets = useRef<HTMLDivElement>(null);
@@ -42,7 +44,7 @@ export function KeywordsFilterBar({
     <div className="flex flex-col gap-2">
       <div className="flex flex-wrap items-center gap-2">
         <SearchInput
-          label="Search keywords"
+          label={uiLabel("Search keywords")}
           value={filters.q}
           onSearch={(q, options) => void setFilters({ q }, options)}
         />

@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText, useUiLanguage } from "@/components/language/UiLanguage";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import type { ReviewReplyState } from "@asobeast/shared";
 import { InfoTip } from "@/components/ui/info-tip";
@@ -19,21 +20,27 @@ export function ReviewCountsStrip({
   view: ReviewView;
   onSelect: (state: ReviewReplyState | null) => void;
 }) {
+  const { text: uiLabel } = useUiLanguage();
   const { data } = useSuspenseQuery(reviewsOptions(id, countsFilters(view)));
   const counts = data.counts;
   if (!counts) return null;
   const states = shownReplyStates(counts, view.replyState);
 
   return (
-    <section aria-label="Reply status" className="flex flex-col gap-2">
+    <section
+      aria-label={uiLabel("Reply status")}
+      className="flex flex-col gap-2"
+    >
       <div className="flex items-center gap-1">
         <h2 className="text-label text-muted-foreground uppercase">
-          Reply status
+          <UiText message="Reply status" />
         </h2>
         <InfoTip
-          label="About reply status"
-          title="Reply status"
-          summary="Needs reply: no reply anywhere. Draft saved: a reply is kept here and not marked. Replied: the store shows a reply, posted from here or in the console, or you marked the review as replied. Updated after reply: the reviewer edited the review after the Google Play reply, so read it again."
+          label={uiLabel("About reply status")}
+          title={uiLabel("Reply status")}
+          summary={uiLabel(
+            "Needs reply: no reply anywhere. Draft saved: a reply is kept here and not marked. Replied: the store shows a reply, posted from here or in the console, or you marked the review as replied. Updated after reply: the reviewer edited the review after the Google Play reply, so read it again.",
+          )}
         >
           <a
             href={REPLY_STATES_GUIDE}
@@ -41,7 +48,7 @@ export function ReviewCountsStrip({
             rel="noreferrer"
             className="font-medium text-foreground underline decoration-primary underline-offset-4 hover:decoration-2"
           >
-            Read how replies work
+            <UiText message="Read how replies work" />
           </a>
         </InfoTip>
       </div>

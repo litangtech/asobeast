@@ -1,5 +1,6 @@
 "use client";
 
+import { useUiLanguage } from "@/components/language/UiLanguage";
 import { useDeferredValue, useTransition } from "react";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { useQueryStates } from "nuqs";
@@ -21,6 +22,7 @@ const STORE_OPTIONS = STORES.map((store) => ({
 }));
 
 export function AdminApps() {
+  const { text: uiLabel } = useUiLanguage();
   const [, startTransition] = useTransition();
   const [{ q, workspace, store, sort, dir }, setList] = useQueryStates(
     adminAppListParsers,
@@ -54,7 +56,7 @@ export function AdminApps() {
   return (
     <AdminList
       table={table}
-      caption="Tracked apps on this instance"
+      caption={uiLabel("Tracked apps on this instance")}
       noun="app"
       loaded={apps.items.length}
       total={apps.total}
@@ -63,7 +65,7 @@ export function AdminApps() {
       onSearch={(next, options) => void setList({ q: next }, options)}
       filters={
         <FacetFilter
-          title="Store"
+          title={uiLabel("Store")}
           options={STORE_OPTIONS}
           selected={store}
           counts={countBy(searched, (app) => app.store)}

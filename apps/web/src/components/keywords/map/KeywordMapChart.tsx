@@ -1,5 +1,6 @@
 "use client";
 
+import { useUiLanguage } from "@/components/language/UiLanguage";
 import type { Ref } from "react";
 import { CartesianGrid, Scatter, ScatterChart, XAxis, YAxis } from "recharts";
 import {
@@ -29,19 +30,20 @@ export function KeywordMapChart({
   onZone: (zone: KeywordZone) => void;
   chartRef?: Ref<HTMLDivElement>;
 }) {
+  const { text: uiLabel } = useUiLanguage();
   return (
     <ChartContainer
       ref={chartRef}
       config={{}}
       role="region"
-      aria-label="Keyword opportunity map"
+      aria-label={uiLabel("Keyword opportunity map")}
       className={`${CHART_HEIGHT.hero} w-full`}
     >
       <ScatterChart
         accessibilityLayer
         role="group"
         tabIndex={-1}
-        aria-label="Keywords by difficulty and popularity"
+        aria-label={uiLabel("Keywords by difficulty and popularity")}
         aria-describedby={describedBy}
         margin={CHART_MARGIN}
       >

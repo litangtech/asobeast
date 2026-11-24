@@ -1,5 +1,6 @@
 "use client";
 
+import { useUiLanguage } from "@/components/language/UiLanguage";
 import { Copy, ImageDown } from "lucide-react";
 import { SubjectButton } from "@/components/SubjectButton";
 import { useChartImage, type ChartImageJob } from "./use-chart-image";
@@ -11,6 +12,7 @@ export function ChartImageButtons({
   subject: string;
   makeJob: () => ChartImageJob | null;
 }) {
+  const { text: uiLabel } = useUiLanguage();
   const image = useChartImage();
   const busy = image.pending || undefined;
   const start = (act: (job: ChartImageJob) => void) => () => {
@@ -22,7 +24,7 @@ export function ChartImageButtons({
     <>
       <SubjectButton
         icon={<Copy aria-hidden />}
-        label="Copy image"
+        label={uiLabel("Copy image")}
         subject={subject}
         className="print:hidden"
         aria-disabled={busy}
@@ -30,7 +32,7 @@ export function ChartImageButtons({
       />
       <SubjectButton
         icon={<ImageDown aria-hidden />}
-        label="Download PNG"
+        label={uiLabel("Download PNG")}
         subject={subject}
         className="print:hidden"
         aria-disabled={busy}

@@ -1,3 +1,4 @@
+import { UiText } from "@/components/language/UiLanguage";
 import { Meter } from "@/components/ui/meter";
 import { cn } from "@/lib/utils";
 import { ACTION_IMPACT_CAPTION } from "./action-copy";
@@ -27,8 +28,12 @@ export function ActionImpactMeter({
       </div>
       <span className="numeric font-mono text-caption text-muted-foreground">
         {impact}
-        <span className="sr-only"> of 100</span>
-        <span className={cn(compact && "sr-only")}> estimated impact</span>
+        <span className="sr-only">
+          <UiText message="of 100" />
+        </span>
+        <span className={cn(compact && "sr-only")}>
+          <UiText message="estimated impact" />
+        </span>
       </span>
     </div>
   );

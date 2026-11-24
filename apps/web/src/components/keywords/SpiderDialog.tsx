@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText, useUiLanguage } from "@/components/language/UiLanguage";
 import { useState, type ReactNode } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Check, Loader2, Plus, Search } from "lucide-react";
@@ -39,6 +40,7 @@ export function SpiderDialog({
   country: string;
   children: ReactNode;
 }) {
+  const { text: uiLabel } = useUiLanguage();
   const queryClient = useQueryClient();
   const [open, setOpen] = useState(false);
   const [term, setTerm] = useQueryState("spider", spiderTermParser);
@@ -67,7 +69,7 @@ export function SpiderDialog({
       toast.error(
         error instanceof ApiError
           ? error.envelope.message
-          : "Could not start deep search",
+          : uiLabel("Could not start deep search"),
       ),
   });
 
@@ -77,13 +79,13 @@ export function SpiderDialog({
     mutationFn: (text: string) => addKeywords(appId, [text], country),
     onSuccess: (_data, text) => {
       invalidateKeywordMutation(queryClient, appId);
-      toast.success(`Tracking ${text}`);
+      toast.success(uiLabel("Tracking {0}", [text]));
     },
     onError: (error, text) =>
       toast.error(
         error instanceof ApiError
           ? error.envelope.message
-          : `Could not track ${text}`,
+          : uiLabel("Could not track {0}", [text]),
       ),
   });
 
@@ -105,18 +107,20 @@ export function SpiderDialog({
       <DialogTrigger asChild>{children}</DialogTrigger>
       <DialogContent size="md">
         <DialogHeader>
-          <DialogTitle>Deep search</DialogTitle>
+          <DialogTitle>
+            <UiText message="Deep search" />
+          </DialogTitle>
           <DialogDescription>
-            Probes App Store autocomplete for your term plus every a–z prefix —
-            27 rate-limited lookups, usually about two minutes and longer while
-            the daily run is collecting.
+            <UiText message="Probes App Store autocomplete for your term plus every a–z prefix — 27 rate-limited lookups, usually about two minutes and longer while the daily run is collecting." />
           </DialogDescription>
         </DialogHeader>
 
         <DialogBody>
           <div className="flex items-end gap-2">
             <div className="flex flex-1 flex-col gap-2">
-              <Label htmlFor="spider-term">Seed term</Label>
+              <Label htmlFor="spider-term">
+                <UiText message="Seed term" />
+              </Label>
               <Input
                 id="spider-term"
                 value={draft}
@@ -126,7 +130,7 @@ export function SpiderDialog({
                     submit();
                   }
                 }}
-                placeholder="habit tracker"
+                placeholder={uiLabel("habit tracker")}
                 autoFocus
                 minLength={2}
                 maxLength={40}
@@ -141,7 +145,7 @@ export function SpiderDialog({
               ) : (
                 <Search />
               )}
-              Start
+              <UiText message="Start" />
             </Button>
           </div>
 
@@ -149,7 +153,13 @@ export function SpiderDialog({
             <div className="flex flex-col gap-3">
               <div className="flex flex-col gap-1.5">
                 <div className="flex items-center justify-between text-xs text-muted-foreground tabular-nums">
-                  <span>{complete ? "Complete" : "Searching…"}</span>
+                  <span>
+                    {complete ? (
+                      <UiText message="Complete" />
+                    ) : (
+                      <UiText message="Searching…" />
+                    )}
+                  </span>
                   <span>{`${probesDone}/${PROBES_TOTAL}`}</span>
                 </div>
                 <div
@@ -157,7 +167,7 @@ export function SpiderDialog({
                   aria-valuemin={0}
                   aria-valuemax={PROBES_TOTAL}
                   aria-valuenow={probesDone}
-                  aria-label="Deep search progress"
+                  aria-label={uiLabel("Deep search progress")}
                   className="h-2 overflow-hidden rounded-full bg-muted"
                 >
                   <div
@@ -169,9 +179,11 @@ export function SpiderDialog({
 
               {suggestions.length === 0 ? (
                 <p className="rounded-lg border border-dashed p-4 text-center text-sm text-muted-foreground">
-                  {complete
-                    ? "No new terms found for this seed."
-                    : "Waiting for the first results…"}
+                  {complete ? (
+                    <UiText message="No new terms found for this seed." />
+                  ) : (
+                    <UiText message="Waiting for the first results…" />
+                  )}
                 </p>
               ) : (
                 <ul className="flex flex-col divide-y">
@@ -191,11 +203,20 @@ export function SpiderDialog({
                           <span className="flex items-center gap-2 text-xs text-muted-foreground tabular-nums">
                             {suggestion.priority !== null ? (
                               <span>
-                                {`priority ${Math.round(suggestion.priority)}`}
+                                <UiText
+                                  message="priority {0}"
+                                  values={[Math.round(suggestion.priority)]}
+                                />
                               </span>
                             ) : null}
                             <span>
-                              {`${suggestion.probes} probe${suggestion.probes === 1 ? "" : "s"}`}
+                              <UiText
+                                message="{0} probe{1}"
+                                values={[
+                                  suggestion.probes,
+                                  suggestion.probes === 1 ? "" : "s",
+                                ]}
+                              />
                             </span>
                           </span>
                         </div>
@@ -208,14 +229,14 @@ export function SpiderDialog({
                           {already ? (
                             <>
                               <Check />
-                              Tracked
+                              <UiText message="Tracked" />
                             </>
                           ) : pending ? (
                             <Loader2 className="animate-spin" />
                           ) : (
                             <>
                               <Plus />
-                              Track
+                              <UiText message="Track" />
                             </>
                           )}
                         </Button>

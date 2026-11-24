@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText } from "@/components/language/UiLanguage";
 import Link from "next/link";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { TriangleAlert } from "lucide-react";
@@ -17,9 +18,9 @@ export function BudgetBanner() {
     <Alert variant="destructive">
       <TriangleAlert />
       <AlertDescription>
-        Daily requests exceed 85% of your store rate limit.{" "}
+        <UiText message="Daily requests exceed 85% of your store rate limit." />{" "}
         <Link href="/settings" className="font-medium underline">
-          Review the request budget
+          <UiText message="Review the request budget" />
         </Link>
         .
       </AlertDescription>

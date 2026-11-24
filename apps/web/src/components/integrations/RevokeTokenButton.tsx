@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText, useUiLanguage } from "@/components/language/UiLanguage";
 import { useRef, useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Trash2 } from "lucide-react";
@@ -34,6 +35,7 @@ const revokeSuccessor = (trigger: HTMLElement | null): HTMLElement | null => {
 };
 
 export function RevokeTokenButton({ id, name }: { id: string; name: string }) {
+  const { text: uiLabel } = useUiLanguage();
   const queryClient = useQueryClient();
   const [open, setOpen] = useState(false);
   const trigger = useRef<HTMLButtonElement>(null);
@@ -45,9 +47,9 @@ export function RevokeTokenButton({ id, name }: { id: string; name: string }) {
       invalidateApiTokenMutation(queryClient);
       handOff(revokeSuccessor(trigger.current));
       setOpen(false);
-      toast.success("Token revoked");
+      toast.success(uiLabel("Token revoked"));
     },
-    onError: () => toast.error("Could not revoke the token"),
+    onError: () => toast.error(uiLabel("Could not revoke the token")),
   });
   const revokeOnce = useSingleFlight(revoke);
 
@@ -61,22 +63,25 @@ export function RevokeTokenButton({ id, name }: { id: string; name: string }) {
           ref={trigger}
           variant="ghost"
           size="icon-sm"
-          aria-label={`Revoke ${name}`}
+          aria-label={uiLabel("Revoke {0}", [name])}
         >
           <Trash2 />
         </Button>
       </AlertDialogTrigger>
       <AlertDialogContent onCloseAutoFocus={onCloseAutoFocus}>
         <AlertDialogHeader>
-          <AlertDialogTitle>Revoke this token?</AlertDialogTitle>
+          <AlertDialogTitle>
+            <UiText message="Revoke this token?" />
+          </AlertDialogTitle>
           <AlertDialogDescription>
-            Anything using {name} will stop authenticating immediately. This
-            cannot be undone.
+            <UiText message="Anything using" trailing />
+            {name}
+            <UiText message="will stop authenticating immediately. This cannot be undone." />
           </AlertDialogDescription>
         </AlertDialogHeader>
         <ConfirmActionFooter
           pending={revoke.isPending}
-          label="Revoke"
+          label={uiLabel("Revoke")}
           pendingLabel="Revoking…"
           onConfirm={revokeOnce}
         />

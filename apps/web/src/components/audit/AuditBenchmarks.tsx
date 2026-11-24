@@ -1,3 +1,4 @@
+import { UiText } from "@/components/language/UiLanguage";
 import Link from "next/link";
 import type {
   AuditBenchmarkRow,
@@ -56,7 +57,9 @@ export function AuditBenchmarks({
             body="Track a few rivals and the audit compares your listing with theirs."
             action={
               <Button asChild variant="outline">
-                <Link href={`/apps/${appId}/competitors`}>Add competitors</Link>
+                <Link href={`/apps/${appId}/competitors`}>
+                  <UiText message="Add competitors" />
+                </Link>
               </Button>
             }
           />
@@ -68,24 +71,36 @@ export function AuditBenchmarks({
   return (
     <Card>
       <CardContent>
-        <h2 className="mb-3 text-lg font-medium">Competitor comparison</h2>
+        <h2 className="mb-3 text-lg font-medium">
+          <UiText message="Competitor comparison" />
+        </h2>
         <Table scrollLabel="Competitor comparison" scrollFocus="overflow">
           <TableCaption>
-            How your listing compares with{" "}
+            <UiText message="How your listing compares with" />{" "}
             {pluralize(benchmarks.competitors, "competitor")}
           </TableCaption>
           <TableHeader>
             <TableRow>
-              <TableHead>Metric</TableHead>
-              <TableHead>You</TableHead>
-              <TableHead>Competitor median</TableHead>
-              <TableHead>Best</TableHead>
+              <TableHead>
+                <UiText message="Metric" />
+              </TableHead>
+              <TableHead>
+                <UiText message="You" />
+              </TableHead>
+              <TableHead>
+                <UiText message="Competitor median" />
+              </TableHead>
+              <TableHead>
+                <UiText message="Best" />
+              </TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {benchmarks.rows.map((row) => (
               <TableRow key={row.metric}>
-                <TableCell>{row.label}</TableCell>
+                <TableCell>
+                  <UiText message={row.label} />
+                </TableCell>
                 <YouCell row={row} />
                 <TableCell className="numeric font-mono">
                   {formatBenchmarkValue(row.metric, row.median)}

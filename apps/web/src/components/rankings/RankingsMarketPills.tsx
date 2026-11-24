@@ -1,5 +1,6 @@
 "use client";
 
+import { useUiLanguage } from "@/components/language/UiLanguage";
 import { useQuery } from "@tanstack/react-query";
 import { useQueryState } from "nuqs";
 import { MarketPills } from "@/components/layout/MarketPills";
@@ -7,6 +8,7 @@ import { keywordCountriesOptions } from "@/lib/queries";
 import { countryParser } from "@/lib/search-params";
 
 export function RankingsMarketPills({ id }: { id: string }) {
+  const { text: uiLabel } = useUiLanguage();
   const [country, setCountry] = useQueryState("country", countryParser);
   const { data: markets } = useQuery(keywordCountriesOptions(id));
 
@@ -21,7 +23,7 @@ export function RankingsMarketPills({ id }: { id: string }) {
         }))}
         value={country || null}
         onChange={(next) => void setCountry(next)}
-        ariaLabel="Report markets"
+        ariaLabel={uiLabel("Report markets")}
         allLabel="All markets"
       />
     </div>

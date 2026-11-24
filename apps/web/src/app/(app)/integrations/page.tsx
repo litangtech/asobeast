@@ -23,14 +23,10 @@ export default async function IntegrationsPage() {
       <div className="page-reading flex flex-col gap-8">
         <div className="flex flex-col gap-1">
           <h1 className="text-display tracking-tight text-balance">
-            <UiText message={"Integrations"} />
+            <UiText message="Integrations" />
           </h1>
           <p className="text-body text-muted-foreground">
-            <UiText
-              message={
-                "Your store consoles, personal API tokens and the MCP server."
-              }
-            />
+            <UiText message="Your store consoles, personal API tokens and the MCP server." />
           </p>
         </div>
 
@@ -39,9 +35,7 @@ export default async function IntegrationsPage() {
           title="Store connections"
           description={
             <>
-              Connect App Store Connect or the Google Play Console so store
-              listing visits, downloads and conversion appear beside your
-              rankings.{" "}
+              <UiText message="Connect App Store Connect or the Google Play Console so store listing visits, downloads and conversion appear beside your rankings." />{" "}
               <GuideLink
                 href={INTEGRATIONS_GUIDE}
                 subject="store connections, API tokens and MCP"

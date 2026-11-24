@@ -10,8 +10,18 @@ export function uiLanguageFromCookie(value: string | undefined): UiLanguage {
   return value === "zh-CN" ? "zh-CN" : "en";
 }
 
-export function uiText(language: UiLanguage, message: string): string {
-  return language === "zh-CN" && Object.hasOwn(SIMPLIFIED_CHINESE, message)
-    ? SIMPLIFIED_CHINESE[message]
-    : message;
+export function uiText(
+  language: UiLanguage,
+  message: string,
+  values: readonly unknown[] = [],
+): string {
+  const template =
+    language === "zh-CN" && Object.hasOwn(SIMPLIFIED_CHINESE, message)
+      ? SIMPLIFIED_CHINESE[message]
+      : message;
+  return values.length > 0
+    ? template.replace(/\{(\d+)\}/g, (token, index: string) =>
+        Number(index) < values.length ? String(values[Number(index)]) : token,
+      )
+    : template;
 }

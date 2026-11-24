@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText, useUiLanguage } from "@/components/language/UiLanguage";
 import { useQuery } from "@tanstack/react-query";
 import { useQueryStates } from "nuqs";
 import { Tabs, TabsList, TabsOption } from "@/components/ui/tabs";
@@ -25,6 +26,7 @@ export function useKeywordsTab() {
 }
 
 export function KeywordsTabs({ id, market }: { id: string; market: string }) {
+  const { text: uiLabel } = useUiLanguage();
   const [tab, setTab] = useKeywordsTab();
   const { data: tracked } = useQuery(keywordsOptions(id, market));
   const { data: discovered } = useQuery(keywordDiscoveriesOptions(id, market));
@@ -37,14 +39,20 @@ export function KeywordsTabs({ id, market }: { id: string; market: string }) {
       onValueChange={(next) => setTab(keywordsTabParser.parse(next) ?? tab)}
       className="max-w-full min-w-0"
     >
-      <TabsList aria-label="Keyword lists" scrollable>
+      <TabsList aria-label={uiLabel("Keyword lists")} scrollable>
         <TabsOption value="tracked">
-          {tracked ? `Tracked ${tracked.length}` : "Tracked"}
+          {tracked ? (
+            <UiText message="Tracked {0}" values={[tracked.length]} />
+          ) : (
+            <UiText message="Tracked" />
+          )}
         </TabsOption>
         <TabsOption
           value="discovered"
           aria-label={
-            unseen ? `${discoveredLabel}, new discoveries to review` : undefined
+            unseen
+              ? uiLabel("{0}, new discoveries to review", [discoveredLabel])
+              : undefined
           }
         >
           <span>{discoveredLabel}</span>

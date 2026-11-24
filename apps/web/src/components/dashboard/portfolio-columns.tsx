@@ -1,5 +1,6 @@
 "use client";
 
+import { UiDate } from "@/components/language/UiFormat";
 import Link from "next/link";
 import { createColumnHelper } from "@tanstack/react-table";
 import type { PortfolioApp, PortfolioAppInsight } from "@asobeast/shared";
@@ -9,12 +10,7 @@ import { SortableHeader } from "@/components/data-table/SortableHeader";
 import type { DataTableFeatures } from "@/components/data-table/table-features";
 import { TrendChip } from "@/components/ui/delta-chip";
 import { GradedNumber } from "@/components/ui/graded";
-import {
-  formatDate,
-  formatNumber,
-  formatRating,
-  storeLabel,
-} from "@/lib/format";
+import { formatNumber, formatRating, storeLabel } from "@/lib/format";
 import { grade } from "@/lib/grade";
 import { nullsLast } from "@/lib/table/sorting";
 import { MovementValue } from "./MovementValue";
@@ -215,7 +211,7 @@ export const portfolioColumns = columnHelper.columns([
     ),
     cell: ({ row }) => (
       <span className="whitespace-nowrap">
-        {formatDate(row.original.app.lastCapturedAt)}
+        <UiDate value={row.original.app.lastCapturedAt} />
       </span>
     ),
   }),

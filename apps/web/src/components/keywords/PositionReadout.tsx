@@ -1,3 +1,4 @@
+import { UiText } from "@/components/language/UiLanguage";
 import type { TrackedKeywordItem } from "@asobeast/shared";
 import { PositionDeltaChip } from "@/components/ui/delta-chip";
 import { GradedNumber } from "@/components/ui/graded";
@@ -29,7 +30,11 @@ export function PositionReadout({
           title={lost?.on ? lastRankedLine(lost.position, lost.on) : undefined}
           className={cn("text-muted-foreground", className)}
         >
-          {lost ? `${label} (was #${lost.position})` : label}
+          {lost ? (
+            <UiText message="{0} (was #{1})" values={[label, lost.position]} />
+          ) : (
+            label
+          )}
         </span>
       ) : (
         <GradedNumber

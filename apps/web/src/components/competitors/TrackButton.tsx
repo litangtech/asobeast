@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText, useUiLanguage } from "@/components/language/UiLanguage";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Loader2, Plus } from "lucide-react";
 import { toast } from "sonner";
@@ -24,18 +25,19 @@ export function TrackButton({
   focusKey?: string;
   className?: string;
 }) {
+  const { text: uiLabel } = useUiLanguage();
   const queryClient = useQueryClient();
   const mutation = useMutation({
     mutationFn: () => addCompetitor(id, storeAppId),
     onSuccess: (competitor) => {
       invalidateCompetitorMutation(queryClient, id);
-      toast.success(`Now tracking ${competitor.name ?? title}`);
+      toast.success(uiLabel("Now tracking {0}", [competitor.name ?? title]));
     },
     onError: (error) => {
       toast.error(
         error instanceof ApiError
           ? error.envelope.message
-          : `Could not track ${title}`,
+          : uiLabel("Could not track {0}", [title]),
       );
     },
   });
@@ -54,7 +56,7 @@ export function TrackButton({
       }}
     >
       {mutation.isPending ? <Loader2 className="animate-spin" /> : <Plus />}
-      Track
+      <UiText message="Track" />
     </Button>
   );
 }

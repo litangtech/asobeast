@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText, useUiLanguage } from "@/components/language/UiLanguage";
 import { Suspense, useId, type ReactNode } from "react";
 import Link from "next/link";
 import { useSuspenseQuery } from "@tanstack/react-query";
@@ -46,7 +47,10 @@ function ReadsCard({
     <Card role="region" aria-labelledby={titleId} className="min-w-0">
       <CardHeader>
         <CardTitle id={titleId}>
-          {`What ${market.toUpperCase()} search reads`}
+          <UiText
+            message="What {0} search reads"
+            values={[market.toUpperCase()]}
+          />
         </CardTitle>
         {aside ? <CardAction>{aside}</CardAction> : null}
       </CardHeader>
@@ -56,6 +60,7 @@ function ReadsCard({
 }
 
 function ReadRow({ id, read }: { id: string; read: MarketLocalizationRead }) {
+  const { text: uiLabel } = useUiLanguage();
   const name = localizationName(read.localization);
   return (
     <li className="flex flex-wrap items-center gap-x-3 gap-y-1">
@@ -70,17 +75,19 @@ function ReadRow({ id, read }: { id: string; read: MarketLocalizationRead }) {
           tone="health"
         />
         <span className="numeric shrink-0 font-mono text-caption text-muted-foreground">
-          {read.phrases.length === 0
-            ? "Empty"
-            : `${read.charactersUsed}/${read.charactersLimit}`}
+          {read.phrases.length === 0 ? (
+            <UiText message="Empty" />
+          ) : (
+            `${read.charactersUsed}/${read.charactersLimit}`
+          )}
         </span>
       </span>
       <Button asChild variant="link" size="sm" className="h-auto p-0">
         <Link
           href={editLocalizationHref(id, read.localization)}
-          aria-label={`Edit the ${name} keyword field`}
+          aria-label={uiLabel("Edit the {0} keyword field", [name])}
         >
-          Edit
+          <UiText message="Edit" />
         </Link>
       </Button>
     </li>
@@ -102,7 +109,14 @@ function UnshippedReads({
   return (
     <details open={open} className="rounded-lg border border-border px-3 py-2">
       <summary className="cursor-pointer text-body">
-        {`${market.toUpperCase()} also reads ${pluralize(reads.length, "localization")} you don't ship · up to ${formatNumber(reads.length * KEYWORD_FIELD_CHAR_LIMIT)} more characters`}
+        <UiText
+          message="{0} also reads {1} you don't ship · up to {2} more characters"
+          values={[
+            market.toUpperCase(),
+            pluralize(reads.length, "localization"),
+            formatNumber(reads.length * KEYWORD_FIELD_CHAR_LIMIT),
+          ]}
+        />
       </summary>
       <ul className="mt-3 flex flex-wrap gap-2">
         {reads.map((read) => (
@@ -115,7 +129,7 @@ function UnshippedReads({
       </ul>
       <Button asChild variant="link" size="sm" className="mt-2 h-auto p-0">
         <Link href={localizationsSectionHref(id)}>
-          Add one on the metadata page
+          <UiText message="Add one on the metadata page" />
         </Link>
       </Button>
     </details>
@@ -123,6 +137,7 @@ function UnshippedReads({
 }
 
 function MarketReads({ id, market }: { id: string; market: string }) {
+  const { text: uiLabel } = useUiLanguage();
   const { data } = useSuspenseQuery(marketKeywordFieldsOptions(id, market));
   const shipped = data.localizations.filter((read) => read.shipped);
 
@@ -135,16 +150,21 @@ function MarketReads({ id, market }: { id: string; market: string }) {
             {`${pluralize(uniqueWordCount(data.localizations), "unique word")} · ${pluralize(shipped.length, "localization")}`}
           </span>
           <InfoTip
-            label="About market keyword fields"
-            title="What a market reads"
-            summary="Search in a storefront reads the keyword field of every localization on its list. Words combine only within one localization."
+            label={uiLabel("About market keyword fields")}
+            title={uiLabel("What a market reads")}
+            summary={uiLabel(
+              "Search in a storefront reads the keyword field of every localization on its list. Words combine only within one localization.",
+            )}
           />
         </span>
       }
     >
       {shipped.length === 0 ? (
         <p className="text-body text-muted-foreground">
-          {`${market.toUpperCase()} reads none of the localizations this app ships.`}
+          <UiText
+            message="{0} reads none of the localizations this app ships."
+            values={[market.toUpperCase()]}
+          />
         </p>
       ) : (
         <ul className="flex flex-col gap-3">
@@ -181,7 +201,10 @@ export function MarketSearchReadsCard({
     return (
       <ReadsCard market={market}>
         <p className="text-body text-muted-foreground">
-          {`${market.toUpperCase()} is not an App Store storefront, so it has no keyword field.`}
+          <UiText
+            message="{0} is not an App Store storefront, so it has no keyword field."
+            values={[market.toUpperCase()]}
+          />
         </p>
       </ReadsCard>
     );

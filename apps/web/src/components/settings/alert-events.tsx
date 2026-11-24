@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText } from "@/components/language/UiLanguage";
 import { useId } from "react";
 import { CheckIcon } from "lucide-react";
 import {
@@ -67,7 +68,9 @@ export function ReviewStarSelection({
 
   return (
     <div className="flex flex-col gap-2">
-      <Label id={labelId}>New review stars</Label>
+      <Label id={labelId}>
+        <UiText message="New review stars" />
+      </Label>
       <div
         role="group"
         aria-labelledby={labelId}
@@ -85,7 +88,11 @@ export function ReviewStarSelection({
         ))}
       </div>
       <p id={helpId} className="text-sm text-muted-foreground">
-        {value.length === 0 ? "Pick at least one star." : STARS_HELP}
+        {value.length === 0 ? (
+          <UiText message="Pick at least one star." />
+        ) : (
+          STARS_HELP
+        )}
       </p>
     </div>
   );
@@ -111,7 +118,9 @@ export function RatingDropSelection({
 
   return (
     <div className="flex flex-col gap-2">
-      <Label htmlFor={triggerId}>Rating drop threshold</Label>
+      <Label htmlFor={triggerId}>
+        <UiText message="Rating drop threshold" />
+      </Label>
       <Select
         value={String(value)}
         onValueChange={(next) => onChange(Number(next))}
@@ -159,7 +168,9 @@ export function RankDropField({
 
   return (
     <div className="flex flex-col gap-2">
-      <Label htmlFor={inputId}>Rank drop positions</Label>
+      <Label htmlFor={inputId}>
+        <UiText message="Rank drop positions" />
+      </Label>
       <div className="flex items-center gap-2">
         <Input
           id={inputId}
@@ -173,7 +184,9 @@ export function RankDropField({
           className="w-24"
           onChange={(event) => onChange(event.target.value)}
         />
-        <span className="text-sm text-muted-foreground">positions</span>
+        <span className="text-sm text-muted-foreground">
+          <UiText message="positions" />
+        </span>
       </div>
       {error ? (
         <p id={errorId} className="text-sm text-destructive">

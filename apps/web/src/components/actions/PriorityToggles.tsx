@@ -1,3 +1,4 @@
+import { UiText } from "@/components/language/UiLanguage";
 import { ACTION_PRIORITIES, type ActionPriority } from "@asobeast/shared";
 import { Button } from "@/components/ui/button";
 import { formatNumber, pluralize } from "@/lib/format";
@@ -14,7 +15,9 @@ export function PriorityToggles({
 }) {
   return (
     <fieldset className="flex flex-wrap items-center gap-2">
-      <legend className="sr-only">Filter by priority</legend>
+      <legend className="sr-only">
+        <UiText message="Filter by priority" />
+      </legend>
       {ACTION_PRIORITIES.map((priority) => {
         const pressed = selected.includes(priority);
         const count = counts.get(priority) ?? 0;

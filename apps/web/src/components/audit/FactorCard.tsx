@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText } from "@/components/language/UiLanguage";
 import { useId, useState } from "react";
 import Link from "next/link";
 import type { AuditFactorResult, Store } from "@asobeast/shared";
@@ -42,7 +43,9 @@ export function FactorCard({
       <Card>
         <CardContent className="flex flex-col gap-2">
           <div className="flex items-start justify-between gap-3">
-            <h3 className="text-body font-medium">{factor.label}</h3>
+            <h3 className="text-body font-medium">
+              <UiText message={factor.label} />
+            </h3>
             <span className="numeric font-mono text-body font-semibold">
               {factor.score === null ? "—" : factor.score}
             </span>
@@ -62,16 +65,21 @@ export function FactorCard({
               href={unlockHref(appId, unlock.kind)}
               className="w-fit text-sm font-medium underline-offset-4 hover:underline"
             >
-              {unlock.label}
+              <UiText message={unlock.label} />
             </Link>
           ) : (
             <>
               <span className="text-sm text-muted-foreground">
-                {`${scored} of ${factor.checks.length} checks scored${
-                  factor.confidence !== undefined && factor.confidence < 1
-                    ? ` · ${percent(factor.confidence)}% measured`
-                    : ""
-                }`}
+                <UiText
+                  message="{0} of {1} checks scored{2}"
+                  values={[
+                    scored,
+                    factor.checks.length,
+                    factor.confidence !== undefined && factor.confidence < 1
+                      ? ` · ${percent(factor.confidence)}% measured`
+                      : "",
+                  ]}
+                />
               </span>
               {availabilityLabel(factor.availability, store) ? (
                 <span className="text-sm text-muted-foreground">
@@ -80,7 +88,8 @@ export function FactorCard({
               ) : null}
               {firstIssue ? (
                 <span className="text-sm text-muted-foreground">
-                  First issue: {firstIssue.label}, {firstIssue.detail}
+                  <UiText message="First issue:" trailing />
+                  {firstIssue.label}, {firstIssue.detail}
                 </span>
               ) : null}
               <button
@@ -90,12 +99,19 @@ export function FactorCard({
                 onClick={() => setOpen(!open)}
                 className="w-fit text-sm font-medium underline-offset-4 hover:underline"
               >
-                {open ? "Hide checks" : "Show checks"}
+                {open ? (
+                  <UiText message="Hide checks" />
+                ) : (
+                  <UiText message="Show checks" />
+                )}
               </button>
               {open ? (
                 <div id={panelId} className="flex flex-col gap-3">
                   <span className="text-caption text-muted-foreground">
-                    Worth {factor.weight} points of {totalWeight}
+                    <UiText message="Worth" trailing />
+                    {factor.weight}
+                    <UiText message="points of" trailing />
+                    {totalWeight}
                   </span>
                   <FactorChecks appId={appId} checks={factor.checks} />
                 </div>

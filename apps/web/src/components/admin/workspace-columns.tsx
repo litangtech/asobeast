@@ -1,5 +1,7 @@
 "use client";
 
+import { UiDate } from "@/components/language/UiFormat";
+import { UiText } from "@/components/language/UiLanguage";
 import Link from "next/link";
 import { createColumnHelper } from "@tanstack/react-table";
 import { PLANS, type SupportWorkspaceSummary } from "@asobeast/shared";
@@ -7,7 +9,7 @@ import { SortableHeader } from "@/components/data-table/SortableHeader";
 import type { DataTableFeatures } from "@/components/data-table/table-features";
 import { Badge } from "@/components/ui/badge";
 import { workspaceListHref } from "@/lib/admin-sections";
-import { formatDate, formatNumber, pluralize } from "@/lib/format";
+import { formatNumber, pluralize } from "@/lib/format";
 import { NUMBER_SORT, WorkspaceName } from "./cells";
 
 const columnHelper = createColumnHelper<
@@ -27,7 +29,9 @@ function WorkspaceStatus({
   if (workspace.suspendedAt) {
     return (
       <div className="flex max-w-56 flex-col items-start gap-1">
-        <Badge variant="destructive">Suspended</Badge>
+        <Badge variant="destructive">
+          <UiText message="Suspended" />
+        </Badge>
         {workspace.suspendedReason ? (
           <span className="text-caption text-muted-foreground">
             {workspace.suspendedReason}
@@ -41,7 +45,8 @@ function WorkspaceStatus({
   if (trial && workspace.trialEndsAt) {
     return (
       <span className="text-sm whitespace-nowrap">
-        Trial until {formatDate(workspace.trialEndsAt)}
+        <UiText message="Trial until" trailing />
+        <UiDate value={workspace.trialEndsAt} />
       </span>
     );
   }
@@ -140,7 +145,7 @@ export const workspaceColumns = columnHelper.columns([
     header: ({ column }) => <SortableHeader column={column} label="Created" />,
     cell: ({ row }) => (
       <span className="whitespace-nowrap">
-        {formatDate(row.original.createdAt)}
+        <UiDate value={row.original.createdAt} />
       </span>
     ),
   }),

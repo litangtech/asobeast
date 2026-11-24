@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText } from "@/components/language/UiLanguage";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import type {
   PortfolioInsights,
@@ -44,7 +45,9 @@ export function PortfolioMoversCard() {
           name={app?.name ?? null}
           size={16}
         />
-        <span className="sr-only">{app?.name ?? "Unknown app"}</span>
+        <span className="sr-only">
+          {app?.name ?? <UiText message="Unknown app" />}
+        </span>
         <span className="text-caption text-muted-foreground">
           {mover.country.toUpperCase()}
         </span>
@@ -66,10 +69,12 @@ export function PortfolioMoversCard() {
     <Card className="@container/movers">
       <CardHeader>
         <CardTitle asChild>
-          <h2>Keyword movers</h2>
+          <h2>
+            <UiText message="Keyword movers" />
+          </h2>
         </CardTitle>
         <CardDescription>
-          Largest position changes in the last 7 days, across every app.
+          <UiText message="Largest position changes in the last 7 days, across every app." />
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -83,8 +88,12 @@ export function PortfolioMoversCard() {
             </div>
             <Tabs defaultValue="up" className="@md/movers:hidden">
               <TabsList>
-                <TabsTrigger value="up">Climbers</TabsTrigger>
-                <TabsTrigger value="down">Fallers</TabsTrigger>
+                <TabsTrigger value="up">
+                  <UiText message="Climbers" />
+                </TabsTrigger>
+                <TabsTrigger value="down">
+                  <UiText message="Fallers" />
+                </TabsTrigger>
               </TabsList>
               <TabsContent value="up">{list(insights.movers.up)}</TabsContent>
               <TabsContent value="down">

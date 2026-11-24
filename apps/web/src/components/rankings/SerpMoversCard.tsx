@@ -1,5 +1,7 @@
 "use client";
 
+import { UiDate } from "@/components/language/UiFormat";
+import { UiText, useUiLanguage } from "@/components/language/UiLanguage";
 import { Suspense } from "react";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { useQueryState } from "nuqs";
@@ -16,7 +18,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Tabs, TabsList, TabsOption } from "@/components/ui/tabs";
 import { EmptyState } from "@/components/ui/empty-state";
 import { TrackButton } from "@/components/competitors/TrackButton";
-import { formatCountry, formatDate } from "@/lib/format";
+import { formatCountry } from "@/lib/format";
 import { serpMoversOptions } from "@/lib/queries";
 import { MOVER_WINDOWS } from "@/lib/ranges";
 import { countryParser, moverDaysParser } from "@/lib/search-params";
@@ -44,13 +46,14 @@ function SerpMoversList({
   days: number;
   country: string | null;
 }) {
+  const { text: uiLabel } = useUiLanguage();
   const { data } = useSuspenseQuery(serpMoversOptions(id, days, country));
   const market = country ? formatCountry(country) : null;
 
   if (data.items.length === 0) {
     return (
       <EmptyState
-        title={`No new entrants in the last ${days} days`}
+        title={uiLabel("No new entrants in the last {0} days", [days])}
         body={
           market
             ? `Nobody broke into the top 10 for your tracked keywords in ${market} in this window. Widen it to look further back.`
@@ -65,7 +68,7 @@ function SerpMoversList({
       {groupByDay(data.items).map(([date, items]) => (
         <div key={date} className="flex flex-col gap-2">
           <p className="text-xs font-medium text-muted-foreground">
-            {formatDate(date)}
+            <UiDate value={date} />
           </p>
           <ul className="flex flex-col gap-1">
             {items.map((item) => (
@@ -76,15 +79,23 @@ function SerpMoversList({
                 <div className="flex min-w-0 flex-1 flex-col gap-0.5">
                   <span className="flex flex-wrap items-center gap-2">
                     <span className="font-medium">{item.title}</span>
-                    {item.appId === id ? <Badge>You</Badge> : null}
+                    {item.appId === id ? (
+                      <Badge>
+                        <UiText message="You" />
+                      </Badge>
+                    ) : null}
                     {item.isCompetitor ? (
-                      <Badge variant="secondary">Competitor</Badge>
+                      <Badge variant="secondary">
+                        <UiText message="Competitor" />
+                      </Badge>
                     ) : null}
                   </span>
                   <span className="text-sm text-muted-foreground">
-                    entered the top 10 for{" "}
+                    <UiText message="entered the top 10 for" />{" "}
                     <span className="italic">{item.text}</span>
-                    <span>{` at #${item.position}`}</span>
+                    <span>
+                      <UiText message=" at #{0}" values={[item.position]} />
+                    </span>
                   </span>
                 </div>
                 {item.appId === null ? (
@@ -119,6 +130,7 @@ function SerpMoversSkeleton() {
 }
 
 export function SerpMoversCard({ id }: { id: string }) {
+  const { text: uiLabel } = useUiLanguage();
   const [days, setDays] = useQueryState("movers", moverDaysParser);
   const [country] = useQueryState("country", countryParser);
 
@@ -127,17 +139,27 @@ export function SerpMoversCard({ id }: { id: string }) {
       <CardHeader className="flex-row items-start justify-between gap-4">
         <div className="flex flex-col gap-1.5">
           <CardDescription>
-            {country
-              ? `SERP movers (${formatCountry(country)})`
-              : "SERP movers"}
+            {country ? (
+              <UiText
+                message="SERP movers ({0})"
+                values={[formatCountry(country)]}
+              />
+            ) : (
+              <UiText message="SERP movers" />
+            )}
           </CardDescription>
-          <CardTitle>New entrants in your keywords’ top 10</CardTitle>
+          <CardTitle>
+            <UiText message="New entrants in your keywords’ top 10" />
+          </CardTitle>
         </div>
         <Tabs
           value={String(days)}
           onValueChange={(next) => void setDays(Number(next) as typeof days)}
         >
-          <TabsList aria-label="SERP movers window" className="print:hidden">
+          <TabsList
+            aria-label={uiLabel("SERP movers window")}
+            className="print:hidden"
+          >
             {MOVER_WINDOWS.map((window) => (
               <TabsOption key={window} value={String(window)}>
                 {window}d

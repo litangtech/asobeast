@@ -1,5 +1,6 @@
 "use client";
 
+import { useUiLanguage } from "@/components/language/UiLanguage";
 import type { RefObject } from "react";
 import { Copy } from "lucide-react";
 import type { Store, TrackedKeywordItem } from "@asobeast/shared";
@@ -23,6 +24,7 @@ export function PositionImageButton({
   chart: RankingChartData;
   chartRef: RefObject<HTMLDivElement | null>;
 }) {
+  const { text: uiLabel } = useUiLanguage();
   const image = useChartImage();
   const detail = useCachedQueryData(appDetailOptions(appId).queryKey);
 
@@ -48,7 +50,9 @@ export function PositionImageButton({
     <Button
       variant="ghost"
       size="icon-xs"
-      aria-label={`Copy image of the position history of ${keyword.text}`}
+      aria-label={uiLabel("Copy image of the position history of {0}", [
+        keyword.text,
+      ])}
       aria-disabled={image.pending || undefined}
       className="text-muted-foreground hover:text-foreground print:hidden"
       onClick={copy}

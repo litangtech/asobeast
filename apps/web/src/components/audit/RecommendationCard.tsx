@@ -1,3 +1,4 @@
+import { UiText } from "@/components/language/UiLanguage";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import type { AuditRecommendation } from "@asobeast/shared";
@@ -25,7 +26,9 @@ export function RecommendationCard({
     <Card>
       <CardContent className="flex flex-col gap-2">
         <div className="flex items-start justify-between gap-3">
-          <h4 className="text-body font-medium">{item.label}</h4>
+          <h4 className="text-body font-medium">
+            <UiText message={item.label} />
+          </h4>
           <span className="numeric shrink-0 font-mono text-body font-semibold">
             {liftLabel(item.lift)}
           </span>
@@ -40,7 +43,9 @@ export function RecommendationCard({
             <Badge variant="outline">{EFFORT_LABEL[item.effort]}</Badge>
           ) : null}
         </div>
-        <p className="text-sm text-muted-foreground">{item.detail}</p>
+        <p className="text-sm text-muted-foreground">
+          <UiText message={item.detail} />
+        </p>
         {item.fix ? <p className="text-sm">{item.fix}</p> : null}
         {label ? (
           href ? (
@@ -48,11 +53,13 @@ export function RecommendationCard({
               href={href}
               className="inline-flex w-fit items-center gap-1 text-sm font-medium underline-offset-4 hover:underline"
             >
-              {label}
+              <UiText message={label} />
               <ArrowRight aria-hidden className="size-4" />
             </Link>
           ) : (
-            <p className="text-sm text-muted-foreground">{label}</p>
+            <p className="text-sm text-muted-foreground">
+              <UiText message={label} />
+            </p>
           )
         ) : null}
       </CardContent>

@@ -1,5 +1,6 @@
 "use client";
 
+import { useUiLanguage } from "@/components/language/UiLanguage";
 import { ErrorState } from "@/components/layout/ErrorState";
 
 export default function AdminAppsError({
@@ -9,12 +10,13 @@ export default function AdminAppsError({
   error: Error & { digest?: string };
   retry: () => void;
 }) {
+  const { text: uiLabel } = useUiLanguage();
   return (
     <ErrorState
       error={error}
       retry={retry}
       scope="admin"
-      title="Tracked apps could not be loaded"
+      title={uiLabel("Tracked apps could not be loaded")}
     />
   );
 }

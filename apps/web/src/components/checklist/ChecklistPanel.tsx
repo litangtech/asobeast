@@ -1,6 +1,6 @@
 "use client";
 
-import { UiText } from "@/components/language/UiLanguage";
+import { UiText, useUiLanguage } from "@/components/language/UiLanguage";
 import Link from "next/link";
 import { CheckCircle2, Circle } from "lucide-react";
 import type {
@@ -35,9 +35,11 @@ function DoneRow({ item }: { item: WorkspaceChecklistItem }) {
   return (
     <li className="flex items-center gap-2" title={ITEM_COPY[item.id].doneText}>
       <CheckCircle2 className="size-4 shrink-0 text-success" aria-hidden />
-      <span className="flex-1">{item.title}</span>
+      <span className="flex-1">
+        <UiText message={item.title} />
+      </span>
       <span className="text-caption text-muted-foreground">
-        <UiText message={"Done"} />
+        <UiText message="Done" />
       </span>
     </li>
   );
@@ -53,7 +55,12 @@ function TipLink({
   onNavigate: () => void;
 }) {
   const href = tip.href(appId);
-  if (href === null) return <span>{tip.label}</span>;
+  if (href === null)
+    return (
+      <span>
+        <UiText message={tip.label} />
+      </span>
+    );
   if (tip.external) {
     return (
       <a
@@ -62,14 +69,18 @@ function TipLink({
         rel="noreferrer noopener"
         className={CHECKLIST_LINK}
       >
-        <span>{tip.label}</span>
-        <span className="sr-only"> (opens in a new tab)</span>
+        <span>
+          <UiText message={tip.label} />
+        </span>
+        <span className="sr-only">
+          <UiText message="(opens in a new tab)" />
+        </span>
       </a>
     );
   }
   return (
     <Link href={href} onClick={onNavigate} className={CHECKLIST_LINK}>
-      {tip.label}
+      <UiText message={tip.label} />
     </Link>
   );
 }
@@ -81,11 +92,12 @@ function ChecklistTips({
   item: WorkspaceChecklistItem;
   onNavigate: () => void;
 }) {
+  const { text: uiLabel } = useUiLanguage();
   const tips = ITEM_TIPS[item.id];
   if (tips.length === 0) return null;
   return (
     <ul
-      aria-label={`Worth knowing about ${item.title}`}
+      aria-label={uiLabel("Worth knowing about {0}", [item.title])}
       className="flex flex-col gap-1 text-caption"
     >
       {tips.map((tip) => (
@@ -116,13 +128,21 @@ function OpenRow({
       />
       <div className="flex min-w-0 flex-1 flex-col gap-1.5">
         <div className="flex flex-wrap items-center gap-2">
-          <span className="font-medium">{item.title}</span>
-          {next ? <Badge variant="info">Next</Badge> : null}
+          <span className="font-medium">
+            <UiText message={item.title} />
+          </span>
+          {next ? (
+            <Badge variant="info">
+              <UiText message="Next" />
+            </Badge>
+          ) : null}
         </div>
-        <p className="text-muted-foreground">{copy.description}</p>
+        <p className="text-muted-foreground">
+          <UiText message={copy.description} />
+        </p>
         {href === null ? (
           <span className="text-caption text-muted-foreground">
-            Import an app first
+            <UiText message="Import an app first" />
           </span>
         ) : (
           <Button asChild size="sm" variant="outline" className="w-fit">
@@ -146,6 +166,7 @@ export function ChecklistPanel({
   onHide,
   onNavigate,
 }: ChecklistPanelProps) {
+  const { text: uiLabel } = useUiLanguage();
   const { done, total, goal, items } = checklist;
   const next = nextItemId(items);
   const progress = pillLabel(done, total);
@@ -153,25 +174,27 @@ export function ChecklistPanel({
     <div className="flex flex-col gap-3">
       <div className="flex flex-col gap-1">
         <PopoverTitle id={titleId} className="text-body">
-          Setup checklist
+          <UiText message="Setup checklist" />
         </PopoverTitle>
         <PopoverDescription id={summaryId}>{progress}</PopoverDescription>
         {goal ? (
           <p className="flex flex-wrap items-center gap-x-2 text-caption text-muted-foreground">
-            <span>{`Goal: ${GOAL_COPY[goal].label}`}</span>
+            <span>
+              <UiText message="Goal: {0}" values={[GOAL_COPY[goal].label]} />
+            </span>
             <Link
               href="/settings#getting-started"
               onClick={onNavigate}
               className={CHECKLIST_LINK}
             >
-              Change
+              <UiText message="Change" />
             </Link>
           </p>
         ) : null}
       </div>
       <Progress
         value={ringFraction(done, total) * 100}
-        aria-label="Setup progress"
+        aria-label={uiLabel("Setup progress")}
         getValueLabel={() => progress}
         indicatorClassName="bg-success"
       />
@@ -179,7 +202,10 @@ export function ChecklistPanel({
         appId={items.find((item) => item.id === "import_app")?.appId ?? null}
         onNavigate={onNavigate}
       />
-      <ol aria-label="Checklist steps" className="flex flex-col gap-3">
+      <ol
+        aria-label={uiLabel("Checklist steps")}
+        className="flex flex-col gap-3"
+      >
         {items.map((item) =>
           item.done ? (
             <DoneRow key={item.id} item={item} />
@@ -195,10 +221,14 @@ export function ChecklistPanel({
       </ol>
       <div className="flex flex-wrap justify-end gap-2 border-t pt-2">
         <Button variant="ghost" size="sm" onClick={onToggleCollapsed}>
-          {collapsed ? "Expand the pill" : "Shrink the pill"}
+          {collapsed ? (
+            <UiText message="Expand the pill" />
+          ) : (
+            <UiText message="Shrink the pill" />
+          )}
         </Button>
         <Button variant="ghost" size="sm" onClick={onHide}>
-          Hide checklist
+          <UiText message="Hide checklist" />
         </Button>
       </div>
     </div>

@@ -1,3 +1,4 @@
+import { UiText } from "@/components/language/UiLanguage";
 import type { LucideIcon } from "lucide-react";
 import type { ReactNode } from "react";
 import { cn } from "@/lib/utils";
@@ -27,9 +28,13 @@ export function EmptyState({
         <Icon aria-hidden className="size-6 text-muted-foreground" />
       ) : null}
       <div className="flex flex-col gap-1">
-        <p className="text-body font-medium">{title}</p>
+        <p className="text-body font-medium">
+          <UiText message={title} />
+        </p>
         {body ? (
-          <p className="max-w-md text-body text-muted-foreground">{body}</p>
+          <p className="max-w-md text-body text-muted-foreground">
+            {typeof body === "string" ? <UiText message={body} /> : body}
+          </p>
         ) : null}
       </div>
       {action}

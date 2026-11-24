@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText, useUiLanguage } from "@/components/language/UiLanguage";
 import { Suspense, useMemo } from "react";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { flexRender, useTable } from "@tanstack/react-table";
@@ -56,6 +57,7 @@ function DiscoveryTable({
   days: number;
   storeName: string;
 }) {
+  const { text: uiLabel } = useUiLanguage();
   const { data } = useSuspenseQuery(discoveryOptions(id, days));
   const [params, setParams] = useQueryStates(DISCOVERY_PARAMS, {
     urlKeys: DISCOVERY_URL_KEYS,
@@ -97,7 +99,7 @@ function DiscoveryTable({
   if (data.items.length === 0) {
     return (
       <EmptyState
-        title={`Nothing discovered in the last ${days} days`}
+        title={uiLabel("Nothing discovered in the last {0} days", [days])}
         body="As daily checks accumulate, apps that keep appearing in your keyword results but you do not track surface here. Widen the window to look further back."
       />
     );
@@ -107,7 +109,7 @@ function DiscoveryTable({
     <div className="flex flex-col gap-3">
       <div className="flex flex-wrap items-center gap-2">
         <SearchInput
-          label="Search apps"
+          label={uiLabel("Search apps")}
           value={params.q}
           onSearch={(q, options) => void setParams({ q }, options)}
         />
@@ -118,7 +120,10 @@ function DiscoveryTable({
       </div>
       <Table containerClassName="rounded-xl border">
         <TableCaption className="sr-only">
-          {`Untracked ${storeName} apps appearing in your keyword search results over the last ${days} days.`}
+          <UiText
+            message="Untracked {0} apps appearing in your keyword search results over the last {1} days."
+            values={[storeName, days]}
+          />
         </TableCaption>
         <TableHeader>
           {table.getHeaderGroups().map((headerGroup) => (
@@ -143,7 +148,7 @@ function DiscoveryTable({
             <TableRow>
               <TableCell colSpan={table.getVisibleLeafColumns().length}>
                 <FilteredEmpty
-                  title="No apps match this search"
+                  title={uiLabel("No apps match this search")}
                   onClear={() => void setParams({ q: null })}
                 />
               </TableCell>
@@ -165,6 +170,7 @@ function DiscoveryTable({
 }
 
 export function DiscoveryPanel({ id }: { id: string }) {
+  const { text: uiLabel } = useUiLanguage();
   const [days, setDays] = useQueryState("days", discoveryDaysParser);
   const { data: detail } = useSuspenseQuery(appDetailOptions(id));
   const storeName = storeLabel(detail.store);
@@ -173,7 +179,7 @@ export function DiscoveryPanel({ id }: { id: string }) {
     <CollapsibleCard
       section={COMPETITOR_SECTION.discovery}
       eyebrow="Discovery"
-      title="Apps you don’t track yet"
+      title={uiLabel("Apps you don’t track yet")}
       actions={
         <>
           <Badge variant="secondary">{storeName}</Badge>

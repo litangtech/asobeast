@@ -1,3 +1,4 @@
+import { UiText } from "@/components/language/UiLanguage";
 import { InfoTip } from "@/components/ui/info-tip";
 
 const KEYWORD_TYPES_GUIDE = "https://docs.asobeast.com/concepts/keyword-types";
@@ -15,7 +16,7 @@ export function KeywordTypeTip() {
         rel="noreferrer"
         className="underline decoration-primary underline-offset-4 hover:decoration-2"
       >
-        Read about keyword types
+        <UiText message="Read about keyword types" />
       </a>
     </InfoTip>
   );

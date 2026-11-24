@@ -1,5 +1,6 @@
 "use client";
 
+import { useUiLanguage } from "@/components/language/UiLanguage";
 import { Tabs, TabsList, TabsOption } from "@/components/ui/tabs";
 import { rangeLabel, type DayPreset } from "@/lib/ranges";
 
@@ -22,9 +23,13 @@ export function RangePicker<T extends DayPreset>({
   onChange: (next: T) => void;
   label?: string;
 }) {
+  const { text: uiLabel } = useUiLanguage();
   return (
     <Tabs value={value} onValueChange={(next) => onChange(next as T)}>
-      <TabsList aria-label={label ?? "Date range"} className="print:hidden">
+      <TabsList
+        aria-label={label ?? uiLabel("Date range")}
+        className="print:hidden"
+      >
         {presets.map((preset) => (
           <TabsOption key={preset} value={preset}>
             {preset}

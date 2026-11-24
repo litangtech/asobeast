@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText, useUiLanguage } from "@/components/language/UiLanguage";
 import { useMemo } from "react";
 import { flexRender, useTable } from "@tanstack/react-table";
 import { useSuspenseQuery } from "@tanstack/react-query";
@@ -68,6 +69,7 @@ export function ComparisonTable({
   appId: string;
   onlyGaps: boolean;
 }) {
+  const { text: uiLabel } = useUiLanguage();
   const [sortParams, setSortParams] = useQueryStates({
     sort: matrixSortParser,
     dir: sortDirectionParser,
@@ -155,11 +157,10 @@ export function ComparisonTable({
       />
       <Table containerClassName="rounded-xl border">
         <TableCaption className="sr-only">
-          Your keyword positions compared with each tracked competitor. Gap rows
-          are keywords a competitor ranks for and you do not.
-          {multiMarket
-            ? " The market column names the storefront of each row."
-            : null}
+          <UiText message="Your keyword positions compared with each tracked competitor. Gap rows are keywords a competitor ranks for and you do not." />
+          {multiMarket ? (
+            <UiText message=" The market column names the storefront of each row." />
+          ) : null}
         </TableCaption>
         <TableHeader>
           {table.getHeaderGroups().map((headerGroup) => (
@@ -184,7 +185,7 @@ export function ComparisonTable({
             <TableRow>
               <TableCell colSpan={table.getVisibleLeafColumns().length}>
                 <FilteredEmpty
-                  title="No keywords match these filters"
+                  title={uiLabel("No keywords match these filters")}
                   onClear={() => void setFilters(null)}
                 />
               </TableCell>

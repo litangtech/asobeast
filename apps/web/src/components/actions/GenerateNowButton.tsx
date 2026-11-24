@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText, useUiLanguage } from "@/components/language/UiLanguage";
 import { useEffect, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
@@ -22,6 +23,7 @@ export function GenerateNowButton({
 }: {
   generatedAt: string | null;
 }) {
+  const { text: uiLabel } = useUiLanguage();
   const queryClient = useQueryClient();
   const [followed, setFollowed] = useState<FollowedRun | null>(null);
 
@@ -34,7 +36,7 @@ export function GenerateNowButton({
       );
       setFollowed({ since: generatedAt, startedAt: Date.now() });
     },
-    onError: () => toast.error("Could not queue generation"),
+    onError: () => toast.error(uiLabel("Could not queue generation")),
   });
   const runOnce = useSingleFlight(run);
 
@@ -76,7 +78,11 @@ export function GenerateNowButton({
         if (!busy) runOnce();
       }}
     >
-      {busy ? "Generating…" : "Generate now"}
+      {busy ? (
+        <UiText message="Generating…" />
+      ) : (
+        <UiText message="Generate now" />
+      )}
     </Button>
   );
 }

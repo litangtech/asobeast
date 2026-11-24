@@ -1,5 +1,6 @@
 "use client";
 
+import { useUiLanguage } from "@/components/language/UiLanguage";
 import {
   Select,
   SelectContent,
@@ -19,6 +20,7 @@ export function SelectFilter<T extends string>({
   options: ReadonlyArray<{ value: T; label: string }>;
   onChange: (next: T) => void;
 }) {
+  const { text: uiLabel } = useUiLanguage();
   return (
     <Select
       value={value}
@@ -27,7 +29,10 @@ export function SelectFilter<T extends string>({
         if (option) onChange(option.value);
       }}
     >
-      <SelectTrigger size="sm" aria-label={`Filter by ${title.toLowerCase()}`}>
+      <SelectTrigger
+        size="sm"
+        aria-label={uiLabel("Filter by {0}", [title.toLowerCase()])}
+      >
         <SelectValue>
           {options.find((option) => option.value === value)?.label}
         </SelectValue>

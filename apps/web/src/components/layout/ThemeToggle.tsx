@@ -1,5 +1,6 @@
 "use client";
 
+import { useUiLanguage } from "@/components/language/UiLanguage";
 import { Monitor, Moon, Sun } from "lucide-react";
 import { useTheme } from "next-themes";
 import { Button } from "@/components/ui/button";
@@ -14,6 +15,7 @@ const ORDER = [
 const FALLBACK = ORDER.length - 1;
 
 export function ThemeToggle() {
+  const { text: uiLabel } = useUiLanguage();
   const { theme, setTheme } = useTheme();
   const hydrated = useHydrated();
   const found = ORDER.findIndex((choice) => choice.value === theme);
@@ -25,7 +27,7 @@ export function ThemeToggle() {
       variant="ghost"
       size="icon"
       onClick={() => setTheme(ORDER[(index + 1) % ORDER.length].value)}
-      aria-label={`Theme: ${value}. Switch theme`}
+      aria-label={uiLabel("Theme: {0}. Switch theme", [value])}
     >
       <Icon className="size-4" />
     </Button>

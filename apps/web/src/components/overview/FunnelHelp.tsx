@@ -1,3 +1,4 @@
+import { UiText } from "@/components/language/UiLanguage";
 import type { Store } from "@asobeast/shared";
 import { InfoTip } from "@/components/ui/info-tip";
 
@@ -34,7 +35,7 @@ export function FunnelHelp({ store }: { store: Store }) {
         rel="noreferrer"
         className="font-medium text-foreground underline decoration-primary underline-offset-4 hover:decoration-2"
       >
-        Read how the numbers are read
+        <UiText message="Read how the numbers are read" />
       </a>
     </InfoTip>
   );

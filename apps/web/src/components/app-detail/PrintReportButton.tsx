@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText } from "@/components/language/UiLanguage";
 import { Printer } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
@@ -12,7 +13,7 @@ export function PrintReportButton() {
       onClick={() => window.print()}
     >
       <Printer />
-      Print report
+      <UiText message="Print report" />
     </Button>
   );
 }

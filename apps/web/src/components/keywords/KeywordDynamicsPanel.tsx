@@ -1,6 +1,6 @@
 "use client";
 
-import { UiText } from "@/components/language/UiLanguage";
+import { UiText, useUiLanguage } from "@/components/language/UiLanguage";
 import {
   Suspense,
   useCallback,
@@ -48,6 +48,7 @@ export function KeywordDynamicsPanel({
   chart: ChartedSelection;
   clearFocus: RefObject<HTMLButtonElement | null>;
 }) {
+  const { text: uiLabel } = useUiLanguage();
   const [range, setRange] = useQueryState("range", rangeParser);
   const [, setKeywords] = useQueryState(
     "keywords",
@@ -80,19 +81,19 @@ export function KeywordDynamicsPanel({
           tabIndex={-1}
           className="text-body font-medium outline-none"
         >
-          Keyword dynamics
+          <UiText message="Keyword dynamics" />
         </h3>
         <p className="text-caption text-muted-foreground">
-          Charted rows are highlighted in the table.
+          <UiText message="Charted rows are highlighted in the table." />
         </p>
         <RangePicker
           presets={RANGE_PRESETS}
           value={range}
           onChange={setRange}
-          label="Chart date range"
+          label={uiLabel("Chart date range")}
         />
         <Button variant="ghost" size="sm" className="ml-auto" onClick={clear}>
-          <UiText message={"Clear"} />
+          <UiText message="Clear" />
         </Button>
       </div>
       <Suspense fallback={<KeywordDynamicsSkeleton />}>

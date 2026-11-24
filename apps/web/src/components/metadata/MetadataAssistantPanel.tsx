@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText, useUiLanguage } from "@/components/language/UiLanguage";
 import { Suspense, useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Copy, Loader2, Sparkles } from "lucide-react";
@@ -34,12 +35,15 @@ const STORE_FIELDS: Record<Store, MetadataField[]> = {
 };
 
 function DraftCard({ draft }: { draft: MetadataDraft }) {
+  const { text: uiLabel } = useUiLanguage();
   async function copy() {
     try {
       await navigator.clipboard.writeText(draft.value);
-      toast.success(`${METADATA_FIELD_LABELS[draft.field]} copied`);
+      toast.success(
+        uiLabel("{0} copied", [METADATA_FIELD_LABELS[draft.field]]),
+      );
     } catch {
-      toast.error("Couldn't copy — select and copy it manually");
+      toast.error(uiLabel("Couldn't copy — select and copy it manually"));
     }
   }
 
@@ -58,7 +62,9 @@ function DraftCard({ draft }: { draft: MetadataDraft }) {
       </pre>
       <div className="mt-3 flex flex-wrap items-start justify-between gap-3">
         {draft.issues.length === 0 ? (
-          <Badge variant="success">no issues</Badge>
+          <Badge variant="success">
+            <UiText message="no issues" />
+          </Badge>
         ) : (
           <ul className="flex min-w-0 flex-col gap-1.5">
             {draft.issues.map((issue, index) => (
@@ -68,11 +74,13 @@ function DraftCard({ draft }: { draft: MetadataDraft }) {
         )}
         <Button
           variant="outline"
-          aria-label={`Copy ${METADATA_FIELD_LABELS[draft.field]} draft`}
+          aria-label={uiLabel("Copy {0} draft", [
+            METADATA_FIELD_LABELS[draft.field],
+          ])}
           onClick={copy}
         >
           <Copy />
-          Copy
+          <UiText message="Copy" />
         </Button>
       </div>
       {draft.rationale ? (
@@ -91,6 +99,7 @@ export function MetadataAssistantPanel({
   store: Store;
   canLocalize: boolean;
 }) {
+  const { text: uiLabel } = useUiLanguage();
   const available = STORE_FIELDS[store];
   const [selected, setSelected] = useState<MetadataField[]>(available);
   const [instructions, setInstructions] = useState("");
@@ -123,7 +132,9 @@ export function MetadataAssistantPanel({
 
   return (
     <section className="flex flex-col gap-3">
-      <h2 className="text-lg font-medium">AI drafts</h2>
+      <h2 className="text-lg font-medium">
+        <UiText message="AI drafts" />
+      </h2>
       <Card>
         <CardContent className="flex flex-col gap-4">
           {canLocalize ? (
@@ -136,7 +147,7 @@ export function MetadataAssistantPanel({
               htmlFor="assistant-instructions"
               className="text-xs font-semibold uppercase tracking-wide text-muted-foreground"
             >
-              Instructions (optional)
+              <UiText message="Instructions (optional)" />
             </label>
             <textarea
               id="assistant-instructions"
@@ -144,7 +155,9 @@ export function MetadataAssistantPanel({
               onChange={(event) => setInstructions(event.target.value)}
               maxLength={500}
               rows={2}
-              placeholder="Steer tone or angle — e.g. emphasise sleep tracking."
+              placeholder={uiLabel(
+                "Steer tone or angle — e.g. emphasise sleep tracking.",
+              )}
               className="w-full resize-y rounded-lg border border-border bg-muted p-2 text-sm text-foreground"
             />
           </div>
@@ -174,7 +187,11 @@ export function MetadataAssistantPanel({
               ) : (
                 <Sparkles />
               )}
-              {drafts.length > 0 ? "Regenerate" : "Generate drafts"}
+              {drafts.length > 0 ? (
+                <UiText message="Regenerate" />
+              ) : (
+                <UiText message="Generate drafts" />
+              )}
             </Button>
             <AiCallsLeft />
           </div>
@@ -182,7 +199,10 @@ export function MetadataAssistantPanel({
       </Card>
       {drafted ? (
         <p className="text-sm text-muted-foreground">
-          {`Drafted in ${APP_STORE_LOCALIZATIONS[drafted]}`}
+          <UiText
+            message="Drafted in {0}"
+            values={[APP_STORE_LOCALIZATIONS[drafted]]}
+          />
         </p>
       ) : null}
       {drafts.length > 0 ? (
@@ -193,7 +213,7 @@ export function MetadataAssistantPanel({
         </div>
       ) : null}
       <p className="text-xs text-muted-foreground">
-        Drafts are suggestions — AsoBeast never writes to the store.
+        <UiText message="Drafts are suggestions — AsoBeast never writes to the store." />
       </p>
     </section>
   );

@@ -1,3 +1,5 @@
+import { UiDate } from "@/components/language/UiFormat";
+import { UiText } from "@/components/language/UiLanguage";
 import Link from "next/link";
 import type { UseQueryResult } from "@tanstack/react-query";
 import type { ActionDetail, ActionItem } from "@asobeast/shared";
@@ -5,7 +7,6 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { isNotFound } from "@/lib/api";
-import { formatDate } from "@/lib/format";
 import { ActionEvidencePanel } from "./ActionEvidencePanel";
 import { ActionExplain } from "./ActionExplain";
 import { ActionImpactMeter } from "./ActionImpactMeter";
@@ -40,7 +41,7 @@ function SampleReviews({ item }: { item: ActionItem }) {
       href={`/apps/${item.scope.appId}/reviews`}
       className="self-start text-sm font-medium underline-offset-4 hover:underline"
     >
-      Read the sample reviews
+      <UiText message="Read the sample reviews" />
     </Link>
   );
 }
@@ -67,7 +68,9 @@ export function ActionDetailBody({
     return (
       <div className="p-4">
         <Alert variant="destructive">
-          <AlertTitle>The action could not be loaded</AlertTitle>
+          <AlertTitle>
+            <UiText message="The action could not be loaded" />
+          </AlertTitle>
           <AlertDescription className="flex flex-col items-start gap-2">
             {detail.error.message}
             <Button
@@ -75,7 +78,7 @@ export function ActionDetailBody({
               size="sm"
               onClick={() => void detail.refetch()}
             >
-              Try again
+              <UiText message="Try again" />
             </Button>
           </AlertDescription>
         </Alert>
@@ -118,8 +121,9 @@ export function ActionDetailBody({
       </Section>
       <ActionExplain item={shown} />
       <p className="text-caption text-muted-foreground">
-        Evidence last confirmed {formatDate(shown.lastSeenAt)} · formula{" "}
-        {shown.formulaVersion}
+        <UiText message="Evidence last confirmed" trailing />
+        <UiDate value={shown.lastSeenAt} />
+        <UiText message="· formula" /> {shown.formulaVersion}
       </p>
     </div>
   );

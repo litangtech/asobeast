@@ -1,3 +1,4 @@
+import { UiText } from "@/components/language/UiLanguage";
 import { Suspense } from "react";
 import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 import { notFound } from "next/navigation";
@@ -59,7 +60,7 @@ export default async function MetadataPage({
   if (!result) {
     return (
       <div className="rounded-xl border border-dashed p-4 text-sm text-muted-foreground">
-        Metadata audit is not available for this app yet.
+        <UiText message="Metadata audit is not available for this app yet." />
       </div>
     );
   }

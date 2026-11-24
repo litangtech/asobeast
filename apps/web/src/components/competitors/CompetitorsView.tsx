@@ -1,5 +1,6 @@
 "use client";
 
+import { useUiLanguage } from "@/components/language/UiLanguage";
 import { Suspense } from "react";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { CollapsedSectionsProvider } from "@/components/layout/CollapsedSections";
@@ -33,6 +34,7 @@ export function CompetitorsView({
   id: string;
   collapsed: readonly string[];
 }) {
+  const { text: uiLabel } = useUiLanguage();
   return (
     <CollapsedSectionsProvider initial={collapsed} known={KNOWN_SECTIONS}>
       <BreakdownOpenerProvider>
@@ -40,7 +42,7 @@ export function CompetitorsView({
           <CollapsibleCard
             section={COMPETITOR_SECTION.tracked}
             eyebrow="Competitors"
-            title="Track the apps you rank against"
+            title={uiLabel("Track the apps you rank against")}
           >
             <div className="flex flex-col gap-6">
               <Suspense fallback={<Skeleton className="h-9 w-full" />}>

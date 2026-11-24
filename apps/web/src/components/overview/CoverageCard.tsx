@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText } from "@/components/language/UiLanguage";
 import Link from "next/link";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { useKeywordScope } from "@/components/app-detail/use-market";
@@ -18,7 +19,9 @@ function CoverageStat({ label, value }: { label: string; value: number }) {
   return (
     <div className="rounded-lg bg-muted/50 py-2 text-center">
       <div className="text-lg font-semibold numeric font-mono">{value}</div>
-      <div className="text-xs text-muted-foreground">{label}</div>
+      <div className="text-xs text-muted-foreground">
+        <UiText message={label} />
+      </div>
     </div>
   );
 }
@@ -40,10 +43,12 @@ export function CoverageCard({ id }: { id: string }) {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Metadata coverage</CardTitle>
+        <CardTitle>
+          <UiText message="Metadata coverage" />
+        </CardTitle>
         {switchable ? (
           <CardDescription>
-            All markets, judged against the home listing
+            <UiText message="All markets, judged against the home listing" />
           </CardDescription>
         ) : null}
       </CardHeader>
@@ -65,11 +70,11 @@ export function CoverageCard({ id }: { id: string }) {
 
         <div className="flex flex-col gap-2">
           <p className="text-sm text-muted-foreground">
-            High-opportunity keywords absent from your metadata
+            <UiText message="High-opportunity keywords absent from your metadata" />
           </p>
           {coverage.uncoveredHighOpportunity.length === 0 ? (
             <p className="text-sm text-muted-foreground">
-              Your metadata covers your top opportunities.
+              <UiText message="Your metadata covers your top opportunities." />
             </p>
           ) : (
             <div className="flex flex-wrap gap-2">

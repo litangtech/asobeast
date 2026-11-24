@@ -1,5 +1,7 @@
 "use client";
 
+import { UiDate } from "@/components/language/UiFormat";
+import { UiText } from "@/components/language/UiLanguage";
 import { createColumnHelper } from "@tanstack/react-table";
 import { CheckCircle2, CircleDashed } from "lucide-react";
 import { PLANS, type AdminUser } from "@asobeast/shared";
@@ -7,7 +9,6 @@ import { SortableHeader } from "@/components/data-table/SortableHeader";
 import type { DataTableFeatures } from "@/components/data-table/table-features";
 import { Badge } from "@/components/ui/badge";
 import { workspaceListHref } from "@/lib/admin-sections";
-import { formatDate } from "@/lib/format";
 import { WorkspaceName } from "./cells";
 
 const columnHelper = createColumnHelper<DataTableFeatures, AdminUser>();
@@ -20,7 +21,9 @@ function Account({ user }: { user: AdminUser }) {
           {user.email}
         </span>
         {user.platformOperator ? (
-          <Badge variant="secondary">Operator</Badge>
+          <Badge variant="secondary">
+            <UiText message="Operator" />
+          </Badge>
         ) : null}
       </span>
       {user.name ? (
@@ -42,7 +45,11 @@ function Confirmation({ confirmed }: { confirmed: boolean }) {
           confirmed ? "size-4 text-success" : "size-4 text-muted-foreground"
         }
       />
-      {confirmed ? "Confirmed" : "Not confirmed"}
+      {confirmed ? (
+        <UiText message="Confirmed" />
+      ) : (
+        <UiText message="Not confirmed" />
+      )}
     </span>
   );
 }
@@ -103,7 +110,7 @@ export const userColumns = columnHelper.columns([
     header: ({ column }) => <SortableHeader column={column} label="Joined" />,
     cell: ({ row }) => (
       <span className="whitespace-nowrap">
-        {formatDate(row.original.createdAt)}
+        <UiDate value={row.original.createdAt} />
       </span>
     ),
   }),

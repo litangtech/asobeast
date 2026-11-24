@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText, useUiLanguage } from "@/components/language/UiLanguage";
 import {
   useIsMutating,
   useMutation,
@@ -15,6 +16,7 @@ import { queuedToast } from "@/lib/queued-toast";
 import { useSingleFlight } from "@/lib/single-flight";
 
 export function RunDailyAction({ appId }: { appId: string }) {
+  const { text: uiLabel } = useUiLanguage();
   const queryClient = useQueryClient();
   const busy = useIsMutating({ mutationKey: ["app-action", appId] }) > 0;
 
@@ -26,7 +28,7 @@ export function RunDailyAction({ appId }: { appId: string }) {
       const { apps, keywords, categories, reviews } = result.enqueued;
       const jobs = apps + keywords + categories + reviews;
       if (jobs === 0) {
-        toast.info("Nothing new to queue", {
+        toast.info(uiLabel("Nothing new to queue"), {
           description:
             "Today's checks for this app are already queued, running or done.",
         });
@@ -41,7 +43,9 @@ export function RunDailyAction({ appId }: { appId: string }) {
     },
     onError: (error) => {
       toast.error(
-        error instanceof ApiError ? error.envelope.message : "Run daily failed",
+        error instanceof ApiError
+          ? error.envelope.message
+          : uiLabel("Run daily failed"),
       );
     },
   });
@@ -54,14 +58,16 @@ export function RunDailyAction({ appId }: { appId: string }) {
       onClick={() => {
         if (!busy) runOnce();
       }}
-      aria-label="Run daily"
+      aria-label={uiLabel("Run daily")}
     >
       {mutation.isPending ? (
         <Loader2 className="animate-spin" />
       ) : (
         <CalendarClock />
       )}
-      <span className="hidden lg:inline">Run daily</span>
+      <span className="hidden lg:inline">
+        <UiText message="Run daily" />
+      </span>
     </Button>
   );
 }

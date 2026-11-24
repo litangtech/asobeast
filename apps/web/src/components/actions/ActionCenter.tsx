@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText } from "@/components/language/UiLanguage";
 import { Suspense, useDeferredValue } from "react";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { queueFilters } from "@/lib/action-filters";
@@ -97,7 +98,7 @@ export function ActionCenter({ appId }: { appId?: string }) {
           className={QUEUE_COLUMN}
         >
           <h2 id="queue-heading" className="sr-only">
-            Queue
+            <UiText message="Queue" />
           </h2>
           <ActionToolbar
             appId={appId}

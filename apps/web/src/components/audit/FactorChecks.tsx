@@ -1,3 +1,4 @@
+import { UiText } from "@/components/language/UiLanguage";
 import Link from "next/link";
 import type { AuditCheckResult } from "@asobeast/shared";
 import { SOURCE_LABEL, STATUS_LABEL } from "./audit-copy";
@@ -22,12 +23,14 @@ export function FactorChecks({
                 aria-hidden
                 className={`size-4 ${STATUS_TONE[check.status]}`}
               />
-              {check.label}
+              <UiText message={check.label} />
               <span className="text-caption text-muted-foreground">
                 {STATUS_LABEL[check.status]}
               </span>
             </span>
-            <span className="text-muted-foreground">{check.detail}</span>
+            <span className="text-muted-foreground">
+              <UiText message={check.detail} />
+            </span>
             {check.source ? (
               <span className="text-caption text-muted-foreground">
                 {SOURCE_LABEL[check.source]}
@@ -38,7 +41,7 @@ export function FactorChecks({
                 href={unlockHref(appId, check.unlock.kind)}
                 className="w-fit text-sm font-medium underline-offset-4 hover:underline"
               >
-                {check.unlock.label}
+                <UiText message={check.unlock.label} />
               </Link>
             ) : null}
           </li>

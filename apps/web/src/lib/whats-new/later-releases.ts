@@ -10,7 +10,7 @@ export const LATER_RELEASES: readonly Release[] = [
       {
         kind: "new",
         title: "Simplified Chinese dashboard",
-        text: "Settings remembers the display language for this browser. Switch between English and Simplified Chinese for the main navigation and common controls.",
+        text: "Settings remembers the display language for this browser. Switch between English and Simplified Chinese across the dashboard, including keywords, rankings, reviews, integrations and administration.",
       },
     ],
   },

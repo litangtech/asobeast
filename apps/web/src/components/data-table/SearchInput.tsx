@@ -1,5 +1,6 @@
 "use client";
 
+import { useUiLanguage } from "@/components/language/UiLanguage";
 import { useRef } from "react";
 import { Search, X } from "lucide-react";
 import { debounce, type Options } from "nuqs";
@@ -24,6 +25,8 @@ export function SearchInput({
   onSearch: (value: string, options: Options) => void;
   className?: string;
 }) {
+  const { text: uiLabel } = useUiLanguage();
+  const { text } = useUiLanguage();
   const input = useRef<HTMLInputElement>(null);
   const search = (next: string) =>
     onSearch(next, {
@@ -37,8 +40,8 @@ export function SearchInput({
       </InputGroupAddon>
       <InputGroupInput
         ref={input}
-        aria-label={label}
-        placeholder={label}
+        aria-label={text(label)}
+        placeholder={text(label)}
         value={value}
         onChange={(event) => search(event.target.value)}
       />
@@ -46,7 +49,7 @@ export function SearchInput({
         <InputGroupAddon align="inline-end">
           <InputGroupButton
             size="icon-xs"
-            aria-label="Clear search"
+            aria-label={uiLabel("Clear search")}
             onClick={() => {
               search("");
               input.current?.focus();

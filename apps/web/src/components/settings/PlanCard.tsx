@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText, useUiLanguage } from "@/components/language/UiLanguage";
 import { Suspense } from "react";
 import Link from "next/link";
 import { useMutation, useQuery, useSuspenseQuery } from "@tanstack/react-query";
@@ -54,7 +55,9 @@ function UsageRow({
   return (
     <div className="flex flex-col gap-1.5">
       <div className="flex items-baseline justify-between gap-4 text-sm">
-        <dt className="text-muted-foreground">{label}</dt>
+        <dt className="text-muted-foreground">
+          <UiText message={label} />
+        </dt>
         <dd className="font-medium tabular-nums">
           {formatQuotaUsage(usage, counted)}
         </dd>
@@ -68,6 +71,7 @@ function UsageRow({
 }
 
 function ManageBillingButton() {
+  const { text: uiLabel } = useUiLanguage();
   const portal = useMutation({
     mutationFn: openBillingPortal,
     onSuccess: ({ url }) => {
@@ -77,7 +81,7 @@ function ManageBillingButton() {
       toast.error(
         error instanceof ApiError
           ? error.envelope.message
-          : "Could not open the billing portal. Try again.",
+          : uiLabel("Could not open the billing portal. Try again."),
       );
     },
   });
@@ -90,7 +94,7 @@ function ManageBillingButton() {
       onClick={() => portalOnce()}
     >
       {portal.isPending ? <Loader2 className="animate-spin" /> : null}
-      Manage billing
+      <UiText message="Manage billing" />
     </Button>
   );
 }
@@ -109,6 +113,7 @@ function BillingActions({ plan }: { plan: AccountPlan }) {
 }
 
 export function PlanCard() {
+  const { text: uiLabel } = useUiLanguage();
   const { data: plan } = useSuspenseQuery(accountPlanOptions);
   const { data: catalog } = useQuery({
     ...billingCatalogOptions,
@@ -121,11 +126,15 @@ export function PlanCard() {
   return (
     <Card>
       <CardHeader>
-        <CardDescription>Plan</CardDescription>
+        <CardDescription>
+          <UiText message="Plan" />
+        </CardDescription>
         <CardTitle className="flex items-center gap-2">
           {plan.displayName}
           {plan.entitled ? null : (
-            <Badge variant="destructive">Access paused</Badge>
+            <Badge variant="destructive">
+              <UiText message="Access paused" />
+            </Badge>
           )}
         </CardTitle>
         <p className="text-body text-muted-foreground">
@@ -139,7 +148,7 @@ export function PlanCard() {
           ))}
           {plan.usage.aiCalls ? (
             <UsageRow
-              label="AI calls this month"
+              label={uiLabel("AI calls this month")}
               usage={plan.usage.aiCalls}
               counted="used"
               note={aiUsageNote(plan.usage.aiCalls, plan.trialing === true)}

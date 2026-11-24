@@ -1,5 +1,6 @@
 "use client";
 
+import { useUiLanguage, UiText } from "@/components/language/UiLanguage";
 import type { RefObject } from "react";
 import { Send } from "lucide-react";
 import type { Store } from "@asobeast/shared";
@@ -25,6 +26,7 @@ export function PostReplyDialog({
   textRef: RefObject<HTMLTextAreaElement | null>;
   onPost: () => void;
 }) {
+  const { text: uiLabel } = useUiLanguage();
   return (
     <ReplyConfirmDialog
       trigger={
@@ -37,12 +39,15 @@ export function PostReplyDialog({
           }}
         >
           <Send />
-          {label}
+          <UiText message={label} />
         </Button>
       }
-      title="Post this reply publicly?"
-      description={`AsoBeast sends this text to ${consoleLabel(store)} as the reply to this review.`}
-      cancelLabel="Keep editing"
+      title={uiLabel("Post this reply publicly?")}
+      description={uiLabel(
+        "AsoBeast sends this text to {0} as the reply to this review.",
+        [consoleLabel(store)],
+      )}
+      cancelLabel={uiLabel("Keep editing")}
       actionLabel="Post"
       textRef={textRef}
       onConfirm={onPost}

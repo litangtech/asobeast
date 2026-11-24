@@ -1,5 +1,6 @@
 "use client";
 
+import { useUiLanguage } from "@/components/language/UiLanguage";
 import { useDeferredValue, useTransition } from "react";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { useQueryStates } from "nuqs";
@@ -12,6 +13,7 @@ import { userColumns } from "./user-columns";
 import { workspaceChip } from "./workspace-chip";
 
 export function AdminUsers() {
+  const { text: uiLabel } = useUiLanguage();
   const [, startTransition] = useTransition();
   const [{ q, workspace, sort, dir }, setList] = useQueryStates(
     adminUserListParsers,
@@ -42,7 +44,7 @@ export function AdminUsers() {
   return (
     <AdminList
       table={table}
-      caption="Accounts on this instance"
+      caption={uiLabel("Accounts on this instance")}
       noun="account"
       loaded={users.items.length}
       total={users.total}

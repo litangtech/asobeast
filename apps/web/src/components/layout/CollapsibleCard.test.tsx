@@ -51,7 +51,9 @@ describe("CollapsibleCard", () => {
     const id = /aria-labelledby="([^"]+)"/.exec(region)?.[1];
     expect(id).toBeTruthy();
     expect(markup).toMatch(
-      new RegExp(`<h2[^>]*id="${id}"[^>]*><button[^>]*>Section title`),
+      new RegExp(
+        `<h2[^>]*id="${id}"[^>]*><button[^>]*><span>Section title</span>`,
+      ),
     );
   });
 

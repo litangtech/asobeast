@@ -1,3 +1,4 @@
+import { UiText } from "@/components/language/UiLanguage";
 import Link from "next/link";
 import type { AuditRecommendations } from "@asobeast/shared";
 import { Card, CardContent } from "@/components/ui/card";
@@ -19,11 +20,11 @@ export function AuditTopFixes({
           className="flex flex-col gap-3"
         >
           <h2 id="top-fixes-heading" className="text-lg font-medium">
-            Top fixes
+            <UiText message="Top fixes" />
           </h2>
           {fixes.length === 0 ? (
             <p className="text-sm text-muted-foreground">
-              No change is waiting on you right now.
+              <UiText message="No change is waiting on you right now." />
             </p>
           ) : (
             <ol className="flex flex-col gap-2">
@@ -36,7 +37,7 @@ export function AuditTopFixes({
                     <span className="numeric font-mono text-muted-foreground">
                       {index + 1}.{" "}
                     </span>
-                    {item.label}
+                    <UiText message={item.label} />
                   </span>
                   <span className="numeric shrink-0 font-mono font-semibold">
                     {liftLabel(item.lift)}
@@ -49,7 +50,7 @@ export function AuditTopFixes({
             href="#action-plan"
             className="w-fit text-sm font-medium underline-offset-4 hover:underline"
           >
-            View the full plan
+            <UiText message="View the full plan" />
           </Link>
         </section>
       </CardContent>

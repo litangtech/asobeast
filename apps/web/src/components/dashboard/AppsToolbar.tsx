@@ -1,5 +1,6 @@
 "use client";
 
+import { useUiLanguage } from "@/components/language/UiLanguage";
 import { useQueryStates } from "nuqs";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { LayoutGrid, Rows3 } from "lucide-react";
@@ -34,6 +35,7 @@ const SORT_LABELS: Record<AppSort, string> = {
 };
 
 export function AppsToolbar() {
+  const { text: uiLabel } = useUiLanguage();
   const { data } = useSuspenseQuery(portfolioOptions);
   const [{ q, sort, view }, setList] = useQueryStates(appListParsers);
 
@@ -42,7 +44,7 @@ export function AppsToolbar() {
       <VisibilityHelp />
       {data.apps.length > SEARCH_MIN_APPS || q !== "" ? (
         <SearchInput
-          label="Search apps"
+          label={uiLabel("Search apps")}
           value={q}
           onSearch={(next, options) => void setList({ q: next }, options)}
         />
@@ -54,7 +56,7 @@ export function AppsToolbar() {
             void setList({ sort: appSortParser.parse(next), dir: null })
           }
         >
-          <SelectTrigger size="sm" aria-label="Sort by">
+          <SelectTrigger size="sm" aria-label={uiLabel("Sort by")}>
             <SelectValue>{SORT_LABELS[sort]}</SelectValue>
           </SelectTrigger>
           <SelectContent>
@@ -73,10 +75,10 @@ export function AppsToolbar() {
         }
       >
         <TabsList>
-          <TabsOption value="cards" aria-label="Cards">
+          <TabsOption value="cards" aria-label={uiLabel("Cards")}>
             <LayoutGrid aria-hidden />
           </TabsOption>
-          <TabsOption value="table" aria-label="Table">
+          <TabsOption value="table" aria-label={uiLabel("Table")}>
             <Rows3 aria-hidden />
           </TabsOption>
         </TabsList>

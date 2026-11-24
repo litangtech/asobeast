@@ -1,12 +1,13 @@
+import { UiDate } from "@/components/language/UiFormat";
+import { UiText } from "@/components/language/UiLanguage";
 import type { ActionEventItem } from "@asobeast/shared";
-import { formatDateTime } from "@/lib/format";
 import { historyEntries } from "./action-history";
 
 export function ActionHistory({ events }: { events: ActionEventItem[] }) {
   if (events.length === 0) {
     return (
       <p className="text-body text-muted-foreground">
-        No history recorded yet.
+        <UiText message="No history recorded yet." />
       </p>
     );
   }
@@ -25,8 +26,10 @@ export function ActionHistory({ events }: { events: ActionEventItem[] }) {
             ) : null}
           </span>
           <span className="text-caption text-muted-foreground">
-            <time dateTime={entry.date}>{formatDateTime(entry.date)}</time> ·{" "}
-            {entry.actor}
+            <time dateTime={entry.date}>
+              <UiDate value={entry.date} style="dateTime" />
+            </time>{" "}
+            · {entry.actor}
           </span>
         </li>
       ))}

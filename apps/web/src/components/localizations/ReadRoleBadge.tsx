@@ -1,3 +1,4 @@
+import { UiText } from "@/components/language/UiLanguage";
 import type {
   LocalizationReader,
   LocalizationReadRole,
@@ -31,7 +32,11 @@ export function ReaderChips({
   readers: readonly LocalizationReader[];
 }) {
   if (readers.length === 0) {
-    return <Badge variant="outline">Not read in your markets</Badge>;
+    return (
+      <Badge variant="outline">
+        <UiText message="Not read in your markets" />
+      </Badge>
+    );
   }
   return (
     <>

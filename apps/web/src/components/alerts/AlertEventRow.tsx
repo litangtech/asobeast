@@ -1,34 +1,36 @@
+"use client";
+
+import { UiText, useUiLanguage } from "@/components/language/UiLanguage";
 import Link from "next/link";
 import type { AlertEventItem } from "@asobeast/shared";
 import { AppIcon } from "@/components/AppIcon";
 import { Badge } from "@/components/ui/badge";
 import { EVENT_LABELS } from "@/components/settings/alert-event-copy";
-import {
-  formatCountry,
-  formatDateTime,
-  formatUtcClock,
-  storeLabel,
-} from "@/lib/format";
+import { storeLabel } from "@/lib/format";
+import { uiCountry, uiDate } from "@/lib/ui-formats";
+import type { UiLanguage } from "@/lib/ui-language";
+import { alertSentenceZh } from "./alert-sentence.zh-cn";
 import { cn } from "@/lib/utils";
 import { ALERT_EVENT_ICONS, ALERT_TONE_CLASS } from "./alert-event-icons";
 import { alertEventHref } from "./alert-event-href";
 
-function metaOf(item: AlertEventItem): string {
+function metaOf(item: AlertEventItem, language: UiLanguage): string {
   return [
     item.store ? storeLabel(item.store) : null,
-    item.country ? formatCountry(item.country) : null,
+    item.country ? uiCountry(language, item.country) : null,
   ]
     .filter((part) => part !== null)
     .join(" · ");
 }
 
 function Sentence({ item }: { item: AlertEventItem }) {
+  const { language, text } = useUiLanguage();
   const href = alertEventHref(item);
   const content = (
     <>
-      <span className="sr-only">{`${EVENT_LABELS[item.event]}: `}</span>
+      <span className="sr-only">{`${text(EVENT_LABELS[item.event])}: `}</span>
       <span dir="auto" className="block wrap-anywhere">
-        {item.sentence}
+        {language === "zh-CN" ? alertSentenceZh(item) : item.sentence}
       </span>
     </>
   );
@@ -53,7 +55,8 @@ export function AlertEventRow({
   isNew: boolean;
 }) {
   const { icon: Icon, tone } = ALERT_EVENT_ICONS[item.event];
-  const meta = metaOf(item);
+  const { language } = useUiLanguage();
+  const meta = metaOf(item, language);
 
   return (
     <li className="flex min-w-0 items-start gap-3 rounded-lg border bg-card px-3 py-3">
@@ -78,13 +81,17 @@ export function AlertEventRow({
         </div>
       </div>
       <div className="flex shrink-0 flex-col items-end gap-1">
-        {isNew ? <Badge variant="info">New</Badge> : null}
+        {isNew ? (
+          <Badge variant="info">
+            <UiText message="New" />
+          </Badge>
+        ) : null}
         <time
           dateTime={item.occurredAt}
-          title={formatDateTime(item.occurredAt)}
+          title={uiDate(language, item.occurredAt, "dateTime")}
           className="text-caption text-muted-foreground"
         >
-          {formatUtcClock(item.occurredAt)}
+          {uiDate(language, item.occurredAt, "clock")}
         </time>
       </div>
     </li>

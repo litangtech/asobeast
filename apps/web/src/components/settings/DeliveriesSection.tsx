@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText } from "@/components/language/UiLanguage";
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import {
@@ -26,14 +27,14 @@ function StatusBadge({ status }: { status: AlertDeliveryItem["status"] }) {
     return (
       <Badge variant="secondary">
         <CheckCircle2 className="text-success" />
-        Success
+        <UiText message="Success" />
       </Badge>
     );
   }
   return (
     <Badge variant="secondary">
       <XCircle className="text-destructive" />
-      Failed
+      <UiText message="Failed" />
     </Badge>
   );
 }
@@ -51,7 +52,10 @@ function DeliveryRow({
       <span className="text-muted-foreground">
         {EVENT_LABELS[delivery.event]}
       </span>
-      <span className="text-muted-foreground">attempt {delivery.attempt}</span>
+      <span className="text-muted-foreground">
+        <UiText message="attempt" trailing />
+        {delivery.attempt}
+      </span>
       <Tooltip>
         <TooltipTrigger asChild>
           <time
@@ -99,7 +103,9 @@ export function DeliveriesSection({
         ) : (
           <ChevronRight className="size-4" />
         )}
-        <span>Recent deliveries</span>
+        <span>
+          <UiText message="Recent deliveries" />
+        </span>
       </button>
 
       {open ? (
@@ -107,7 +113,7 @@ export function DeliveriesSection({
           {isLoading ? (
             <p className="flex items-center gap-2 py-2 text-sm text-muted-foreground">
               <Loader2 className="size-4 animate-spin" />
-              Loading…
+              <UiText message="Loading…" />
             </p>
           ) : data && data.length > 0 ? (
             <ul className="divide-y">
@@ -121,7 +127,7 @@ export function DeliveriesSection({
             </ul>
           ) : (
             <p className="py-2 text-sm text-muted-foreground">
-              No deliveries yet.
+              <UiText message="No deliveries yet." />
             </p>
           )}
         </div>

@@ -1,5 +1,6 @@
 "use client";
 
+import { useUiLanguage } from "@/components/language/UiLanguage";
 import { ErrorState } from "@/components/layout/ErrorState";
 
 export default function CompetitorsError({
@@ -9,11 +10,12 @@ export default function CompetitorsError({
   error: Error & { digest?: string };
   retry: () => void;
 }) {
+  const { text: uiLabel } = useUiLanguage();
   return (
     <ErrorState
       error={error}
       retry={retry}
-      title="Competitors could not be loaded"
+      title={uiLabel("Competitors could not be loaded")}
     />
   );
 }

@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText, useUiLanguage } from "@/components/language/UiLanguage";
 import { useEffect, useState } from "react";
 import type { FormEvent } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -75,6 +76,7 @@ export function ConnectPlayDialog({
   label: string;
   googleSignIn: boolean;
 }) {
+  const { text: uiLabel } = useUiLanguage();
   const queryClient = useQueryClient();
   const initial: Method = googleSignIn ? "google" : "key";
   const [open, setOpen] = useState(false);
@@ -112,7 +114,7 @@ export function ConnectPlayDialog({
       }),
     onSuccess: () => {
       invalidateStoreConnectionMutation(queryClient);
-      toast.success("Google Play Console connected");
+      toast.success(uiLabel("Google Play Console connected"));
       reset(false);
     },
     onError: (failure) => setError(messageOf(failure)),
@@ -148,7 +150,9 @@ export function ConnectPlayDialog({
       submitLabel={method === "google" ? SIGN_IN_LABEL : label}
       description={
         <>
-          <span>{METHODS[method].description}</span>{" "}
+          <span>
+            <UiText message={METHODS[method].description} />
+          </span>{" "}
           <GuideLink href={METHODS[method].guide} subject="Google Play">
             Step by step guide
           </GuideLink>
@@ -159,7 +163,7 @@ export function ConnectPlayDialog({
       onSubmit={submit}
       trigger={
         <Button variant="outline" size="sm">
-          {label}
+          <UiText message={label} />
         </Button>
       }
     >
@@ -174,29 +178,30 @@ export function ConnectPlayDialog({
             setError(null);
           }}
         >
-          <TabsList aria-label="How to connect">
+          <TabsList aria-label={uiLabel("How to connect")}>
             {METHOD_ORDER.map((each) => (
               <TabsOption key={each} value={each}>
-                {METHODS[each].label}
+                <UiText message={METHODS[each].label} />
               </TabsOption>
             ))}
           </TabsList>
         </Tabs>
       ) : null}
       <div className="flex flex-col gap-2">
-        <Label htmlFor="play-bucket">Bucket id</Label>
+        <Label htmlFor="play-bucket">
+          <UiText message="Bucket id" />
+        </Label>
         <Input
           id="play-bucket"
           value={bucket}
           onChange={(event) => setBucket(event.target.value)}
-          placeholder="pubsite_prod_rev_01234567890987654321"
+          placeholder={uiLabel("pubsite_prod_rev_01234567890987654321")}
           autoComplete="off"
           spellCheck={false}
           className="font-mono text-xs"
         />
         <p className="text-xs text-muted-foreground">
-          Play Console shows it under Download reports, as the Cloud Storage URI
-          after gs://.
+          <UiText message="Play Console shows it under Download reports, as the Cloud Storage URI after gs://." />
         </p>
       </div>
       {method === "key" ? (

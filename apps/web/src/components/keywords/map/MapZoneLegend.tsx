@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText, useUiLanguage } from "@/components/language/UiLanguage";
 import { Button } from "@/components/ui/button";
 import { InfoTip } from "@/components/ui/info-tip";
 import {
@@ -32,8 +33,12 @@ export function MapZoneLegend({
   selected: KeywordZone | null;
   onToggle: (zone: KeywordZone) => void;
 }) {
+  const { text: uiLabel } = useUiLanguage();
   return (
-    <ul aria-label="Zones" className="grid grid-cols-2 gap-2 lg:grid-cols-4">
+    <ul
+      aria-label={uiLabel("Zones")}
+      className="grid grid-cols-2 gap-2 lg:grid-cols-4"
+    >
       {KEYWORD_ZONES.map((zone) => {
         const name = ZONE_LABELS[zone];
         const count = counts.zones[zone];
@@ -59,7 +64,7 @@ export function MapZoneLegend({
               <span className="ml-auto numeric font-mono">{String(count)}</span>
             </Button>
             <InfoTip
-              label={`About ${name}`}
+              label={uiLabel("About {0}", [name])}
               title={name}
               summary={`${zoneMeaning(zone)} ${zoneRule(zone, thresholds)}.`}
             >
@@ -69,7 +74,7 @@ export function MapZoneLegend({
                 rel="noreferrer"
                 className="font-medium text-foreground underline decoration-primary underline-offset-4 hover:decoration-2"
               >
-                Read the opportunity map
+                <UiText message="Read the opportunity map" />
               </a>
             </InfoTip>
           </li>
@@ -89,12 +94,20 @@ export function MapZoneTable({
   return (
     <div className="sr-only">
       <table>
-        <caption>Opportunity map zones</caption>
+        <caption>
+          <UiText message="Opportunity map zones" />
+        </caption>
         <thead>
           <tr>
-            <th scope="col">Zone</th>
-            <th scope="col">Rule</th>
-            <th scope="col">Keywords</th>
+            <th scope="col">
+              <UiText message="Zone" />
+            </th>
+            <th scope="col">
+              <UiText message="Rule" />
+            </th>
+            <th scope="col">
+              <UiText message="Keywords" />
+            </th>
           </tr>
         </thead>
         <tbody>
@@ -106,8 +119,12 @@ export function MapZoneTable({
             </tr>
           ))}
           <tr>
-            <th scope="row">Not on the map</th>
-            <td>Missing a popularity or a difficulty</td>
+            <th scope="row">
+              <UiText message="Not on the map" />
+            </th>
+            <td>
+              <UiText message="Missing a popularity or a difficulty" />
+            </td>
             <td>{String(counts.unplotted)}</td>
           </tr>
         </tbody>

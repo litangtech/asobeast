@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText } from "@/components/language/UiLanguage";
 import { useRef, type ReactNode, type RefObject } from "react";
 import {
   AlertDialog,
@@ -50,8 +51,12 @@ export function ReplyConfirmDialog({
         }}
       >
         <AlertDialogHeader>
-          <AlertDialogTitle>{title}</AlertDialogTitle>
-          <AlertDialogDescription>{description}</AlertDialogDescription>
+          <AlertDialogTitle>
+            <UiText message={title} />
+          </AlertDialogTitle>
+          <AlertDialogDescription>
+            <UiText message={description} />
+          </AlertDialogDescription>
           {children}
         </AlertDialogHeader>
         <AlertDialogFooter>

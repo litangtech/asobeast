@@ -1,7 +1,6 @@
 "use client";
 
-import { UiText } from "@/components/language/UiLanguage";
-import { useUiLanguage } from "@/components/language/UiLanguage";
+import { useUiLanguage, UiText } from "@/components/language/UiLanguage";
 import { useState } from "react";
 import type { FormEvent, RefObject } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -79,14 +78,10 @@ function StorefrontField({
   return (
     <div className="flex flex-col gap-2">
       <Label htmlFor="import-country">
-        <UiText message={"Home storefront"} />
+        <UiText message="Home storefront" />
       </Label>
       <p className="text-xs text-muted-foreground">
-        <UiText
-          message={
-            "Where this app’s metadata and category ranks are read. Add other markets later from the keyword monitor."
-          }
-        />
+        <UiText message="Where this app’s metadata and category ranks are read. Add other markets later from the keyword monitor." />
       </p>
       <CountrySelect
         id="import-country"
@@ -128,6 +123,7 @@ export function ImportAppDialog({
   onOpenChange?: (open: boolean) => void;
   returnFocus?: RefObject<HTMLElement | null>;
 }) {
+  const { text: uiLabel } = useUiLanguage();
   const { text } = useUiLanguage();
   const router = useRouter();
   const queryClient = useQueryClient();
@@ -149,7 +145,7 @@ export function ImportAppDialog({
       void queryClient.invalidateQueries({ queryKey: portfolioKey });
       invalidateWorkspaceChecklist(queryClient);
       setOpen(false);
-      toast.success(`Imported ${app.name ?? "app"}`);
+      toast.success(uiLabel("Imported {0}", [app.name ?? "app"]));
       router.push(`/apps/${app.id}/setup`);
     },
     onError: (err) => {
@@ -236,14 +232,10 @@ export function ImportAppDialog({
       <DialogContent onCloseAutoFocus={returnFocusTo(returnFocus)}>
         <DialogHeader>
           <DialogTitle>
-            <UiText message={"Import an app"} />
+            <UiText message="Import an app" />
           </DialogTitle>
           <DialogDescription>
-            <UiText
-              message={
-                "Search the App Store or Google Play by name, or paste a store URL, to import the app and start tracking its keywords."
-              }
-            />
+            <UiText message="Search the App Store or Google Play by name, or paste a store URL, to import the app and start tracking its keywords." />
           </DialogDescription>
         </DialogHeader>
 

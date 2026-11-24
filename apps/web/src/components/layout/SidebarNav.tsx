@@ -1,6 +1,6 @@
 "use client";
 
-import { useUiLanguage } from "@/components/language/UiLanguage";
+import { UiText, useUiLanguage } from "@/components/language/UiLanguage";
 
 import type { ReactNode } from "react";
 import Link from "next/link";
@@ -83,7 +83,10 @@ function OpenActionBadge() {
   return (
     <>
       <span className="sr-only">
-        {`, ${open} open action${open === 1 ? "" : "s"}`}
+        <UiText
+          message=", {0} open action{1}"
+          values={[open, open === 1 ? "" : "s"]}
+        />
       </span>
       <SidebarMenuBadge aria-hidden className="numeric">
         {open > DISPLAY_MAX ? `${DISPLAY_MAX}+` : open}

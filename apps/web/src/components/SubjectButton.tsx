@@ -1,3 +1,4 @@
+import { UiText } from "@/components/language/UiLanguage";
 import type { ComponentProps, ReactNode } from "react";
 import { Button } from "@/components/ui/button";
 
@@ -15,8 +16,10 @@ export function SubjectButton({
   return (
     <Button variant="outline" size="sm" {...props}>
       {icon}
-      {label}
-      <span className="sr-only">{` of ${subject}`}</span>
+      <UiText message={label} />
+      <span className="sr-only">
+        <UiText message=" of {0}" values={[subject]} />
+      </span>
     </Button>
   );
 }

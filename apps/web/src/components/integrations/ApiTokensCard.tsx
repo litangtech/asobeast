@@ -1,6 +1,7 @@
 "use client";
 
-import { UiText } from "@/components/language/UiLanguage";
+import { UiDate } from "@/components/language/UiFormat";
+import { UiText, useUiLanguage } from "@/components/language/UiLanguage";
 import { useState } from "react";
 import type { FormEvent } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -77,6 +78,7 @@ function TokenSecret({
   created: ApiTokenCreated;
   onDone: () => void;
 }) {
+  const { text: uiLabel } = useUiLanguage();
   const [copied, setCopied] = useState(false);
 
   async function copy() {
@@ -86,19 +88,22 @@ function TokenSecret({
       }
       await navigator.clipboard.writeText(created.token);
       setCopied(true);
-      toast.success("Token copied");
+      toast.success(uiLabel("Token copied"));
     } catch {
-      toast.error("Copy failed — select the token above and copy it manually.");
+      toast.error(
+        uiLabel("Copy failed — select the token above and copy it manually."),
+      );
     }
   }
 
   return (
     <>
       <DialogHeader>
-        <DialogTitle>Copy your token</DialogTitle>
+        <DialogTitle>
+          <UiText message="Copy your token" />
+        </DialogTitle>
         <DialogDescription>
-          This is the only time the token is shown. Store it somewhere safe —
-          you will not see it again.
+          <UiText message="This is the only time the token is shown. Store it somewhere safe — you will not see it again." />
         </DialogDescription>
       </DialogHeader>
       <DialogBody>
@@ -106,14 +111,14 @@ function TokenSecret({
           <Input
             readOnly
             value={created.token}
-            aria-label="New api token"
+            aria-label={uiLabel("New api token")}
             className="font-mono text-xs"
           />
           <Button
             type="button"
             variant="outline"
             size="icon-sm"
-            aria-label="Copy token"
+            aria-label={uiLabel("Copy token")}
             onClick={() => void copy()}
           >
             {copied ? <Check /> : <Copy />}
@@ -122,7 +127,7 @@ function TokenSecret({
       </DialogBody>
       <DialogFooter>
         <Button type="button" onClick={onDone}>
-          <UiText message={"Done"} />
+          <UiText message="Done" />
         </Button>
       </DialogFooter>
     </>
@@ -130,6 +135,7 @@ function TokenSecret({
 }
 
 function TokenForm({ onCreated }: { onCreated: (t: ApiTokenCreated) => void }) {
+  const { text: uiLabel } = useUiLanguage();
   const queryClient = useQueryClient();
   const [name, setName] = useState("");
   const [scope, setScope] = useState<ApiTokenScope>(DEFAULT_API_TOKEN_SCOPE);
@@ -170,25 +176,30 @@ function TokenForm({ onCreated }: { onCreated: (t: ApiTokenCreated) => void }) {
   return (
     <form onSubmit={submit} className="flex min-h-0 flex-col gap-4">
       <DialogHeader>
-        <DialogTitle>New API token</DialogTitle>
+        <DialogTitle>
+          <UiText message="New API token" />
+        </DialogTitle>
         <DialogDescription>
-          Use a token to authenticate scripts and the MCP server with a Bearer
-          header. Limits are per workspace, so a second token adds no capacity.
+          <UiText message="Use a token to authenticate scripts and the MCP server with a Bearer header. Limits are per workspace, so a second token adds no capacity." />
         </DialogDescription>
       </DialogHeader>
       <DialogBody>
         <div className="flex flex-col gap-2">
-          <Label htmlFor="token-name">Name</Label>
+          <Label htmlFor="token-name">
+            <UiText message="Name" />
+          </Label>
           <Input
             id="token-name"
             value={name}
             onChange={(event) => setName(event.target.value)}
-            placeholder="Local script"
+            placeholder={uiLabel("Local script")}
             aria-invalid={error !== null}
           />
         </div>
         <div className="flex flex-col gap-2">
-          <Label htmlFor="token-scope">Scope</Label>
+          <Label htmlFor="token-scope">
+            <UiText message="Scope" />
+          </Label>
           <Select
             value={scope}
             onValueChange={(next) => setScope(next as ApiTokenScope)}
@@ -205,13 +216,13 @@ function TokenForm({ onCreated }: { onCreated: (t: ApiTokenCreated) => void }) {
             </SelectContent>
           </Select>
           <p className="text-xs text-muted-foreground">
-            Read only is the safer default. Choose read and write for a script
-            that changes data, or for an agent you allow to track keywords,
-            manage competitors and update actions.
+            <UiText message="Read only is the safer default. Choose read and write for a script that changes data, or for an agent you allow to track keywords, manage competitors and update actions." />
           </p>
         </div>
         <div className="flex flex-col gap-2">
-          <Label htmlFor="token-expiry">Expiry</Label>
+          <Label htmlFor="token-expiry">
+            <UiText message="Expiry" />
+          </Label>
           <Select value={expiry} onValueChange={setExpiry}>
             <SelectTrigger id="token-expiry">
               <SelectValue />
@@ -219,7 +230,7 @@ function TokenForm({ onCreated }: { onCreated: (t: ApiTokenCreated) => void }) {
             <SelectContent>
               {EXPIRY_CHOICES.map((choice) => (
                 <SelectItem key={choice.value} value={choice.value}>
-                  {choice.label}
+                  <UiText message={choice.label} />
                 </SelectItem>
               ))}
             </SelectContent>
@@ -230,7 +241,7 @@ function TokenForm({ onCreated }: { onCreated: (t: ApiTokenCreated) => void }) {
       <DialogFooter>
         <Button type="submit" disabled={mutation.isPending}>
           {mutation.isPending ? <Loader2 className="animate-spin" /> : null}
-          Create token
+          <UiText message="Create token" />
         </Button>
       </DialogFooter>
     </form>
@@ -251,7 +262,7 @@ function CreateTokenDialog() {
       <DialogTrigger asChild>
         <Button variant="outline" size="sm">
           <Plus />
-          New token
+          <UiText message="New token" />
         </Button>
       </DialogTrigger>
       <DialogContent>
@@ -276,35 +287,52 @@ export function ApiTokensCard() {
     <Card>
       <CardHeader className="flex-row items-start justify-between gap-4">
         <div className="flex flex-col gap-1.5">
-          <CardDescription>Automation</CardDescription>
-          <CardTitle>API tokens</CardTitle>
+          <CardDescription>
+            <UiText message="Automation" />
+          </CardDescription>
+          <CardTitle>
+            <UiText message="API tokens" />
+          </CardTitle>
         </div>
         <CreateTokenDialog />
       </CardHeader>
       <CardContent>
         {!data || data.length === 0 ? (
           <div className="rounded-xl border border-dashed p-8 text-center text-sm text-muted-foreground">
-            No tokens yet. Create one to authenticate scripts or the MCP server
-            with a Bearer header.
+            <UiText message="No tokens yet. Create one to authenticate scripts or the MCP server with a Bearer header." />
           </div>
         ) : (
           <div className="overflow-x-auto rounded-xl border">
             <Table>
               <TableCaption className="sr-only">
-                Personal API tokens for automation.
+                <UiText message="Personal API tokens for automation." />
               </TableCaption>
               <TableHeader>
                 <TableRow>
-                  <TableHead>Name</TableHead>
-                  <TableHead>Prefix</TableHead>
-                  <TableHead>Scope</TableHead>
-                  <TableHead>Expires</TableHead>
-                  <TableHead>Last used</TableHead>
-                  <TableHead className="numeric text-right">Requests</TableHead>
-                  <TableHead>Created</TableHead>
+                  <TableHead>
+                    <UiText message="Name" />
+                  </TableHead>
+                  <TableHead>
+                    <UiText message="Prefix" />
+                  </TableHead>
+                  <TableHead>
+                    <UiText message="Scope" />
+                  </TableHead>
+                  <TableHead>
+                    <UiText message="Expires" />
+                  </TableHead>
+                  <TableHead>
+                    <UiText message="Last used" />
+                  </TableHead>
+                  <TableHead className="numeric text-right">
+                    <UiText message="Requests" />
+                  </TableHead>
+                  <TableHead>
+                    <UiText message="Created" />
+                  </TableHead>
                   <TableHead className="w-0">
                     <span className="sr-only">
-                      <UiText message={"Actions"} />
+                      <UiText message="Actions" />
                     </span>
                   </TableHead>
                 </TableRow>
@@ -328,18 +356,26 @@ export function ApiTokensCard() {
                     </TableCell>
                     <TableCell>
                       {token.expiresAt === null ? (
-                        <span className="text-muted-foreground">Never</span>
+                        <span className="text-muted-foreground">
+                          <UiText message="Never" />
+                        </span>
                       ) : token.expired ? (
-                        <Badge variant="destructive">Expired</Badge>
+                        <Badge variant="destructive">
+                          <UiText message="Expired" />
+                        </Badge>
                       ) : (
                         formatDate(token.expiresAt)
                       )}
                     </TableCell>
-                    <TableCell>{formatDate(token.lastUsedAt)}</TableCell>
+                    <TableCell>
+                      <UiDate value={token.lastUsedAt} />
+                    </TableCell>
                     <TableCell className="numeric text-right">
                       {formatNumber(token.usageCount)}
                     </TableCell>
-                    <TableCell>{formatDate(token.createdAt)}</TableCell>
+                    <TableCell>
+                      <UiDate value={token.createdAt} />
+                    </TableCell>
                     <TableCell>
                       <div className="flex justify-end">
                         <RevokeTokenButton id={token.id} name={token.name} />

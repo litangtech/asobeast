@@ -1,3 +1,4 @@
+import { UiText } from "@/components/language/UiLanguage";
 import {
   AlertOctagon,
   AlertTriangle,
@@ -40,7 +41,7 @@ export function ActionPriorityBadge({
     >
       <Icon aria-hidden className="size-3.5" />
       <span className={cn(compact && "sr-only @2xl/queue:not-sr-only")}>
-        {ACTION_PRIORITY_LABEL[priority]}
+        <UiText message={ACTION_PRIORITY_LABEL[priority]} />
       </span>
     </Badge>
   );

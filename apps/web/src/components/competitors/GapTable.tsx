@@ -1,5 +1,6 @@
 "use client";
 
+import { useUiLanguage } from "@/components/language/UiLanguage";
 import { useMemo } from "react";
 import { flexRender, useTable } from "@tanstack/react-table";
 import type { inferParserType, SetValues } from "nuqs";
@@ -64,6 +65,7 @@ export function GapTable({
   params: GapTableParams;
   setParams: SetValues<typeof gapTableParsers>;
 }) {
+  const { text: uiLabel } = useUiLanguage();
   const columns = useMemo(() => gapColumns(scope), [scope]);
   const [visibility, setVisibility] = useStoredColumnVisibility(
     "gaps",
@@ -110,7 +112,7 @@ export function GapTable({
     <div className="flex flex-col gap-3">
       <div className="flex flex-wrap items-center gap-2">
         <SearchInput
-          label="Search gap keywords"
+          label={uiLabel("Search gap keywords")}
           value={params.q}
           onSearch={(q, options) => void setParams({ q }, options)}
         />
@@ -160,7 +162,7 @@ export function GapTable({
             <TableRow>
               <TableCell colSpan={table.getVisibleLeafColumns().length}>
                 <FilteredEmpty
-                  title="No keywords match this search"
+                  title={uiLabel("No keywords match this search")}
                   onClear={() => void setParams({ q: null })}
                 />
               </TableCell>

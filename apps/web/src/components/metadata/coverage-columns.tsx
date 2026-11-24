@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText, useUiLanguage } from "@/components/language/UiLanguage";
 import { createColumnHelper } from "@tanstack/react-table";
 import { Check, CircleDashed, Minus } from "lucide-react";
 import {
@@ -53,7 +54,8 @@ function CoverageMark({ covered, label }: { covered: boolean; label: string }) {
         <Minus className="size-3.5" />
       )}
       <span className="sr-only">
-        {covered ? "in" : "missing from"} {label}
+        <UiText message={covered ? "in" : "missing from"} />{" "}
+        <UiText message={label} />
       </span>
     </span>
   );
@@ -80,7 +82,10 @@ function FieldMark({
           <CoverageMark covered label={label} />
         </span>
       </TooltipTrigger>
-      <TooltipContent>in {label}</TooltipContent>
+      <TooltipContent>
+        <UiText message="in" trailing />
+        <UiText message={label} />
+      </TooltipContent>
     </Tooltip>
   );
 }
@@ -89,17 +94,24 @@ function NotReadMark({ label }: { label: string }) {
   return (
     <span className="inline-flex size-6 items-center justify-center rounded-full text-muted-foreground">
       <CircleDashed className="size-4" />
-      <span className="sr-only">{label} not read</span>
+      <span className="sr-only">
+        <UiText message={label} />
+        <UiText message="not read" />
+      </span>
     </span>
   );
 }
 
 function ScreenshotTextCell({ row }: { row: KeywordCoverageRow }) {
+  const { text: uiLabel } = useUiLanguage();
   const mark = screenshotTextMark(row);
   return mark === "unread" ? (
-    <NotReadMark label="screenshot text" />
+    <NotReadMark label={uiLabel("screenshot text")} />
   ) : (
-    <CoverageMark covered={mark === "covered"} label="screenshot text" />
+    <CoverageMark
+      covered={mark === "covered"}
+      label={uiLabel("screenshot text")}
+    />
   );
 }
 
@@ -120,7 +132,7 @@ export function coverageColumns(
           {row.original.text}
           {row.original.uncovered ? (
             <Badge variant="outline" className="border-warning/40 text-warning">
-              Uncovered
+              <UiText message="Uncovered" />
             </Badge>
           ) : null}
         </span>

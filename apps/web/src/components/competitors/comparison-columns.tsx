@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText, useUiLanguage } from "@/components/language/UiLanguage";
 import { createColumnHelper } from "@tanstack/react-table";
 import { formatRankPosition } from "@asobeast/shared";
 import type { KeywordComparisonRow } from "@asobeast/shared";
@@ -71,6 +72,7 @@ export function PositionCell({
   best: boolean;
   checked?: boolean;
 }) {
+  const { text: uiLabel } = useUiLanguage();
   const graded = grade("position", value);
   const pill = cn(
     "inline-flex min-w-10 justify-center rounded-md px-1.5 py-0.5",
@@ -79,22 +81,26 @@ export function PositionCell({
   if (!checked) {
     return (
       <span
-        title="Not checked yet"
+        title={uiLabel("Not checked yet")}
         className={cn(pill, "text-muted-foreground")}
       >
         <span aria-hidden>—</span>
-        <span className="sr-only">Not checked yet</span>
+        <span className="sr-only">
+          <UiText message="Not checked yet" />
+        </span>
       </span>
     );
   }
   if (graded === null) {
     return (
       <span
-        title="Not ranking"
+        title={uiLabel("Not ranking")}
         className={cn(pill, "numeric font-mono text-muted-foreground")}
       >
         <span aria-hidden>{formatRankPosition(value)}</span>
-        <span className="sr-only">Not ranking</span>
+        <span className="sr-only">
+          <UiText message="Not ranking" />
+        </span>
       </span>
     );
   }
@@ -102,7 +108,7 @@ export function PositionCell({
     <GradedNumber
       value={formatRankPosition(value)}
       grade={graded}
-      label="Position"
+      label={uiLabel("Position")}
       className={cn(pill, "text-foreground", gradeWash(graded))}
     />
   );
@@ -144,13 +150,14 @@ function KeywordCell({
   market: string | null;
   onOpenBreakdown: (keywordId: string, opener: HTMLElement) => void;
 }) {
+  const { text: uiLabel } = useUiLanguage();
   return (
     <div className="flex flex-col gap-0.5">
       <span className="inline-flex items-center gap-2 font-medium">
         <button
           type="button"
           title={row.text}
-          aria-label={`${row.text}, why apps rank`}
+          aria-label={uiLabel("{0}, why apps rank", [row.text])}
           data-breakdown-keyword={row.keywordId}
           onClick={(event) =>
             onOpenBreakdown(row.keywordId, event.currentTarget)
@@ -161,7 +168,7 @@ function KeywordCell({
         </button>
         {row.gap ? (
           <Badge variant="outline" className="border-warning/40 text-warning">
-            Gap
+            <UiText message="Gap" />
           </Badge>
         ) : null}
       </span>

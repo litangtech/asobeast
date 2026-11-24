@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText, useUiLanguage } from "@/components/language/UiLanguage";
 import { useId } from "react";
 import { useQuery } from "@tanstack/react-query";
 import type { WorkspaceChecklist } from "@asobeast/shared";
@@ -30,7 +31,9 @@ function ChecklistVisibility({ checklist }: { checklist: WorkspaceChecklist }) {
   return (
     <>
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <Label htmlFor={switchId}>Show the setup checklist</Label>
+        <Label htmlFor={switchId}>
+          <UiText message="Show the setup checklist" />
+        </Label>
         <div className="flex items-center gap-3">
           <span className="text-muted-foreground">
             {pillLabel(checklist.done, checklist.total)}
@@ -51,7 +54,7 @@ function ChecklistVisibility({ checklist }: { checklist: WorkspaceChecklist }) {
       </div>
       {hidden ? (
         <p className="text-muted-foreground">
-          The checklist is hidden for everyone in this workspace.
+          <UiText message="The checklist is hidden for everyone in this workspace." />
         </p>
       ) : null}
     </>
@@ -59,6 +62,7 @@ function ChecklistVisibility({ checklist }: { checklist: WorkspaceChecklist }) {
 }
 
 export function ChecklistSettingsCard() {
+  const { text: uiLabel } = useUiLanguage();
   const { authenticated } = useAuth();
   const read = useQuery({
     ...workspaceChecklistOptions,
@@ -68,10 +72,11 @@ export function ChecklistSettingsCard() {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Setup checklist</CardTitle>
+        <CardTitle>
+          <UiText message="Setup checklist" />
+        </CardTitle>
         <CardDescription>
-          The checklist floats at the bottom right of every page until every
-          item is done.
+          <UiText message="The checklist floats at the bottom right of every page until every item is done." />
         </CardDescription>
       </CardHeader>
       <CardContent className="flex flex-col gap-4">
@@ -83,7 +88,7 @@ export function ChecklistSettingsCard() {
         ) : null}
         {failedRead(read) ? (
           <InlineQueryError
-            message="Could not load the setup checklist."
+            message={uiLabel("Could not load the setup checklist.")}
             read={read}
           />
         ) : null}

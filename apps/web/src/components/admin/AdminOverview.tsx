@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText, useUiLanguage } from "@/components/language/UiLanguage";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import {
   ACTIVATION_WINDOW_DAYS,
@@ -30,16 +31,20 @@ const ACTIVATION_GUIDE =
   "https://docs.asobeast.com/security/admin-surfaces#activation";
 
 function ActivationTile({ activation }: { activation: AdminActivation }) {
+  const { text: uiLabel } = useUiLanguage();
   return (
     <StatTile
-      label="Activation"
+      label={uiLabel("Activation")}
       value={`${formatNumber(activation.rankedWithinADay)} of ${formatNumber(activation.importedLast30Days)}`}
       note={`ranked within a day of import · ${formatNumber(activation.completedSetup)} completed setup`}
       info={
         <InfoTip
-          label="What activation means"
-          title="Activation"
-          summary={`Of the apps imported in the last ${ACTIVATION_WINDOW_DAYS} days, how many had a position for one of their keywords within 24 hours of the import, which is the time to value the guided setup is built for.`}
+          label={uiLabel("What activation means")}
+          title={uiLabel("Activation")}
+          summary={uiLabel(
+            "Of the apps imported in the last {0} days, how many had a position for one of their keywords within 24 hours of the import, which is the time to value the guided setup is built for.",
+            [ACTIVATION_WINDOW_DAYS],
+          )}
         >
           <a
             href={ACTIVATION_GUIDE}
@@ -47,7 +52,7 @@ function ActivationTile({ activation }: { activation: AdminActivation }) {
             rel="noreferrer"
             className="font-medium text-foreground underline decoration-primary underline-offset-4 hover:decoration-2"
           >
-            Read how activation is counted
+            <UiText message="Read how activation is counted" />
           </a>
         </InfoTip>
       }
@@ -56,11 +61,12 @@ function ActivationTile({ activation }: { activation: AdminActivation }) {
 }
 
 function OverviewTiles({ overview }: { overview: Overview }) {
+  const { text: uiLabel } = useUiLanguage();
   const { workspaces, users, apps, keywords } = overview;
   return (
     <StatTileGroup>
       <StatTile
-        label="Workspaces"
+        label={uiLabel("Workspaces")}
         value={formatNumber(workspaces.total)}
         note={joinParts([
           countedPart(workspaces.suspended, "suspended"),
@@ -68,7 +74,7 @@ function OverviewTiles({ overview }: { overview: Overview }) {
         ])}
       />
       <StatTile
-        label="Users"
+        label={uiLabel("Users")}
         value={formatNumber(users.total)}
         note={joinParts([
           `${formatNumber(users.emailVerified)} confirmed`,
@@ -76,22 +82,22 @@ function OverviewTiles({ overview }: { overview: Overview }) {
         ])}
       />
       <StatTile
-        label="Tracked apps"
+        label={uiLabel("Tracked apps")}
         value={formatNumber(apps.tracked)}
         note={pluralize(apps.competitors, "competitor")}
       />
       <StatTile
-        label="Keyword markets"
+        label={uiLabel("Keyword markets")}
         value={formatNumber(keywords.trackedMarkets)}
         note={`tracked across ${pluralize(keywords.storefronts, "storefront")}`}
       />
       <StatTile
-        label="Searched keywords"
+        label={uiLabel("Searched keywords")}
         value={formatNumber(keywords.searched)}
         note="one store search each per day"
       />
       <StatTile
-        label="AI calls this month"
+        label={uiLabel("AI calls this month")}
         value={formatNumber(overview.aiCallsThisMonth)}
       />
       {overview.activation ? (
@@ -110,7 +116,9 @@ function CountList({
     <dl className="grid grid-cols-[1fr_auto] gap-x-6 gap-y-2 text-sm">
       {rows.map((row) => (
         <div key={row.key} className="contents">
-          <dt className="text-muted-foreground">{row.label}</dt>
+          <dt className="text-muted-foreground">
+            <UiText message={row.label} />
+          </dt>
           <dd className="numeric text-right font-mono">
             {formatNumber(row.count)}
           </dd>
@@ -130,11 +138,13 @@ export function AdminOverview() {
         <Card>
           <CardHeader>
             <CardTitle asChild>
-              <h2>Sign ups, last 30 days</h2>
+              <h2>
+                <UiText message="Sign ups, last 30 days" />
+              </h2>
             </CardTitle>
             <CardDescription>
-              {pluralize(overview.users.joinedLast30Days, "account")} joined in
-              the last 30 days.
+              {pluralize(overview.users.joinedLast30Days, "account")}
+              <UiText message="joined in the last 30 days." />
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -146,10 +156,12 @@ export function AdminOverview() {
             <Card>
               <CardHeader>
                 <CardTitle asChild>
-                  <h2>Plans</h2>
+                  <h2>
+                    <UiText message="Plans" />
+                  </h2>
                 </CardTitle>
                 <CardDescription>
-                  The plan each workspace is on right now.
+                  <UiText message="The plan each workspace is on right now." />
                 </CardDescription>
               </CardHeader>
               <CardContent>
@@ -166,10 +178,12 @@ export function AdminOverview() {
           <Card>
             <CardHeader>
               <CardTitle asChild>
-                <h2>Apps by store</h2>
+                <h2>
+                  <UiText message="Apps by store" />
+                </h2>
               </CardTitle>
               <CardDescription>
-                Tracked apps, competitors aside.
+                <UiText message="Tracked apps, competitors aside." />
               </CardDescription>
             </CardHeader>
             <CardContent>

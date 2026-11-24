@@ -1,5 +1,6 @@
 "use client";
 
+import { useUiLanguage } from "@/components/language/UiLanguage";
 import type { AppListItem, ChartPage } from "@asobeast/shared";
 import { useFocusGroupClaim } from "@/lib/focus-handoff";
 import { CaptureTodayButton } from "./CaptureTodayButton";
@@ -40,11 +41,12 @@ export function ChartTableView({
   busy: boolean;
   date: string | null;
 }) {
+  const { text: uiLabel } = useUiLanguage();
   if (listsNoApps(page)) return <ChartNoApps page={page} />;
   return page.capture ? (
     <div aria-busy={busy} className={CHART_GRID}>
       <ChartTable page={page} apps={apps} />
-      <aside aria-label="Trending" className={TRENDING_COLUMN}>
+      <aside aria-label={uiLabel("Trending")} className={TRENDING_COLUMN}>
         <TrendingPanel pages={[page]} />
       </aside>
     </div>

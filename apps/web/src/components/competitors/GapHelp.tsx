@@ -1,3 +1,4 @@
+import { UiText } from "@/components/language/UiLanguage";
 import {
   GAP_TOP,
   GAP_YOU_BELOW,
@@ -42,8 +43,7 @@ export function GapHelp() {
         ))}
       </ul>
       <p className="text-muted-foreground">
-        The Gap badge of the comparison matrix uses stricter numbers on purpose:
-        it marks only the keywords a competitor holds on the first page.
+        <UiText message="The Gap badge of the comparison matrix uses stricter numbers on purpose: it marks only the keywords a competitor holds on the first page." />
       </p>
       <a
         href="https://docs.asobeast.com/guides/competitors#gap-analysis"
@@ -51,7 +51,7 @@ export function GapHelp() {
         rel="noreferrer"
         className="font-medium text-foreground underline decoration-primary underline-offset-4 hover:decoration-2"
       >
-        Read how the lists are chosen
+        <UiText message="Read how the lists are chosen" />
       </a>
     </InfoTip>
   );

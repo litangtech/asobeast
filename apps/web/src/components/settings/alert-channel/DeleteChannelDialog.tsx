@@ -1,5 +1,6 @@
 "use client";
 
+import { useUiLanguage, UiText } from "@/components/language/UiLanguage";
 import { useRef, useState, type ReactNode } from "react";
 import { Trash2 } from "lucide-react";
 import {
@@ -41,6 +42,7 @@ export function DeleteChannelDialog({
   pending: boolean;
   onDelete: () => Promise<unknown>;
 }) {
+  const { text: uiLabel } = useUiLanguage();
   const [open, setOpen] = useState(false);
   const trigger = useRef<HTMLButtonElement>(null);
   const { handOff, onCloseAutoFocus } = useCloseFocusHandoff();
@@ -55,19 +57,27 @@ export function DeleteChannelDialog({
           ref={trigger}
           variant="ghost"
           size="icon-sm"
-          aria-label={`Delete ${label}`}
+          aria-label={uiLabel("Delete {0}", [label])}
         >
           <Trash2 />
         </Button>
       </AlertDialogTrigger>
       <AlertDialogContent onCloseAutoFocus={onCloseAutoFocus}>
         <AlertDialogHeader>
-          <AlertDialogTitle>{title}</AlertDialogTitle>
-          <AlertDialogDescription>{description}</AlertDialogDescription>
+          <AlertDialogTitle>
+            <UiText message={title} />
+          </AlertDialogTitle>
+          <AlertDialogDescription>
+            {typeof description === "string" ? (
+              <UiText message={description} />
+            ) : (
+              description
+            )}
+          </AlertDialogDescription>
         </AlertDialogHeader>
         <ConfirmActionFooter
           pending={pending}
-          label="Delete"
+          label={uiLabel("Delete")}
           pendingLabel="Removing…"
           onConfirm={() => {
             const successor = deleteSuccessor(trigger.current);

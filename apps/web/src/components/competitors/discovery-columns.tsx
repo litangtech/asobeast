@@ -1,6 +1,6 @@
 "use client";
 
-import { UiText } from "@/components/language/UiLanguage";
+import { useUiLanguage, UiText } from "@/components/language/UiLanguage";
 import { createColumnHelper } from "@tanstack/react-table";
 import type { CompetitorDiscoveryItem } from "@asobeast/shared";
 import { SortableHeader } from "@/components/data-table/SortableHeader";
@@ -114,7 +114,7 @@ export function discoveryColumns(appId: string) {
       enableHiding: false,
       header: () => (
         <span className="sr-only">
-          <UiText message={"Track"} />
+          <UiText message="Track" />
         </span>
       ),
       cell: ({ row }) => (
@@ -131,6 +131,7 @@ export function discoveryColumns(appId: string) {
 }
 
 function RatingCell({ item }: { item: CompetitorDiscoveryItem }) {
+  const { text: uiLabel } = useUiLanguage();
   if (item.ratingAvg === null) {
     return <span className="text-muted-foreground">—</span>;
   }
@@ -139,7 +140,7 @@ function RatingCell({ item }: { item: CompetitorDiscoveryItem }) {
       <GradedNumber
         value={formatRating(item.ratingAvg)}
         grade={grade("rating", item.ratingAvg)}
-        label="Rating"
+        label={uiLabel("Rating")}
       />
       {item.ratingCount !== null ? (
         <span className="numeric font-mono text-muted-foreground">

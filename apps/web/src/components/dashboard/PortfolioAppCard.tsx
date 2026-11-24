@@ -1,3 +1,5 @@
+import { UiDate } from "@/components/language/UiFormat";
+import { UiText } from "@/components/language/UiLanguage";
 import Link from "next/link";
 import type { PortfolioApp, PortfolioAppInsight } from "@asobeast/shared";
 import { RankBandBar } from "@/components/charts/RankBandBar";
@@ -7,7 +9,6 @@ import { Card } from "@/components/ui/card";
 import { TrendChip } from "@/components/ui/delta-chip";
 import {
   formatCountry,
-  formatDate,
   formatNumber,
   pluralize,
   storeLabel,
@@ -24,7 +25,10 @@ export function AppStats({ app }: { app: PortfolioApp }) {
     <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-caption text-muted-foreground">
       <span>{pluralize(app.trackedKeywords, "keyword")}</span>
       <span>{pluralize(app.competitors, "competitor")}</span>
-      <span>Updated {formatDate(app.lastCapturedAt)}</span>
+      <span>
+        <UiText message="Updated" trailing />
+        <UiDate value={app.lastCapturedAt} />
+      </span>
     </div>
   );
 }
@@ -58,7 +62,10 @@ function Top10Line({ insight }: { insight: PortfolioAppInsight }) {
     <div className="flex flex-col gap-1">
       <RankBandBar distribution={insight.rankDistribution} />
       <div className="flex flex-wrap items-center gap-2 text-caption text-muted-foreground">
-        <span>{formatNumber(insight.rankDistribution.top10)} in top 10</span>
+        <span>
+          {formatNumber(insight.rankDistribution.top10)}
+          <UiText message="in top 10" />
+        </span>
         <TrendChip label="7d" value={insight.top10Delta7d} />
       </div>
     </div>
@@ -102,7 +109,7 @@ export function PortfolioAppCard({
 
         {app.lastCapturedAt === null ? (
           <p className="text-body text-muted-foreground">
-            Collecting the first positions. Visibility appears within the hour.
+            <UiText message="Collecting the first positions. Visibility appears within the hour." />
           </p>
         ) : (
           <>
@@ -114,7 +121,7 @@ export function PortfolioAppCard({
                 <TrendChip label="7d" value={app.visibility.delta7d} />
               </div>
               <span className="text-caption text-muted-foreground">
-                visibility
+                <UiText message="visibility" />
               </span>
             </div>
 
@@ -176,7 +183,7 @@ export function PortfolioGroupMember({
 
       {app.lastCapturedAt === null ? (
         <p className="text-caption text-muted-foreground">
-          Collecting the first positions.
+          <UiText message="Collecting the first positions." />
         </p>
       ) : (
         <>

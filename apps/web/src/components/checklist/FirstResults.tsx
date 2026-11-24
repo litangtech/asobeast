@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText, useUiLanguage } from "@/components/language/UiLanguage";
 import Link from "next/link";
 import { useQuery } from "@tanstack/react-query";
 import { Loader2 } from "lucide-react";
@@ -18,6 +19,7 @@ export function FirstResults({
   appId: string | null;
   onNavigate: () => void;
 }) {
+  const { text: uiLabel } = useUiLanguage();
   const read = useQuery({
     ...firstRunOptions(appId ?? ""),
     enabled: appId !== null,
@@ -25,7 +27,7 @@ export function FirstResults({
   if (failedRead(read)) {
     return (
       <InlineQueryError
-        message="Could not check your first positions."
+        message={uiLabel("Could not check your first positions.")}
         read={read}
       />
     );
@@ -36,19 +38,23 @@ export function FirstResults({
     return (
       <p className="flex items-center gap-2 text-body">
         <Loader2 className="size-4 shrink-0 animate-spin" aria-hidden />
-        <span>Checking where your app already ranks</span>
+        <span>
+          <UiText message="Checking where your app already ranks" />
+        </span>
       </p>
     );
   }
   return (
     <p className="flex flex-wrap items-center gap-x-2 text-body">
-      <span>Your first positions are in</span>
+      <span>
+        <UiText message="Your first positions are in" />
+      </span>
       <Link
         href={`/apps/${row.appId}/rankings`}
         onClick={onNavigate}
         className={CHECKLIST_LINK}
       >
-        See where it ranks
+        <UiText message="See where it ranks" />
       </Link>
     </p>
   );

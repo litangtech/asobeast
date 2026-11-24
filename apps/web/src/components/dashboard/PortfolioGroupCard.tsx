@@ -1,3 +1,4 @@
+import { UiText } from "@/components/language/UiLanguage";
 import { Globe, Link2 } from "lucide-react";
 import type {
   PortfolioApp,
@@ -27,12 +28,12 @@ function GroupVisibility({ group }: { group: PortfolioGroup | undefined }) {
           {Math.round(group.visibility.current)}
         </span>
         <span className="text-caption text-muted-foreground">
-          blended visibility
+          <UiText message="blended visibility" />
         </span>
       </div>
       <TrendChip label="7d" value={group.visibility.delta7d} />
       <p className="text-caption text-muted-foreground">
-        Blended across stores, whose scores are not directly comparable.
+        <UiText message="Blended across stores, whose scores are not directly comparable." />
       </p>
       <Sparkline points={group.sparkline} />
     </div>
@@ -64,13 +65,16 @@ export function PortfolioGroupCard({
             {name}
           </span>
           <Badge variant="outline" className="ml-auto">
-            {storefront ? "Storefronts" : "Linked"}
+            {storefront ? (
+              <UiText message="Storefronts" />
+            ) : (
+              <UiText message="Linked" />
+            )}
           </Badge>
         </div>
         {storefront ? (
           <p className="text-caption text-muted-foreground">
-            One listing across storefronts. Ranks are per market, so each row
-            keeps its own score.
+            <UiText message="One listing across storefronts. Ranks are per market, so each row keeps its own score." />
           </p>
         ) : (
           <GroupVisibility group={group} />

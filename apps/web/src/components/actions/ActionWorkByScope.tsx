@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText } from "@/components/language/UiLanguage";
 import { useQuery } from "@tanstack/react-query";
 import { usePathname } from "next/navigation";
 import { queueFilters } from "@/lib/action-filters";
@@ -28,10 +29,12 @@ export function ActionWorkByScope({
   return (
     <section aria-labelledby="where-heading" className="flex flex-col gap-3">
       <h2 id="where-heading" className="text-title">
-        Where the work is
+        <UiText message="Where the work is" />
       </h2>
       {rows.length === 0 ? (
-        <p className="text-body text-muted-foreground">Nothing open.</p>
+        <p className="text-body text-muted-foreground">
+          <UiText message="Nothing open." />
+        </p>
       ) : (
         <ul className="flex list-none flex-col gap-1 p-0">
           {rows.slice(0, SHOWN_SCOPES).map((row) => (
@@ -47,7 +50,9 @@ export function ActionWorkByScope({
                 <span className="truncate">{row.label}</span>
                 <span className="numeric font-mono">
                   {formatNumber(row.total)}
-                  <span className="sr-only"> open</span>
+                  <span className="sr-only">
+                    <UiText message="open" />
+                  </span>
                 </span>
                 <span className="col-span-2">
                   <PriorityBar counts={row.counts} />
@@ -59,12 +64,15 @@ export function ActionWorkByScope({
       )}
       {hidden > 0 ? (
         <p className="text-caption text-muted-foreground">
-          {`and ${formatNumber(hidden)} more`}
+          <UiText message="and {0} more" values={[formatNumber(hidden)]} />
         </p>
       ) : null}
       {data.total > data.items.length ? (
         <p className="text-caption text-muted-foreground">
-          {`Counts cover the ${formatNumber(data.items.length)} highest-impact actions.`}
+          <UiText
+            message="Counts cover the {0} highest-impact actions."
+            values={[formatNumber(data.items.length)]}
+          />
         </p>
       ) : null}
     </section>

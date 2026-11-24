@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText, useUiLanguage } from "@/components/language/UiLanguage";
 import type { RefObject } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useQueryStates } from "nuqs";
@@ -97,6 +98,7 @@ export function AlertFeedToolbar({
   searchBox: RefObject<HTMLDivElement | null>;
   onClearAll: () => void;
 }) {
+  const { text: uiLabel } = useUiLanguage();
   const [view, setView] = useAlertFeedView();
   const hydrated = useHydrated();
   const { data: apps } = useQuery(appsOptions);
@@ -107,7 +109,7 @@ export function AlertFeedToolbar({
       <div className="flex flex-wrap items-center gap-2">
         <div ref={searchBox} className="w-full sm:w-64">
           <SearchInput
-            label="Search alerts"
+            label={uiLabel("Search alerts")}
             value={view.q}
             onSearch={(q, options) =>
               void setView({ q: q === "" ? null : q }, options)
@@ -115,7 +117,7 @@ export function AlertFeedToolbar({
           />
         </div>
         <FacetFilter
-          title="App"
+          title={uiLabel("App")}
           options={[...labels].map(([value, label]) => ({ value, label }))}
           selected={view.app === null ? [] : [view.app]}
           onChange={(selected) =>
@@ -123,7 +125,7 @@ export function AlertFeedToolbar({
           }
         />
         <FacetFilter
-          title="Event type"
+          title={uiLabel("Event type")}
           options={TYPE_OPTIONS}
           selected={view.type}
           onChange={(type) => void setView({ type })}
@@ -136,7 +138,10 @@ export function AlertFeedToolbar({
       <RowCount shown={shown} total={loaded} noun="event" />
       {hasMore && view.q !== "" ? (
         <p className="text-caption text-muted-foreground">
-          {`Searching the ${loaded} loaded events. Load more to search further.`}
+          <UiText
+            message="Searching the {0} loaded events. Load more to search further."
+            values={[loaded]}
+          />
         </p>
       ) : null}
     </div>

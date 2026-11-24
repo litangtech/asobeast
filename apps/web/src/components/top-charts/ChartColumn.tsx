@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText } from "@/components/language/UiLanguage";
 import { useId, useMemo, type ReactNode } from "react";
 import Link from "next/link";
 import type { AppListItem, ChartPage } from "@asobeast/shared";
@@ -69,7 +70,7 @@ export function ChartColumn({
       <div className="flex flex-wrap items-start justify-between gap-2">
         <div className="flex flex-col gap-0.5">
           <h2 id={headingId} className="text-title">
-            {label}
+            <UiText message={label} />
           </h2>
           <p className="text-caption text-muted-foreground">
             {columnCaption(page, search.date)}
@@ -81,7 +82,10 @@ export function ChartColumn({
             href={tableHref(chart, search)}
             className="text-sm underline decoration-primary underline-offset-4"
           >
-            Open table<span className="sr-only">{` of ${label}`}</span>
+            <UiText message="Open table" />
+            <span className="sr-only">
+              <UiText message=" of {0}" values={[label]} />
+            </span>
           </Link>
         </div>
       </div>

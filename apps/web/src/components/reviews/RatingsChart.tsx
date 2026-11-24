@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText, useUiLanguage } from "@/components/language/UiLanguage";
 import { Suspense, useDeferredValue } from "react";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { useQueryState } from "nuqs";
@@ -46,6 +47,7 @@ const chartConfig = {
 } satisfies ChartConfig;
 
 function RatingsChartBody({ id, range }: { id: string; range: RatingsRange }) {
+  const { text: uiLabel } = useUiLanguage();
   const { data } = useSuspenseQuery(
     ratingsHistoryOptions(id, presetToRange(range)),
   );
@@ -55,7 +57,7 @@ function RatingsChartBody({ id, range }: { id: string; range: RatingsRange }) {
     return (
       <ChartNotice
         height={CHART_HEIGHT.compact}
-        title="No ratings history yet"
+        title={uiLabel("No ratings history yet")}
         body="Snapshots accrue with the daily pipeline."
       />
     );
@@ -65,7 +67,7 @@ function RatingsChartBody({ id, range }: { id: string; range: RatingsRange }) {
     return (
       <ChartStat
         height={CHART_HEIGHT.compact}
-        label="Latest average rating"
+        label={uiLabel("Latest average rating")}
         value={latest.ratingAvg === null ? "—" : formatRating(latest.ratingAvg)}
         note="A trend line needs a few more daily snapshots."
       />
@@ -77,7 +79,7 @@ function RatingsChartBody({ id, range }: { id: string; range: RatingsRange }) {
       config={chartConfig}
       className={`${CHART_HEIGHT.compact} w-full`}
       role="region"
-      aria-label="Average rating and review volume"
+      aria-label={uiLabel("Average rating and review volume")}
     >
       <LineChart accessibilityLayer data={data.points} margin={CHART_MARGIN}>
         <CartesianGrid {...GRID_PROPS} />
@@ -121,8 +123,12 @@ export function RatingsChart({ id }: { id: string }) {
   return (
     <Card>
       <CardHeader>
-        <CardDescription>Ratings history</CardDescription>
-        <CardTitle>Average rating and volume over time</CardTitle>
+        <CardDescription>
+          <UiText message="Ratings history" />
+        </CardDescription>
+        <CardTitle>
+          <UiText message="Average rating and volume over time" />
+        </CardTitle>
         <CardAction>
           <RangePicker
             presets={RATINGS_RANGES}

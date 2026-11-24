@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText, useUiLanguage } from "@/components/language/UiLanguage";
 import { useRef, type ReactNode, type RefObject } from "react";
 import Link from "next/link";
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
@@ -55,7 +56,7 @@ function ChangesLine({ changes }: { changes: Map<string, ChangeField[]> }) {
   );
   return (
     <p className="text-caption text-muted-foreground">
-      {`Listing changes: ${days.join(" · ")}`}
+      <UiText message="Listing changes: {0}" values={[days.join(" · ")]} />
     </p>
   );
 }
@@ -76,19 +77,20 @@ function PositionHistoryControls({
   onRange: (next: RangePreset) => void;
   image: ReactNode;
 }) {
+  const { text: uiLabel } = useUiLanguage();
   return (
     <div className="flex flex-wrap items-center justify-between gap-2">
       <RangePicker
         presets={RANGE_PRESETS}
         value={range}
         onChange={onRange}
-        label="Date range"
+        label={uiLabel("Date range")}
       />
       <div className="flex items-center gap-1">
         {image}
         <Button asChild variant="link" size="sm" className="px-0">
           <Link href={rankingsHistoryHref(appId, keywordId, range)}>
-            Open in Rankings
+            <UiText message="Open in Rankings" />
           </Link>
         </Button>
       </div>
@@ -144,12 +146,13 @@ function PositionHistoryBody({
   view: HistoryView | null;
   chartRef: RefObject<HTMLDivElement | null>;
 }) {
+  const { text: uiLabel } = useUiLanguage();
   if (chart && view) {
     if (view.kind === "empty") {
       return (
         <ChartNotice
           height={CHART_HEIGHT.compact}
-          title={`No checks in the last ${presetDays(range)} days`}
+          title={uiLabel("No checks in the last {0} days", [presetDays(range)])}
           action={
             range === WIDEST_RANGE ? null : (
               <Button
@@ -157,7 +160,9 @@ function PositionHistoryBody({
                 variant="outline"
                 onClick={() => onRange(WIDEST_RANGE)}
               >
-                Show {presetDays(WIDEST_RANGE)} days
+                <UiText message="Show" trailing />
+                {presetDays(WIDEST_RANGE)}
+                <UiText message="days" />
               </Button>
             )
           }
@@ -178,7 +183,7 @@ function PositionHistoryBody({
           line={view.line}
           best={keyword.bestPosition ?? null}
           changes={changes}
-          label={`Position history of ${keyword.text}`}
+          label={uiLabel("Position history of {0}", [keyword.text])}
           busy={read.isPlaceholderData}
           chartRef={chartRef}
         />
@@ -190,7 +195,7 @@ function PositionHistoryBody({
         <ChangesLine changes={changes} />
         {failedRead(changesRead) ? (
           <InlineQueryError
-            message="Could not load the listing changes."
+            message={uiLabel("Could not load the listing changes.")}
             read={changesRead}
           />
         ) : null}
@@ -200,7 +205,7 @@ function PositionHistoryBody({
   if (failedRead(read)) {
     return (
       <InlineQueryError
-        message="Could not load the position history."
+        message={uiLabel("Could not load the position history.")}
         read={read}
       />
     );

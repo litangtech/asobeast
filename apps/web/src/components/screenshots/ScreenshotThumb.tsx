@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText, useUiLanguage } from "@/components/language/UiLanguage";
 import { useState } from "react";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
@@ -17,6 +18,7 @@ export function ScreenshotThumb({
   height?: number;
   className?: string;
 }) {
+  const { text: uiLabel } = useUiLanguage();
   const [failedSrc, setFailedSrc] = useState<string | null>(null);
   const [measured, setMeasured] = useState<{
     src: string;
@@ -39,14 +41,14 @@ export function ScreenshotThumb({
     return (
       <span
         role="img"
-        aria-label={`${alt}, image unavailable`}
+        aria-label={uiLabel("{0}, image unavailable", [alt])}
         style={{ width: placeholderWidth, height }}
         className={cn(
           "flex shrink-0 items-center justify-center rounded-lg border bg-muted text-caption text-muted-foreground",
           className,
         )}
       >
-        Unavailable
+        <UiText message="Unavailable" />
       </span>
     );
   }

@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText, useUiLanguage } from "@/components/language/UiLanguage";
 import { CircleCheck, Filter, ListChecks } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { EmptyState } from "@/components/ui/empty-state";
@@ -15,11 +16,12 @@ export function ActionEmptyState({
   filtered: boolean;
   onClearFilters: () => void;
 }) {
+  const { text: uiLabel } = useUiLanguage();
   if (generatedAt === null) {
     return (
       <EmptyState
         icon={ListChecks}
-        title="No actions generated yet"
+        title={uiLabel("No actions generated yet")}
         body="Actions are generated after the daily pipeline completes. You can also run generation now — it reads stored data only and costs no store requests."
         action={<GenerateNowButton generatedAt={generatedAt} />}
       />
@@ -29,11 +31,11 @@ export function ActionEmptyState({
     return (
       <EmptyState
         icon={Filter}
-        title="No actions match these filters"
+        title={uiLabel("No actions match these filters")}
         body="Nothing in this workspace matches the current status, priority and rule filters."
         action={
           <Button variant="outline" onClick={onClearFilters}>
-            Clear filters
+            <UiText message="Clear filters" />
           </Button>
         }
       />
@@ -43,7 +45,7 @@ export function ActionEmptyState({
   return (
     <EmptyState
       icon={CircleCheck}
-      title="Nothing to do right now"
+      title={uiLabel("Nothing to do right now")}
       body={`Last generated ${formatDateTime(generatedAt)}.`}
       action={<GenerateNowButton generatedAt={generatedAt} />}
     />

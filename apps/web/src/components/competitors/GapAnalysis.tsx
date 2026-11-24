@@ -1,5 +1,6 @@
 "use client";
 
+import { useUiLanguage } from "@/components/language/UiLanguage";
 import { useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useQueryState, useQueryStates } from "nuqs";
@@ -75,6 +76,7 @@ function GapLists({
   home: string;
   today: string;
 }) {
+  const { text: uiLabel } = useUiLanguage();
   const [tab, setTab] = useQueryState("gaps", GAP_TAB_STATE);
   const [params, setParams] = useQueryStates(gapTableParsers, {
     urlKeys: GAP_URL_KEYS,
@@ -91,7 +93,7 @@ function GapLists({
       <div className="flex flex-wrap items-center gap-2">
         {markets.length > 1 ? (
           <SelectFilter
-            title="Gap market"
+            title={uiLabel("Gap market")}
             value={country === "" ? ALL_MARKETS : country}
             options={marketOptions(markets)}
             onChange={(next) =>
@@ -104,7 +106,7 @@ function GapLists({
           onValueChange={(next) => void setTab(next as GapTab)}
           className="max-w-full min-w-0"
         >
-          <TabsList aria-label="Gap lists" scrollable>
+          <TabsList aria-label={uiLabel("Gap lists")} scrollable>
             {GAP_TABS.map((value) => (
               <TabsOption key={value} value={value}>
                 {`${GAP_TAB_LABELS[value]} (${empty === "none" ? counts[value] : 0})`}
@@ -131,12 +133,13 @@ function GapLists({
 }
 
 function GapAnalysisBody({ id }: { id: string }) {
+  const { text: uiLabel } = useUiLanguage();
   const read = useQuery(competitorAnalysisOptions(id));
   const { data: app } = useQuery(appDetailOptions(id));
   if (failedRead(read)) {
     return (
       <InlineQueryError
-        message="The gap analysis could not be loaded."
+        message={uiLabel("The gap analysis could not be loaded.")}
         read={read}
       />
     );
@@ -155,11 +158,12 @@ function GapAnalysisBody({ id }: { id: string }) {
 }
 
 export function GapAnalysis({ id }: { id: string }) {
+  const { text: uiLabel } = useUiLanguage();
   return (
     <CollapsibleCard
       section={COMPETITOR_SECTION.gaps}
       eyebrow="Gap analysis"
-      title="Where competitors beat you"
+      title={uiLabel("Where competitors beat you")}
       actions={<GapHelp />}
     >
       <GapAnalysisBody id={id} />

@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText, useUiLanguage } from "@/components/language/UiLanguage";
 import { useQuery } from "@tanstack/react-query";
 import { INTEGRATIONS_PATH } from "@asobeast/shared";
 import {
@@ -54,6 +55,7 @@ const GENERAL = [
 ] as const;
 
 export function CommandPalette() {
+  const { text: uiLabel } = useUiLanguage();
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState("");
   const router = useRouter();
@@ -100,32 +102,36 @@ export function CommandPalette() {
           <Button
             variant="ghost"
             size="icon-sm"
-            aria-label="Open command palette"
+            aria-label={uiLabel("Open command palette")}
             onClick={() => handleOpenChange(true)}
           >
             <Search />
           </Button>
         </TooltipTrigger>
-        <TooltipContent>Search — ⌘ K</TooltipContent>
+        <TooltipContent>
+          <UiText message="Search — ⌘ K" />
+        </TooltipContent>
       </Tooltip>
 
       <CommandDialog
         open={open}
         onOpenChange={handleOpenChange}
-        title="Command palette"
-        description="Jump to an app, a section or a page."
+        title={uiLabel("Command palette")}
+        description={uiLabel("Jump to an app, a section or a page.")}
       >
         <Command>
           <CommandInput
             value={query}
             onValueChange={setQuery}
-            placeholder="Search apps and sections…"
+            placeholder={uiLabel("Search apps and sections…")}
           />
           <CommandList>
-            <CommandEmpty>No matches.</CommandEmpty>
+            <CommandEmpty>
+              <UiText message="No matches." />
+            </CommandEmpty>
 
             {apps && apps.length > 0 ? (
-              <CommandGroup heading="Apps">
+              <CommandGroup heading={uiLabel("Apps")}>
                 {apps.map((item) => (
                   <CommandItem
                     key={item.id}
@@ -141,7 +147,7 @@ export function CommandPalette() {
                   >
                     <AppIcon src={item.iconUrl} name={item.name} size={20} />
                     <span className="truncate">
-                      {item.name ?? "Untitled app"}
+                      {item.name ?? <UiText message="Untitled app" />}
                     </span>
                     <Badge variant="secondary" className="ml-auto">
                       {storeLabel(item.store)}
@@ -152,7 +158,7 @@ export function CommandPalette() {
             ) : null}
 
             {appId ? (
-              <CommandGroup heading="Sections">
+              <CommandGroup heading={uiLabel("Sections")}>
                 {APP_SECTIONS.map((section) => (
                   <CommandItem
                     key={section.segment || "overview"}
@@ -165,7 +171,7 @@ export function CommandPalette() {
               </CommandGroup>
             ) : null}
 
-            <CommandGroup heading="General">
+            <CommandGroup heading={uiLabel("General")}>
               {general.map((entry) => (
                 <CommandItem
                   key={entry.href}

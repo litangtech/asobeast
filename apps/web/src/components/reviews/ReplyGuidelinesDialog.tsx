@@ -1,6 +1,6 @@
 "use client";
 
-import { UiText } from "@/components/language/UiLanguage";
+import { UiText, useUiLanguage } from "@/components/language/UiLanguage";
 import { Suspense, useState } from "react";
 import {
   useMutation,
@@ -35,6 +35,7 @@ import { useSingleFlight } from "@/lib/single-flight";
 import { limitCounterText, textLimit } from "@/lib/text-limit";
 
 function GuidelinesForm({ id, onSaved }: { id: string; onSaved: () => void }) {
+  const { text: uiLabel } = useUiLanguage();
   const { data } = useSuspenseQuery(replyGuidelinesOptions(id));
   const [text, setText] = useState(data.guidelines);
   const limit = textLimit(text, REVIEW_REPLY_GUIDELINES_MAX);
@@ -43,14 +44,14 @@ function GuidelinesForm({ id, onSaved }: { id: string; onSaved: () => void }) {
     mutationFn: () => putReviewReplyGuidelines(id, { guidelines: text }),
     onSuccess: (saved) => {
       queryClient.setQueryData(appKeys.replyGuidelines(id), saved);
-      toast.success("Reply guidelines saved");
+      toast.success(uiLabel("Reply guidelines saved"));
       onSaved();
     },
     onError: (error) =>
       toast.error(
         error instanceof ApiError
           ? error.envelope.message
-          : "Could not save the reply guidelines",
+          : uiLabel("Could not save the reply guidelines"),
       ),
   });
   const saveOnce = useSingleFlight(saving);
@@ -59,11 +60,13 @@ function GuidelinesForm({ id, onSaved }: { id: string; onSaved: () => void }) {
     <>
       <DialogBody className="flex flex-col gap-1">
         <Textarea
-          aria-label="Reply guidelines"
+          aria-label={uiLabel("Reply guidelines")}
           value={text}
           aria-invalid={limit.over > 0 || undefined}
           onChange={(event) => setText(event.target.value)}
-          placeholder="Sign as the Tomato team. Support: help@example.com. Never promise a release date."
+          placeholder={uiLabel(
+            "Sign as the Tomato team. Support: help@example.com. Never promise a release date.",
+          )}
           className="min-h-32"
         />
         <p
@@ -79,14 +82,14 @@ function GuidelinesForm({ id, onSaved }: { id: string; onSaved: () => void }) {
       <DialogFooter>
         <DialogClose asChild>
           <Button variant="outline">
-            <UiText message={"Cancel"} />
+            <UiText message="Cancel" />
           </Button>
         </DialogClose>
         <Button
           disabled={saving.isPending || limit.over > 0}
           onClick={() => saveOnce()}
         >
-          <UiText message={"Save"} />
+          <UiText message="Save" />
         </Button>
       </DialogFooter>
     </>
@@ -102,15 +105,16 @@ export function ReplyGuidelinesDialog({ id }: { id: string }) {
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button variant="outline" size="sm">
-          Reply guidelines
+          <UiText message="Reply guidelines" />
         </Button>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Reply guidelines</DialogTitle>
+          <DialogTitle>
+            <UiText message="Reply guidelines" />
+          </DialogTitle>
           <DialogDescription>
-            Every AI draft for this app follows these lines: who signs, the
-            support address, what never to promise.
+            <UiText message="Every AI draft for this app follows these lines: who signs, the support address, what never to promise." />
           </DialogDescription>
         </DialogHeader>
         <Suspense fallback={<Skeleton className="h-32 w-full" />}>

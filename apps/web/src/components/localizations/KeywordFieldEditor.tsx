@@ -1,5 +1,7 @@
 "use client";
 
+import { UiDate } from "@/components/language/UiFormat";
+import { UiText, useUiLanguage } from "@/components/language/UiLanguage";
 import Link from "next/link";
 import { useId, useRef, useState, type ReactNode } from "react";
 import { Loader2 } from "lucide-react";
@@ -16,7 +18,7 @@ import {
   readingStorefrontNames,
   type KeywordFieldDraft,
 } from "@/lib/app-localizations";
-import { formatDateTime, formatList } from "@/lib/format";
+import { formatList } from "@/lib/format";
 import { localizationName } from "@/lib/localizations";
 import { STORE_CONNECTIONS_PATH } from "@/lib/store-connection-copy";
 import { cn } from "@/lib/utils";
@@ -41,7 +43,7 @@ function KeywordFieldUsage({
       />
       <div className="flex items-center justify-between gap-3 text-caption">
         <span className="text-muted-foreground">
-          Separate keywords with commas.
+          <UiText message="Separate keywords with commas." />
         </span>
         <span
           id={countId}
@@ -56,7 +58,7 @@ function KeywordFieldUsage({
       </div>
       {field.storedAs === null ? null : (
         <p className="text-caption text-muted-foreground">
-          Stored as{" "}
+          <UiText message="Stored as" />{" "}
           <span className="font-mono break-all">{field.storedAs}</span>
         </p>
       )}
@@ -68,25 +70,28 @@ function StoreFieldNotice({ sync }: { sync: AppLocalizationStoreSync | null }) {
   return (
     <>
       <p className="text-caption text-muted-foreground">
-        Imported from App Store Connect
+        <UiText message="Imported from App Store Connect" />
         {sync?.at ? (
-          <> · last read {formatDateTime(sync.at)}</>
+          <>
+            <UiText message="· last read" trailing />
+            <UiDate value={sync.at} style="dateTime" />
+          </>
         ) : (
-          " · waiting for its first read"
+          <UiText message=" · waiting for its first read" />
         )}
-        . Edit the keywords there, and this field imports them again with every
-        release. The connection lives in{" "}
+        <UiText message=". Edit the keywords there, and this field imports them again with every release. The connection lives in" />{" "}
         <Link
           href={STORE_CONNECTIONS_PATH}
           className="font-medium text-foreground underline underline-offset-4"
         >
-          Integrations
+          <UiText message="Integrations" />
         </Link>
         .
       </p>
       {sync?.error ? (
         <p role="alert" className="text-sm text-destructive">
-          The last import stopped: {sync.error}
+          <UiText message="The last import stopped:" trailing />
+          {sync.error}
         </p>
       ) : null}
     </>
@@ -106,6 +111,7 @@ export function KeywordFieldEditor({
   sync?: AppLocalizationStoreSync | null;
   leading?: ReactNode;
 }) {
+  const { text: uiLabel } = useUiLanguage();
   const countId = useId();
   const editor = useRef<HTMLTextAreaElement>(null);
   const saveButton = useRef<HTMLButtonElement>(null);
@@ -140,17 +146,21 @@ export function KeywordFieldEditor({
         readOnly={managed || busy}
         rows={3}
         spellCheck={false}
-        aria-label={`${name} keyword field`}
+        aria-label={uiLabel("{0} keyword field", [name])}
         aria-describedby={countId}
         aria-invalid={managed ? undefined : over}
-        placeholder={managed ? undefined : "fitness,workout,running,cardio"}
+        placeholder={
+          managed ? undefined : uiLabel("fitness,workout,running,cardio")
+        }
       />
       <KeywordFieldUsage field={field} countId={countId} />
       {item.readBy.length === 0 ? (
         <p className="text-caption text-muted-foreground">
-          None of your markets reads {name}. Storefronts that read it:{" "}
-          {formatList(readingStorefrontNames(item.localization))}. Add one of
-          them as a keyword market to track these phrases there.
+          <UiText message="None of your markets reads" trailing />
+          {name}
+          <UiText message=". Storefronts that read it:" />{" "}
+          {formatList(readingStorefrontNames(item.localization))}
+          <UiText message=". Add one of them as a keyword market to track these phrases there." />
         </p>
       ) : null}
       {managed ? null : (
@@ -170,7 +180,11 @@ export function KeywordFieldEditor({
               onClick={() => request(text)}
             >
               {busy ? <Loader2 className="animate-spin" /> : null}
-              {busy ? "Saving…" : "Save keyword field"}
+              {busy ? (
+                <UiText message="Saving…" />
+              ) : (
+                <UiText message="Save keyword field" />
+              )}
             </Button>
           </div>
           {review ? (

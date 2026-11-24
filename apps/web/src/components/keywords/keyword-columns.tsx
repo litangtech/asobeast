@@ -365,8 +365,7 @@ function volatilityColumn() {
           <SortableHeader column={column} label="Volatility" />
         </TooltipTrigger>
         <TooltipContent className="max-w-xs">
-          How much the top 10 changed day to day over the last week. High churn
-          means rankings here are unstable.
+          <UiText message="How much the top 10 changed day to day over the last week. High churn means rankings here are unstable." />
         </TooltipContent>
       </Tooltip>
     ),
@@ -386,7 +385,7 @@ function actionsColumn({
     enableHiding: false,
     header: () => (
       <span className="sr-only">
-        <UiText message={"Actions"} />
+        <UiText message="Actions" />
       </span>
     ),
     cell: ({ row, table }) => (

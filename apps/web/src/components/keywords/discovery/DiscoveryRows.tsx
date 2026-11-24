@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText } from "@/components/language/UiLanguage";
 import { useEffect, useRef, useState } from "react";
 import { flexRender, type Table as TanstackTable } from "@tanstack/react-table";
 import type { KeywordDiscoveryItem } from "@asobeast/shared";
@@ -49,8 +50,7 @@ export function DiscoveryRows({ table }: { table: DiscoveryTable }) {
         scrollFocus="overflow"
       >
         <TableCaption className="sr-only">
-          Keyword discoveries: keywords near your listing that you do not track
-          yet, with where your app ranks for each.
+          <UiText message="Keyword discoveries: keywords near your listing that you do not track yet, with where your app ranks for each." />
         </TableCaption>
         <TableHeader>
           {table.getHeaderGroups().map((headerGroup) => (
@@ -94,7 +94,10 @@ export function DiscoveryRows({ table }: { table: DiscoveryTable }) {
       {rows.length > DISCOVERY_PAGE_SIZE ? (
         <div className="flex flex-wrap items-center justify-between gap-3">
           <p className="text-caption text-muted-foreground" aria-live="polite">
-            {`Showing ${formatNumber(shown.length)} of ${formatNumber(rows.length)}`}
+            <UiText
+              message="Showing {0} of {1}"
+              values={[formatNumber(shown.length), formatNumber(rows.length)]}
+            />
           </p>
           {next > 0 ? (
             <Button
@@ -105,7 +108,7 @@ export function DiscoveryRows({ table }: { table: DiscoveryTable }) {
                 setPages((count) => count + 1);
               }}
             >
-              {`Show ${next} more`}
+              <UiText message="Show {0} more" values={[next]} />
             </Button>
           ) : null}
         </div>

@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText, useUiLanguage } from "@/components/language/UiLanguage";
 import Link from "next/link";
 import { useQuery } from "@tanstack/react-query";
 import { useKeywordScope } from "@/components/app-detail/use-market";
@@ -18,13 +19,14 @@ import {
 import { GapHeadlineSkeleton } from "./skeletons";
 
 function GapHeadlineBody({ id, home }: { id: string; home: string }) {
+  const { text: uiLabel } = useUiLanguage();
   const { country } = useKeywordScope(id);
   const read = useQuery(competitorAnalysisOptions(id));
   const { data: competitors } = useQuery(competitorsOptions(id));
   if (failedRead(read)) {
     return (
       <InlineQueryError
-        message="The gap summary could not be loaded."
+        message={uiLabel("The gap summary could not be loaded.")}
         read={read}
       />
     );
@@ -47,7 +49,7 @@ function GapHeadlineBody({ id, home }: { id: string; home: string }) {
           href={link.href}
           className="text-body font-medium underline decoration-primary underline-offset-4 hover:decoration-2 print:hidden"
         >
-          {link.label}
+          <UiText message={link.label} />
         </Link>
       ) : null}
     </div>
@@ -55,19 +57,22 @@ function GapHeadlineBody({ id, home }: { id: string; home: string }) {
 }
 
 export function GapHeadlineCard({ id }: { id: string }) {
+  const { text: uiLabel } = useUiLanguage();
   const { data: app } = useQuery(appDetailOptions(id));
   if (app === undefined || app.isCompetitor) return null;
   return (
-    <section aria-label="Gaps against your competitors">
+    <section aria-label={uiLabel("Gaps against your competitors")}>
       <Card className="py-4">
         <CardContent className="flex min-h-9 items-center gap-2">
           <div className="min-w-0 flex-1">
             <GapHeadlineBody id={id} home={app.country} />
           </div>
           <InfoTip
-            label="About the gap line"
-            title="How the gap line is counted"
-            summary="The line counts the same lists as the Gap analysis on the competitors page, for the market you are looking at."
+            label={uiLabel("About the gap line")}
+            title={uiLabel("How the gap line is counted")}
+            summary={uiLabel(
+              "The line counts the same lists as the Gap analysis on the competitors page, for the market you are looking at.",
+            )}
           >
             <a
               href="https://docs.asobeast.com/guides/competitors#gap-analysis"
@@ -75,7 +80,7 @@ export function GapHeadlineCard({ id }: { id: string }) {
               rel="noreferrer"
               className="font-medium text-foreground underline decoration-primary underline-offset-4 hover:decoration-2"
             >
-              Read how the lists are chosen
+              <UiText message="Read how the lists are chosen" />
             </a>
           </InfoTip>
         </CardContent>

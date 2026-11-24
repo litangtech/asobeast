@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText, useUiLanguage } from "@/components/language/UiLanguage";
 import { Suspense, useDeferredValue } from "react";
 import Link from "next/link";
 import type { AppDetail, CategoryRankSeriesItem } from "@asobeast/shared";
@@ -154,12 +155,12 @@ function HeaderStat({
               {`#${headline.current}`}
             </span>{" "}
             <span className="text-muted-foreground">
-              {`in ${headline.genreName}`}
+              <UiText message="in {0}" values={[headline.genreName]} />
             </span>
           </>
         )}{" "}
         <span className="text-muted-foreground">
-          {`· ${headline.collection} chart`}
+          <UiText message="· {0} chart" values={[headline.collection]} />
         </span>
       </Link>
     </p>
@@ -167,6 +168,7 @@ function HeaderStat({
 }
 
 function CategoryRankBody({ id, range }: { id: string; range: RangePreset }) {
+  const { text: uiLabel } = useUiLanguage();
   const { data } = useSuspenseQuery(
     categoryRanksOptions(id, presetToRange(range)),
   );
@@ -176,7 +178,7 @@ function CategoryRankBody({ id, range }: { id: string; range: RangePreset }) {
     return (
       <ChartNotice
         height={CHART_HEIGHT.tall}
-        title="No category captures yet"
+        title={uiLabel("No category captures yet")}
         body="Chart positions are captured by the daily pipeline."
       />
     );
@@ -191,7 +193,7 @@ function CategoryRankBody({ id, range }: { id: string; range: RangePreset }) {
         config={chart.config}
         className={`${CHART_HEIGHT.tall} w-full`}
         role="region"
-        aria-label="Category chart position over time"
+        aria-label={uiLabel("Category chart position over time")}
       >
         <LineChart accessibilityLayer data={chart.rows} margin={CHART_MARGIN}>
           <CartesianGrid {...GRID_PROPS} />
@@ -233,8 +235,12 @@ export function CategoryRankCard({ id }: { id: string }) {
   return (
     <Card>
       <CardHeader>
-        <CardDescription>Category ranks · Home market</CardDescription>
-        <CardTitle>Top charts position</CardTitle>
+        <CardDescription>
+          <UiText message="Category ranks · Home market" />
+        </CardDescription>
+        <CardTitle>
+          <UiText message="Top charts position" />
+        </CardTitle>
         <CardAction>
           <RangePicker
             presets={RANGE_PRESETS}

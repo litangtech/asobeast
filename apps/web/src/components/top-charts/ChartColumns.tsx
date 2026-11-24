@@ -1,5 +1,6 @@
 "use client";
 
+import { useUiLanguage } from "@/components/language/UiLanguage";
 import type { AppListItem, ChartPage } from "@asobeast/shared";
 import { ChartColumn } from "./ChartColumn";
 import type { ChartSearch } from "./chart-params";
@@ -17,6 +18,7 @@ export function ChartColumns({
   busy: boolean;
   search: Pick<ChartSearch, "compare" | "date">;
 }) {
+  const { text: uiLabel } = useUiLanguage();
   return (
     <>
       <div aria-busy={busy} className={COLUMNS_GRID}>
@@ -29,7 +31,7 @@ export function ChartColumns({
           />
         ))}
       </div>
-      <aside aria-label="Trending">
+      <aside aria-label={uiLabel("Trending")}>
         <TrendingPanel pages={pages} />
       </aside>
     </>

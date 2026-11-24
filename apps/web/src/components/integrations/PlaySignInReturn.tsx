@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText, useUiLanguage } from "@/components/language/UiLanguage";
 import { useEffect, useRef } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -31,10 +32,12 @@ function ReturnCard({
     <Card>
       <CardHeader>
         <CardTitle asChild>
-          <h1>{title}</h1>
+          <h1>
+            <UiText message={title} />
+          </h1>
         </CardTitle>
         <CardDescription role={pending ? "status" : undefined}>
-          {description}
+          <UiText message={description} />
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -45,7 +48,9 @@ function ReturnCard({
           />
         ) : (
           <Button asChild variant="outline">
-            <Link href={STORE_CONNECTIONS_PATH}>Back to store connections</Link>
+            <Link href={STORE_CONNECTIONS_PATH}>
+              <UiText message="Back to store connections" />
+            </Link>
           </Button>
         )}
       </CardContent>
@@ -54,6 +59,7 @@ function ReturnCard({
 }
 
 export function PlaySignInReturn() {
+  const { text: uiLabel } = useUiLanguage();
   const params = useSearchParams();
   const router = useRouter();
   const queryClient = useQueryClient();
@@ -66,7 +72,7 @@ export function PlaySignInReturn() {
     mutationFn: () => completePlaySignIn({ code, state }),
     onSuccess: () => {
       invalidateStoreConnectionMutation(queryClient);
-      toast.success("Google Play Console connected");
+      toast.success(uiLabel("Google Play Console connected"));
       router.replace(STORE_CONNECTIONS_PATH);
     },
   });
@@ -80,35 +86,41 @@ export function PlaySignInReturn() {
   if (denied) {
     return (
       <ReturnCard
-        title="Google sign in was cancelled"
-        description="Nothing was connected. Start again from store connections when you are ready."
+        title={uiLabel("Google sign in was cancelled")}
+        description={uiLabel(
+          "Nothing was connected. Start again from store connections when you are ready.",
+        )}
       />
     );
   }
   if (!ready) {
     return (
       <ReturnCard
-        title="This sign in is incomplete"
-        description="Google did not return the code AsoBeast needs. Start the sign in again from store connections."
+        title={uiLabel("This sign in is incomplete")}
+        description={uiLabel(
+          "Google did not return the code AsoBeast needs. Start the sign in again from store connections.",
+        )}
       />
     );
   }
   if (isError) {
     return (
       <ReturnCard
-        title="Google Play was not connected"
+        title={uiLabel("Google Play was not connected")}
         description={
           error instanceof ApiError
             ? error.envelope.message
-            : "Could not finish the Google sign in. Try again from store connections."
+            : uiLabel(
+                "Could not finish the Google sign in. Try again from store connections.",
+              )
         }
       />
     );
   }
   return (
     <ReturnCard
-      title="Connecting Google Play"
-      description="Checking the bucket with your Google account."
+      title={uiLabel("Connecting Google Play")}
+      description={uiLabel("Checking the bucket with your Google account.")}
       pending
     />
   );

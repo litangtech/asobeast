@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText } from "@/components/language/UiLanguage";
 import { useSyncExternalStore } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { BellRing } from "lucide-react";
@@ -79,38 +80,45 @@ export function AlertsNudge({ id }: { id: string }) {
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <BellRing aria-hidden className="size-4 text-muted-foreground" />
-          Get told when a position moves
+          <UiText message="Get told when a position moves" />
         </CardTitle>
         <CardDescription>
-          Two daily captures are in, so positions can now move. Email or a
-          webhook tells you when one drops, climbs or enters the top ten.
+          <UiText message="Two daily captures are in, so positions can now move. Email or a webhook tells you when one drops, climbs or enters the top ten." />
         </CardDescription>
       </CardHeader>
       <CardContent className="flex flex-col gap-3">
         <div className="flex flex-wrap items-center gap-2">
           {state === "email" ? (
             <AddEmailAlertDialog
-              trigger={<Button variant="outline">Add an email alert</Button>}
+              trigger={
+                <Button variant="outline">
+                  <UiText message="Add an email alert" />
+                </Button>
+              }
             />
           ) : (
             <AddWebhookDialog
-              trigger={<Button variant="outline">Add a webhook</Button>}
+              trigger={
+                <Button variant="outline">
+                  <UiText message="Add a webhook" />
+                </Button>
+              }
             />
           )}
           <Button variant="ghost" onClick={dismiss}>
-            Not now
+            <UiText message="Not now" />
           </Button>
         </div>
         {state === "webhook" ? (
           <p className="text-caption text-muted-foreground">
-            Email alerts need SMTP on this instance.{" "}
+            <UiText message="Email alerts need SMTP on this instance." />{" "}
             <a
               href={EMAIL_DELIVERY_GUIDE}
               target="_blank"
               rel="noreferrer"
               className="text-foreground underline decoration-primary underline-offset-4"
             >
-              Set up email delivery
+              <UiText message="Set up email delivery" />
             </a>
           </p>
         ) : null}

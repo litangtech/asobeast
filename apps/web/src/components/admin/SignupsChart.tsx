@@ -1,5 +1,6 @@
 "use client";
 
+import { useUiLanguage } from "@/components/language/UiLanguage";
 import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from "recharts";
 import type { AdminSignupDay } from "@asobeast/shared";
 import { ChartNotice, MIN_TREND_POINTS } from "@/components/charts/ChartStates";
@@ -44,11 +45,12 @@ const activeDays = (days: AdminSignupDay[]) =>
   days.filter((day) => day.users + day.workspaces > 0).length;
 
 export function SignupsChart({ signups }: { signups: AdminSignupDay[] }) {
+  const { text: uiLabel } = useUiLanguage();
   if (activeDays(signups) < MIN_TREND_POINTS) {
     return (
       <ChartNotice
         height={CHART_HEIGHT.compact}
-        title="Too few sign ups in the last 30 days to chart."
+        title={uiLabel("Too few sign ups in the last 30 days to chart.")}
       />
     );
   }
@@ -58,7 +60,7 @@ export function SignupsChart({ signups }: { signups: AdminSignupDay[] }) {
       config={chartConfig}
       className={`${CHART_HEIGHT.compact} w-full`}
       role="region"
-      aria-label="Accounts and workspaces created per day"
+      aria-label={uiLabel("Accounts and workspaces created per day")}
     >
       <BarChart accessibilityLayer data={signups} margin={CHART_MARGIN}>
         <CartesianGrid {...GRID_PROPS} />

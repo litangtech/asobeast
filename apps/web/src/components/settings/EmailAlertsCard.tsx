@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText, useUiLanguage } from "@/components/language/UiLanguage";
 import {
   useMutation,
   useQueryClient,
@@ -43,12 +44,13 @@ const SMTP_VARS = [
 ];
 
 function EmailAlertRow({ alert }: { alert: EmailAlertItem }) {
+  const { text: uiLabel } = useUiLanguage();
   const queryClient = useQueryClient();
 
   const toggle = useMutation({
     mutationFn: (active: boolean) => updateEmailAlert(alert.id, { active }),
     onSuccess: () => invalidateEmailAlertMutation(queryClient),
-    onError: () => toast.error("Could not update email alert"),
+    onError: () => toast.error(uiLabel("Could not update email alert")),
   });
   const toggleOnce = useSingleFlight(toggle);
 
@@ -58,9 +60,10 @@ function EmailAlertRow({ alert }: { alert: EmailAlertItem }) {
     onSuccess: (saved) => {
       seedEmailAlert(queryClient, saved);
       invalidateEmailAlertMutation(queryClient);
-      toast.success("Email alert rules saved");
+      toast.success(uiLabel("Email alert rules saved"));
     },
-    onError: () => toast.error("Could not save the email alert events"),
+    onError: () =>
+      toast.error(uiLabel("Could not save the email alert events")),
   });
   const saveEvents = useSharedFlight(editEvents.mutateAsync);
 
@@ -68,19 +71,19 @@ function EmailAlertRow({ alert }: { alert: EmailAlertItem }) {
     mutationFn: () => testEmailAlert(alert.id),
     onSuccess: (result) => {
       if (result.delivered) {
-        toast.success("Test email sent");
+        toast.success(uiLabel("Test email sent"));
       } else {
-        toast.error("Could not send the test email");
+        toast.error(uiLabel("Could not send the test email"));
       }
     },
-    onError: () => toast.error("Could not send the test email"),
+    onError: () => toast.error(uiLabel("Could not send the test email")),
   });
 
   const resend = useMutation({
     mutationFn: () => resendEmailAlertConfirmation(alert.id),
     onSuccess: () =>
       toast.success(
-        `Confirmation email sent to ${alert.email}`,
+        uiLabel("Confirmation email sent to {0}", [alert.email]),
         recipientToast(alert),
       ),
     onSettled: () => invalidateEmailAlertMutation(queryClient),
@@ -88,7 +91,7 @@ function EmailAlertRow({ alert }: { alert: EmailAlertItem }) {
       toast.error(
         err instanceof ApiError
           ? err.envelope.message
-          : "Could not send the confirmation email",
+          : uiLabel("Could not send the confirmation email"),
         recipientToast(alert),
       ),
   });
@@ -100,9 +103,9 @@ function EmailAlertRow({ alert }: { alert: EmailAlertItem }) {
     mutationFn: () => deleteEmailAlert(alert.id),
     onSuccess: () => {
       invalidateEmailAlertMutation(queryClient);
-      toast.success("Email alert removed");
+      toast.success(uiLabel("Email alert removed"));
     },
-    onError: () => toast.error("Could not remove email alert"),
+    onError: () => toast.error(uiLabel("Could not remove email alert")),
   });
   const removeOnce = useSharedFlight(remove.mutateAsync);
 
@@ -144,9 +147,11 @@ function EmailAlertRow({ alert }: { alert: EmailAlertItem }) {
 function SetupHint({ need }: { need: EssentialAlertsNeed | null | undefined }) {
   return (
     <div className="rounded-xl border border-dashed p-6 text-sm text-muted-foreground">
-      <p className="font-medium text-foreground">Email alerts are disabled.</p>
+      <p className="font-medium text-foreground">
+        <UiText message="Email alerts are disabled." />
+      </p>
       <p className="mt-1">
-        Set the SMTP environment variables on the API to enable them:
+        <UiText message="Set the SMTP environment variables on the API to enable them:" />
       </p>
       <div className="mt-3 flex flex-wrap gap-2">
         {SMTP_VARS.map((name) => (
@@ -160,7 +165,8 @@ function SetupHint({ need }: { need: EssentialAlertsNeed | null | undefined }) {
       </div>
       <p className="mt-3">
         <code className="font-mono text-xs">SMTP_HOST</code> and{" "}
-        <code className="font-mono text-xs">SMTP_FROM</code> are required.
+        <code className="font-mono text-xs">SMTP_FROM</code>
+        <UiText message="are required." />
       </p>
       <div className="mt-3">
         <EssentialAlertsNotice need={need} />
@@ -170,6 +176,7 @@ function SetupHint({ need }: { need: EssentialAlertsNeed | null | undefined }) {
 }
 
 export function EmailAlertsCard() {
+  const { text: uiLabel } = useUiLanguage();
   const { data: config } = useSuspenseQuery(alertsConfigOptions);
   const { data } = useSuspenseQuery(emailAlertsOptions);
   const essentialNeed =
@@ -179,7 +186,7 @@ export function EmailAlertsCard() {
 
   return (
     <AlertChannelCard
-      title="Email"
+      title={uiLabel("Email")}
       action={config.emailEnabled ? <AddEmailAlertDialog /> : null}
     >
       {config.emailEnabled ? (
@@ -189,12 +196,18 @@ export function EmailAlertsCard() {
         <SetupHint need={essentialNeed} />
       ) : data.length === 0 ? (
         <AlertChannelEmpty>
-          {essentialNeed === null
-            ? ESSENTIAL_ALERTS_EMPTY
-            : "No email alerts yet. Add a recipient to receive metadata and rank alerts by email."}
+          {essentialNeed === null ? (
+            ESSENTIAL_ALERTS_EMPTY
+          ) : (
+            <UiText message="No email alerts yet. Add a recipient to receive metadata and rank alerts by email." />
+          )}
         </AlertChannelEmpty>
       ) : (
-        <AlertChannelList label="Configured email alerts and their subscribed events.">
+        <AlertChannelList
+          label={uiLabel(
+            "Configured email alerts and their subscribed events.",
+          )}
+        >
           {data.map((alert) => (
             <EmailAlertRow key={alert.id} alert={alert} />
           ))}

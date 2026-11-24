@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText, useUiLanguage } from "@/components/language/UiLanguage";
 import { Plus, Tags, Upload } from "lucide-react";
 import type { Ref } from "react";
 import type { Store } from "@asobeast/shared";
@@ -20,23 +21,26 @@ export function KeywordsEmptyState({
   country: string;
   addRef?: Ref<HTMLButtonElement>;
 }) {
+  const { text: uiLabel } = useUiLanguage();
   return (
     <EmptyState
       icon={Tags}
-      title={`No keywords tracked in ${formatCountry(country)} yet`}
+      title={uiLabel("No keywords tracked in {0} yet", [
+        formatCountry(country),
+      ])}
       body="Add the phrases you want this app to rank for and AsoBeast starts capturing positions on the next daily run."
       action={
         <div className="flex flex-wrap justify-center gap-2">
           <ImportKeywordsDialog appId={appId} store={store} country={country}>
             <Button variant="outline">
               <Upload />
-              Import CSV
+              <UiText message="Import CSV" />
             </Button>
           </ImportKeywordsDialog>
           <AddKeywordsDialog appId={appId} store={store} country={country}>
             <Button ref={addRef}>
               <Plus />
-              Add keywords
+              <UiText message="Add keywords" />
             </Button>
           </AddKeywordsDialog>
         </div>

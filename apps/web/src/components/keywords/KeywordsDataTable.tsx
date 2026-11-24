@@ -1,5 +1,6 @@
 "use client";
 
+import { useUiLanguage } from "@/components/language/UiLanguage";
 import { useRef } from "react";
 import { flexRender, type Table as TableInstance } from "@tanstack/react-table";
 import { useVirtualizer } from "@tanstack/react-virtual";
@@ -40,6 +41,7 @@ export function KeywordsDataTable({
   emptyBody?: string;
   onClearFilters: () => void;
 }) {
+  const { text: uiLabel } = useUiLanguage();
   const scrollRef = useRef<HTMLDivElement>(null);
   const rows = table.getRowModel().rows;
   const virtualize = rows.length > VIRTUALIZE_ABOVE;
@@ -111,7 +113,7 @@ export function KeywordsDataTable({
           <TableRow>
             <TableCell colSpan={columnCount}>
               <FilteredEmpty
-                title="No keywords match these filters"
+                title={uiLabel("No keywords match these filters")}
                 body={emptyBody}
                 onClear={onClearFilters}
               />

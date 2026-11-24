@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText, useUiLanguage } from "@/components/language/UiLanguage";
 import type { AppLocalizationsResult } from "@asobeast/shared";
 import { Button } from "@/components/ui/button";
 import { unlistedReads } from "@/lib/app-localizations";
@@ -17,6 +18,7 @@ export function UnlistedLocalizations({
   id: string;
   result: AppLocalizationsResult;
 }) {
+  const { text: uiLabel } = useUiLanguage();
   const { add, pending, error } = useAddLocalization(id);
   const managed = result.storeManaged;
   const reads = unlistedReads(result);
@@ -25,15 +27,19 @@ export function UnlistedLocalizations({
   return (
     <section aria-labelledby={HEADING_ID} className="flex flex-col gap-2">
       <h3 id={HEADING_ID} className="font-medium">
-        Not listed yet
+        <UiText message="Not listed yet" />
       </h3>
       <p className="text-body text-muted-foreground">
-        {managed
-          ? "Your markets read these localizations. Add one your app ships in App Store Connect and the import brings its keyword field; a localization the store serves is added on its own after the next capture of that market."
-          : "Your markets read these localizations. Add one your app ships in App Store Connect to type its keyword field; a localization the store serves is added on its own after the next capture of that market."}
+        {managed ? (
+          <UiText message="Your markets read these localizations. Add one your app ships in App Store Connect and the import brings its keyword field; a localization the store serves is added on its own after the next capture of that market." />
+        ) : (
+          <UiText message="Your markets read these localizations. Add one your app ships in App Store Connect to type its keyword field; a localization the store serves is added on its own after the next capture of that market." />
+        )}
       </p>
       <ul
-        aria-label="Localizations your markets read that are not listed"
+        aria-label={uiLabel(
+          "Localizations your markets read that are not listed",
+        )}
         className="flex flex-col divide-y divide-border rounded-lg border border-border px-3"
       >
         {reads.map(({ localization, readIn }) => {
@@ -50,11 +56,11 @@ export function UnlistedLocalizations({
                   <Button
                     variant="outline"
                     size="xs"
-                    aria-label={`Add ${name}`}
+                    aria-label={uiLabel("Add {0}", [name])}
                     disabled={pending}
                     onClick={() => add(localization)}
                   >
-                    Add
+                    <UiText message="Add" />
                   </Button>
                 )}
               </span>

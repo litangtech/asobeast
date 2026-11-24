@@ -1,3 +1,4 @@
+import { UiText } from "@/components/language/UiLanguage";
 import type { Table } from "@tanstack/react-table";
 import type { TrackedKeywordItem } from "@asobeast/shared";
 import { formatNumber, pluralize } from "@/lib/format";
@@ -25,7 +26,9 @@ function Missing({ label }: { label: string }) {
   return (
     <span className="text-muted-foreground">
       <span aria-hidden>—</span>
-      <span className="sr-only">{label}</span>
+      <span className="sr-only">
+        <UiText message={label} />
+      </span>
     </span>
   );
 }

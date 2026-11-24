@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText } from "@/components/language/UiLanguage";
 import {
   flexRender,
   type RowData,
@@ -26,7 +27,9 @@ export function AdminTable<TData extends RowData>({
 }) {
   return (
     <Table containerClassName="rounded-xl border">
-      <TableCaption className="sr-only">{caption}</TableCaption>
+      <TableCaption className="sr-only">
+        <UiText message={caption} />
+      </TableCaption>
       <TableHeader>
         {table.getHeaderGroups().map((headerGroup) => (
           <TableRow key={headerGroup.id}>

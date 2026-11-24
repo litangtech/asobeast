@@ -1,6 +1,6 @@
 "use client";
 
-import { UiText } from "@/components/language/UiLanguage";
+import { UiText, useUiLanguage } from "@/components/language/UiLanguage";
 import { Suspense, startTransition, useDeferredValue, useState } from "react";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { useQueryState } from "nuqs";
@@ -57,18 +57,27 @@ function ShowAll({
   return (
     <div className="flex flex-wrap items-center gap-3 pt-2">
       <p className="text-caption text-muted-foreground">
-        {searching
-          ? `Search covers the ${formatNumber(shown)} loaded of ${formatNumber(total)} reviews`
-          : `Showing ${formatNumber(shown)} of ${formatNumber(total)}`}
+        {searching ? (
+          <UiText
+            message="Search covers the {0} loaded of {1} reviews"
+            values={[formatNumber(shown), formatNumber(total)]}
+          />
+        ) : (
+          <UiText
+            message="Showing {0} of {1}"
+            values={[formatNumber(shown), formatNumber(total)]}
+          />
+        )}
       </p>
       {expanded ? (
         <p className="text-caption text-muted-foreground">
-          The page shows at most {REVIEWS_SHOW_ALL_LIMIT} reviews; narrow the
-          filters to reach the others.
+          <UiText message="The page shows at most" trailing />
+          {REVIEWS_SHOW_ALL_LIMIT}
+          <UiText message="reviews; narrow the filters to reach the others." />
         </p>
       ) : (
         <Button variant="outline" size="sm" onClick={onShowAll}>
-          <UiText message={"Show all"} />
+          <UiText message="Show all" />
         </Button>
       )}
     </div>
@@ -92,6 +101,7 @@ function ReviewCards({
   onClearFilters: () => void;
   onResetSearch: () => void;
 }) {
+  const { text: uiLabel } = useUiLanguage();
   const { data: app } = useSuspenseQuery(appDetailOptions(id));
   const viewKey = JSON.stringify(view);
   const [expandedView, setExpandedView] = useState<string | null>(null);
@@ -114,8 +124,8 @@ function ReviewCards({
       <EmptyState
         title={
           queueCleared
-            ? "Nothing needs a reply"
-            : "No reviews match these filters"
+            ? uiLabel("Nothing needs a reply")
+            : uiLabel("No reviews match these filters")
         }
         body={
           queueCleared
@@ -124,13 +134,17 @@ function ReviewCards({
         }
         action={
           <Button variant="outline" onClick={onClearFilters}>
-            {queueCleared ? "Show all reviews" : "Clear filters"}
+            {queueCleared ? (
+              <UiText message="Show all reviews" />
+            ) : (
+              <UiText message="Clear filters" />
+            )}
           </Button>
         }
       />
     ) : (
       <EmptyState
-        title="No reviews stored yet"
+        title={uiLabel("No reviews stored yet")}
         body="Reviews appear after the next daily sync."
       />
     );
@@ -145,7 +159,7 @@ function ReviewCards({
     <div className="flex flex-col">
       {shown.length === 0 ? (
         <EmptyState
-          title="No reviews match this search"
+          title={uiLabel("No reviews match this search")}
           body={
             quotedPhrase(query) === null
               ? "Search looks through the titles, texts, authors and replies of the reviews loaded here."
@@ -153,7 +167,7 @@ function ReviewCards({
           }
           action={
             <Button variant="outline" onClick={onResetSearch}>
-              Reset search
+              <UiText message="Reset search" />
             </Button>
           }
         />
@@ -186,7 +200,11 @@ function ReviewCards({
                         onReply(review.id);
                       }}
                     >
-                      {review.reply?.text ? "Edit reply" : "Reply"}
+                      {review.reply?.text ? (
+                        <UiText message="Edit reply" />
+                      ) : (
+                        <UiText message="Reply" />
+                      )}
                     </Button>
                   )
                 }
@@ -235,8 +253,12 @@ export function ReviewsList({ id }: { id: string }) {
   return (
     <Card>
       <CardHeader>
-        <CardDescription>Reviews</CardDescription>
-        <CardTitle>User reviews</CardTitle>
+        <CardDescription>
+          <UiText message="Reviews" />
+        </CardDescription>
+        <CardTitle>
+          <UiText message="User reviews" />
+        </CardTitle>
       </CardHeader>
       <CardContent className="flex flex-col gap-4">
         <Suspense fallback={<ReviewCountsSkeleton />}>

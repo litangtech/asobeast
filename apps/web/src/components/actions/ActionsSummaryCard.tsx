@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText } from "@/components/language/UiLanguage";
 import type { ReactNode } from "react";
 import Link from "next/link";
 import { useSuspenseQuery } from "@tanstack/react-query";
@@ -24,7 +25,7 @@ import {
   portfolioOptions,
 } from "@/lib/queries";
 import { ACTION_PRIORITY_LABEL } from "./action-copy";
-import { actionHeadline } from "./action-headline";
+import { LocalizedActionHeadline } from "./LocalizedActionHeadline";
 import { ActionPriorityBadge } from "./ActionPriorityBadge";
 import { PriorityBar } from "./PriorityBar";
 
@@ -36,9 +37,11 @@ const openActions = (limit: number) => ({
 function EmptyActions({ summary }: { summary: ActionSummary }) {
   return (
     <p className="text-sm text-muted-foreground">
-      {summary.generatedAt === null
-        ? "No actions generated yet."
-        : "Nothing to do right now."}
+      {summary.generatedAt === null ? (
+        <UiText message="No actions generated yet." />
+      ) : (
+        <UiText message="Nothing to do right now." />
+      )}
     </p>
   );
 }
@@ -97,9 +100,14 @@ function TopActionLink({
     >
       <span className="flex items-start gap-2">
         <ActionPriorityBadge priority={item.priority} />
-        <span>{actionHeadline(item)}</span>
+        <span>
+          <LocalizedActionHeadline item={item} />
+        </span>
         {item.reopenCount > 0 ? (
-          <Badge variant="outline">Reopened {item.reopenCount}×</Badge>
+          <Badge variant="outline">
+            <UiText message="Reopened" trailing />
+            {item.reopenCount}×
+          </Badge>
         ) : null}
       </span>
       {children}
@@ -119,7 +127,7 @@ function ActionScopeLine({
     <span className="flex min-w-0 items-center gap-2 text-caption text-muted-foreground">
       <AppIcon src={iconUrl} name={appName} size={16} />
       <span className="truncate">
-        {appName ?? "Unknown app"} · {storeLabel(store)} ·{" "}
+        {appName ?? <UiText message="Unknown app" />} · {storeLabel(store)} ·{" "}
         {country.toUpperCase()}
       </span>
     </span>
@@ -155,7 +163,7 @@ function AllClear() {
   return (
     <p className="flex items-center gap-2 text-sm text-muted-foreground">
       <CircleCheck className="size-4 text-signal-up" aria-hidden />
-      Nothing needs you right now.
+      <UiText message="Nothing needs you right now." />
     </p>
   );
 }
@@ -192,10 +200,12 @@ export function ActionsSummaryCard({ appId }: { appId?: string }) {
     <Card>
       <CardHeader>
         <CardTitle asChild>
-          <Title>Top actions</Title>
+          <Title>
+            <UiText message="Top actions" />
+          </Title>
         </CardTitle>
         <CardDescription>
-          The highest-impact open work, computed from your stored data.
+          <UiText message="The highest-impact open work, computed from your stored data." />
         </CardDescription>
       </CardHeader>
       <CardContent className="flex flex-col gap-4">
@@ -205,7 +215,7 @@ export function ActionsSummaryCard({ appId }: { appId?: string }) {
           href={href}
           className="inline-flex min-h-6 items-center self-start text-sm font-medium underline-offset-4 hover:underline print:hidden"
         >
-          Open the Action Center
+          <UiText message="Open the Action Center" />
         </Link>
       </CardContent>
     </Card>

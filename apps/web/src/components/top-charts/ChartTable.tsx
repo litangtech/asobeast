@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText, useUiLanguage } from "@/components/language/UiLanguage";
 import { useMemo } from "react";
 import { flexRender, useTable } from "@tanstack/react-table";
 import { useQueryStates } from "nuqs";
@@ -35,6 +36,7 @@ export function ChartTable({
   page: ChartPage;
   apps: readonly AppListItem[];
 }) {
+  const { text: uiLabel } = useUiLanguage();
   const [params, setParams] = useQueryStates(chartTableParsers);
   const period = compareLabel(page.compare, page.comparison);
   const context = useMemo(
@@ -85,7 +87,7 @@ export function ChartTable({
     <div className="flex flex-col gap-3">
       <div className="flex flex-wrap items-center gap-2">
         <SearchInput
-          label="Search apps"
+          label={uiLabel("Search apps")}
           value={params.q}
           onSearch={(q, options) => void setParams({ q }, options)}
         />
@@ -96,7 +98,13 @@ export function ChartTable({
       </div>
       <Table containerClassName="rounded-xl border">
         <TableCaption className="sr-only">
-          {`${chartTitle(page.chart)} on ${formatDate(page.capture?.date ?? null)}`}
+          <UiText
+            message="{0} on {1}"
+            values={[
+              chartTitle(page.chart),
+              formatDate(page.capture?.date ?? null),
+            ]}
+          />
         </TableCaption>
         <TableHeader>
           {table.getHeaderGroups().map((headerGroup) => (
@@ -120,7 +128,7 @@ export function ChartTable({
             <TableRow>
               <TableCell colSpan={table.getVisibleLeafColumns().length}>
                 <FilteredEmpty
-                  title="No apps match this search"
+                  title={uiLabel("No apps match this search")}
                   onClear={() => void setParams({ q: null })}
                 />
               </TableCell>

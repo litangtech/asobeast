@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText } from "@/components/language/UiLanguage";
 import { useState } from "react";
 import Link from "next/link";
 import type { KeywordFieldSuggestion } from "@asobeast/shared";
@@ -30,11 +31,14 @@ export function KeywordFieldSuggestionCard({
       <CardContent className="flex flex-col gap-0">
         <div className="flex items-center justify-between gap-3">
           <span className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-            {`Suggested keyword field${
-              suggestion.localization
-                ? ` · ${localizationName(suggestion.localization)}`
-                : ""
-            }`}
+            <UiText
+              message="Suggested keyword field{0}"
+              values={[
+                suggestion.localization
+                  ? ` · ${localizationName(suggestion.localization)}`
+                  : "",
+              ]}
+            />
           </span>
           <span className="text-sm tabular-nums text-muted-foreground">
             {`${suggestion.charactersUsed}/${suggestion.charactersLimit}`}
@@ -42,7 +46,7 @@ export function KeywordFieldSuggestionCard({
         </div>
         {suggestion.value.length === 0 ? (
           <p className="mt-2 text-sm text-muted-foreground">
-            Every tracked keyword is already covered.
+            <UiText message="Every tracked keyword is already covered." />
           </p>
         ) : (
           <>
@@ -54,13 +58,13 @@ export function KeywordFieldSuggestionCard({
               onClick={copy}
               className="mt-3 rounded-lg border border-border px-3 py-1.5 text-sm font-medium text-foreground transition hover:bg-muted dark:hover:bg-secondary"
             >
-              {copied ? "Copied" : "Copy"}
+              {copied ? <UiText message="Copied" /> : <UiText message="Copy" />}
             </button>
             <Link
               href={editHref}
               className="mt-2 text-sm text-foreground underline decoration-primary underline-offset-4"
             >
-              Edit this keyword field
+              <UiText message="Edit this keyword field" />
             </Link>
           </>
         )}

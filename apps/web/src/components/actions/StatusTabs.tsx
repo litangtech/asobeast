@@ -1,5 +1,6 @@
 "use client";
 
+import { useUiLanguage } from "@/components/language/UiLanguage";
 import { Suspense } from "react";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import type { ActionStatus } from "@asobeast/shared";
@@ -18,6 +19,7 @@ function Tabbed({
   onChange,
   byStatus,
 }: StatusTabsProps & { byStatus: Record<ActionStatus, number> | null }) {
+  const { text: uiLabel } = useUiLanguage();
   return (
     <Tabs
       value={presetOf(status)?.key ?? ""}
@@ -28,7 +30,7 @@ function Tabbed({
       }}
       className="min-w-0 max-w-full"
     >
-      <TabsList aria-label="Action status" scrollable>
+      <TabsList aria-label={uiLabel("Action status")} scrollable>
         {STATUS_PRESETS.map((preset) => {
           const count = byStatus ? presetCount(preset, byStatus) : null;
           return (

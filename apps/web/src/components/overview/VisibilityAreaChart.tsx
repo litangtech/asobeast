@@ -1,5 +1,6 @@
 "use client";
 
+import { useUiLanguage } from "@/components/language/UiLanguage";
 import { useQuery, useSuspenseQuery } from "@tanstack/react-query";
 import type { AppAnnotationItem, VisibilityPoint } from "@asobeast/shared";
 import {
@@ -89,6 +90,7 @@ export function VisibilityAreaChart({
   id: string;
   range: VisibilityRange;
 }) {
+  const { text: uiLabel } = useUiLanguage();
   const { country } = useKeywordScope(id);
   const { data } = useSuspenseQuery(
     visibilityOptions(id, presetToRange(range), country),
@@ -106,7 +108,7 @@ export function VisibilityAreaChart({
     return (
       <ChartNotice
         height={CHART_HEIGHT.compact}
-        title="No visibility recorded yet"
+        title={uiLabel("No visibility recorded yet")}
         body="The daily pipeline captures your first point within 24 hours."
       />
     );
@@ -116,7 +118,7 @@ export function VisibilityAreaChart({
     return (
       <ChartStat
         height={CHART_HEIGHT.compact}
-        label="Latest visibility"
+        label={uiLabel("Latest visibility")}
         value={String(latest.visibility)}
         note="A trend line needs a few more daily checks."
       />
@@ -128,7 +130,7 @@ export function VisibilityAreaChart({
       config={chartConfig}
       className={`${CHART_HEIGHT.compact} w-full`}
       role="region"
-      aria-label="Search visibility over time"
+      aria-label={uiLabel("Search visibility over time")}
     >
       <AreaChart accessibilityLayer data={data.points} margin={CHART_MARGIN}>
         <CartesianGrid {...GRID_PROPS} />

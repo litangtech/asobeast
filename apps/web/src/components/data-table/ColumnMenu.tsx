@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText } from "@/components/language/UiLanguage";
 import { Fragment, type ReactNode } from "react";
 import { Columns3 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -43,11 +44,13 @@ export function ColumnMenu({
       <DropdownMenuTrigger asChild>
         <Button variant="outline" size="sm">
           <Columns3 aria-hidden />
-          Columns
+          <UiText message="Columns" />
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-48">
-        <DropdownMenuLabel>Show columns</DropdownMenuLabel>
+        <DropdownMenuLabel>
+          <UiText message="Show columns" />
+        </DropdownMenuLabel>
         <DropdownMenuSeparator />
         {hideable.map((column) => (
           <DropdownMenuCheckboxItem
@@ -62,7 +65,9 @@ export function ColumnMenu({
         {options.length > 0 ? (
           <>
             <DropdownMenuSeparator />
-            <DropdownMenuLabel>Show in the table</DropdownMenuLabel>
+            <DropdownMenuLabel>
+              <UiText message="Show in the table" />
+            </DropdownMenuLabel>
             {options.map((option) => (
               <Fragment key={option.id}>
                 <DropdownMenuCheckboxItem

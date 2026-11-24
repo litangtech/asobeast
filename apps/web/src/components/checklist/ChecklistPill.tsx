@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText, useUiLanguage } from "@/components/language/UiLanguage";
 import { useEffect, useId, useRef, useState, type RefObject } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { toast } from "sonner";
@@ -64,6 +65,7 @@ export function ChecklistPill() {
 }
 
 function EntitledPill() {
+  const { text: uiLabel } = useUiLanguage();
   const { data: checklist } = useQuery(workspaceChecklistOptions);
   const [collapsedValue, saveCollapsed] =
     useStoredPreference(CHECKLIST_COLLAPSED);
@@ -100,7 +102,9 @@ function EntitledPill() {
         onSaved: () => {
           focusAfterCommit(document.getElementById("main-content"));
           setHiding(false);
-          toast.success("Setup checklist hidden. Show it again in Settings.");
+          toast.success(
+            uiLabel("Setup checklist hidden. Show it again in Settings."),
+          );
         },
       },
     );
@@ -127,7 +131,9 @@ function EntitledPill() {
             >
               <ProgressRing done={checklist.done} total={checklist.total} />
               <span className={collapsed ? "sr-only" : undefined}>{label}</span>
-              <span className="sr-only"> in the setup checklist</span>
+              <span className="sr-only">
+                <UiText message="in the setup checklist" />
+              </span>
             </Button>
           </PopoverTrigger>
           <PopoverContent

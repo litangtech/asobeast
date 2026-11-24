@@ -1,16 +1,17 @@
 "use client";
 
-import { UiText } from "@/components/language/UiLanguage";
+import { UiText, useUiLanguage } from "@/components/language/UiLanguage";
 import type { MouseEvent } from "react";
 import { Check, RotateCcw, StickyNote } from "lucide-react";
 import type { ActionItem } from "@asobeast/shared";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
-import { formatDate, storeLabel } from "@/lib/format";
+import { uiDate } from "@/lib/ui-formats";
+import { storeLabel } from "@/lib/format";
 import { cn } from "@/lib/utils";
 import { ACTION_CATEGORY_LABEL } from "./action-copy";
-import { actionHeadline } from "./action-headline";
+import { useActionHeadline } from "./LocalizedActionHeadline";
 import { actionStatusTag, type ActionStatusTag } from "./action-status-tag";
 import { ActionDismissMenu } from "./ActionDismissMenu";
 import { ActionImpactMeter } from "./ActionImpactMeter";
@@ -44,13 +45,14 @@ function RowMeta({
   item: ActionItem;
   appScoped: boolean;
 }) {
+  const { text, language } = useUiLanguage();
   const tag = actionStatusTag(item);
   const parts = [
-    ACTION_CATEGORY_LABEL[item.category],
-    appScoped ? null : (item.scope.appName ?? "Unknown app"),
+    text(ACTION_CATEGORY_LABEL[item.category]),
+    appScoped ? null : (item.scope.appName ?? text("Unknown app")),
     storeLabel(item.scope.store),
     item.scope.country.toUpperCase(),
-    `since ${formatDate(item.firstSeenAt)}`,
+    text("since {0}", [uiDate(language, item.firstSeenAt, "date")]),
   ].filter((part) => part !== null);
 
   return (
@@ -60,13 +62,15 @@ function RowMeta({
       </p>
       {tag ? (
         <Badge variant="outline" className={cn("h-auto", TAG_TONE[tag.tone])}>
-          {tag.label}
+          <UiText message={tag.label} />
         </Badge>
       ) : null}
       {item.note ? (
         <span className="inline-flex text-muted-foreground">
           <StickyNote aria-hidden className="size-3.5" />
-          <span className="sr-only">Has a note</span>
+          <span className="sr-only">
+            <UiText message="Has a note" />
+          </span>
         </span>
       ) : null}
     </div>
@@ -82,6 +86,7 @@ function RowControls({
   headline: string;
   href: string;
 }) {
+  const { text: uiLabel } = useUiLanguage();
   const { update, isPending: busy } = useActionUpdate(item, {
     moveFocus: true,
   });
@@ -96,7 +101,7 @@ function RowControls({
         onClick={() => update({ status: "OPEN" })}
       >
         <RotateCcw aria-hidden />
-        Reopen
+        <UiText message="Reopen" />
       </Button>
     );
   }
@@ -107,14 +112,14 @@ function RowControls({
         variant="secondary"
         size="sm"
         disabled={busy}
-        aria-label="Done"
+        aria-label={uiLabel("Done")}
         data-command="done"
         className="size-11 @2xl/queue:h-7 @2xl/queue:w-auto"
         onClick={() => update({ status: "DONE" })}
       >
         <Check aria-hidden />
         <span className="hidden @2xl/queue:inline">
-          <UiText message={"Done"} />
+          <UiText message="Done" />
         </span>
       </Button>
       <div className="hidden items-center gap-2 @2xl/queue:flex">
@@ -152,12 +157,13 @@ function RowSelect({
   checked: boolean;
   onToggle: () => void;
 }) {
+  const { text: uiLabel } = useUiLanguage();
   return (
     <label className="relative z-20 flex size-11 items-center justify-center @2xl/queue:size-6">
       <Checkbox
         checked={checked}
         onCheckedChange={onToggle}
-        aria-label={`Select ${headline}`}
+        aria-label={uiLabel("Select {0}", [headline])}
       />
     </label>
   );
@@ -182,7 +188,7 @@ export function ActionRow({
   tabbable: boolean;
   onFocus: () => void;
 }) {
-  const headline = actionHeadline(item);
+  const headline = useActionHeadline(item);
   const selectable = selection.selectable.includes(item.id);
 
   return (

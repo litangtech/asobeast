@@ -1,5 +1,7 @@
 "use client";
 
+import { UiCountry } from "@/components/language/UiFormat";
+import { UiText } from "@/components/language/UiLanguage";
 import { useId, useState } from "react";
 import Link from "next/link";
 import { Gauge, Loader2, TriangleAlert } from "lucide-react";
@@ -24,7 +26,6 @@ import {
   saveQuotaNotice,
   selectedCost,
 } from "@/lib/app-localizations";
-import { formatCountry } from "@/lib/format";
 import { localizationName } from "@/lib/localizations";
 import { ReadRoleBadge } from "./ReadRoleBadge";
 
@@ -76,10 +77,13 @@ export function SaveKeywordFieldDialog({
         }}
       >
         <DialogHeader>
-          <DialogTitle>Save the {name} keyword field</DialogTitle>
+          <DialogTitle>
+            <UiText message="Save the" trailing />
+            {name}
+            <UiText message="keyword field" />
+          </DialogTitle>
           <DialogDescription>
-            Choose the markets that should track its phrases. Every market on
-            its list reads the field either way.
+            <UiText message="Choose the markets that should track its phrases. Every market on its list reads the field either way." />
           </DialogDescription>
         </DialogHeader>
 
@@ -89,7 +93,9 @@ export function SaveKeywordFieldDialog({
             <p className="text-body text-muted-foreground">{dropped}</p>
           ) : null}
           <fieldset className="flex flex-col gap-2">
-            <legend className="sr-only">Markets that track the phrases</legend>
+            <legend className="sr-only">
+              <UiText message="Markets that track the phrases" />
+            </legend>
             {preview.markets.map((market) => {
               const checkboxId = `${groupId}-${market.country}`;
               return (
@@ -106,12 +112,15 @@ export function SaveKeywordFieldDialog({
                     }
                   />
                   <Label htmlFor={checkboxId}>
-                    {formatCountry(market.country)}
+                    <UiCountry code={market.country} />
                   </Label>
                   <ReadRoleBadge role={market.role} />
                   {market.newPhrases.length > 0 ? (
                     <span className="text-caption text-muted-foreground">
-                      {`${market.newPhrases.length} new`}
+                      <UiText
+                        message="{0} new"
+                        values={[market.newPhrases.length]}
+                      />
                     </span>
                   ) : null}
                 </div>
@@ -131,7 +140,9 @@ export function SaveKeywordFieldDialog({
                   <>
                     {" "}
                     <Button asChild variant="link" className="h-auto p-0">
-                      <Link href={UPGRADE_PATH}>See plans</Link>
+                      <Link href={UPGRADE_PATH}>
+                        <UiText message="See plans" />
+                      </Link>
                     </Button>
                   </>
                 ) : null}
@@ -147,18 +158,20 @@ export function SaveKeywordFieldDialog({
 
         <DialogFooter>
           <Button variant="outline" disabled={pending} onClick={onClose}>
-            Cancel
+            <UiText message="Cancel" />
           </Button>
           <Button
             disabled={pending || quota?.over === true}
             onClick={() => onConfirm(trackIn)}
           >
             {pending ? <Loader2 className="animate-spin" /> : null}
-            {pending
-              ? "Saving…"
-              : trackIn.length === 0
-                ? "Save"
-                : "Save and track"}
+            {pending ? (
+              <UiText message="Saving…" />
+            ) : trackIn.length === 0 ? (
+              <UiText message="Save" />
+            ) : (
+              <UiText message="Save and track" />
+            )}
           </Button>
         </DialogFooter>
       </DialogContent>

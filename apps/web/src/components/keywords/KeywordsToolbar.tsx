@@ -1,6 +1,6 @@
 "use client";
 
-import { UiText } from "@/components/language/UiLanguage";
+import { UiText, useUiLanguage } from "@/components/language/UiLanguage";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { ChartScatter, Plus, TableProperties, X } from "lucide-react";
 import { useQueryState } from "nuqs";
@@ -25,6 +25,7 @@ export function KeywordsToolbar({
   homeCountry: string;
   showTrackedControls?: boolean;
 }) {
+  const { text: uiLabel } = useUiLanguage();
   const [, setCountry] = useQueryState("country", countryParser);
   const { data: markets } = useSuspenseQuery(keywordCountriesOptions(id));
   const { data: keywords } = useSuspenseQuery(keywordsOptions(id, market));
@@ -43,10 +44,14 @@ export function KeywordsToolbar({
           onChange={(next) => {
             if (next) void setCountry(next);
           }}
-          ariaLabel="Keyword markets"
+          ariaLabel={uiLabel("Keyword markets")}
         />
         <AddKeywordsDialog appId={id} store={store} country={market}>
-          <Button variant="outline" size="sm" aria-label="Add a market">
+          <Button
+            variant="outline"
+            size="sm"
+            aria-label={uiLabel("Add a market")}
+          >
             <Plus />
           </Button>
         </AddKeywordsDialog>
@@ -58,10 +63,12 @@ export function KeywordsToolbar({
           onClick={() => void setCountry(null)}
           className="inline-flex items-center gap-1.5 rounded-full border border-dashed px-2.5 py-1 text-caption hover:bg-muted"
         >
-          <span>{`Market: ${market.toUpperCase()}`}</span>
+          <span>
+            <UiText message="Market: {0}" values={[market.toUpperCase()]} />
+          </span>
           <X className="size-3 opacity-60" aria-hidden />
           <span className="sr-only">
-            <UiText message={"Clear the market filter"} />
+            <UiText message="Clear the market filter" />
           </span>
         </button>
       ) : null}
@@ -85,28 +92,34 @@ function TrackedSummary({
   const partial = keywords.length !== total;
   return (
     <p className="text-body text-muted-foreground" aria-live="polite">
-      Tracking{" "}
+      <UiText message="Tracking" />{" "}
       <span className="numeric font-mono font-medium text-foreground">
         {keywords.length}
       </span>
       {partial ? (
         <span>
-          {" of "}
+          <UiText message=" of " />
           <span className="numeric font-mono font-medium text-foreground">
             {total}
           </span>
         </span>
       ) : null}
-      <span>{` keyword${keywords.length === 1 ? "" : "s"} · `}</span>
+      <span>
+        <UiText
+          message=" keyword{0} · "
+          values={[keywords.length === 1 ? "" : "s"]}
+        />
+      </span>
       <span className="numeric font-mono font-medium text-foreground">
         {active}
       </span>{" "}
-      active
+      <UiText message="active" />
     </p>
   );
 }
 
 function KeywordViewSwitch() {
+  const { text: uiLabel } = useUiLanguage();
   const [view, setView] = useQueryState("view", keywordViewParser);
   return (
     <Tabs
@@ -116,14 +129,18 @@ function KeywordViewSwitch() {
       }
       className="ml-auto"
     >
-      <TabsList aria-label="Keyword view">
+      <TabsList aria-label={uiLabel("Keyword view")}>
         <TabsOption value="table">
           <TableProperties aria-hidden />
-          <span>Table</span>
+          <span>
+            <UiText message="Table" />
+          </span>
         </TabsOption>
         <TabsOption value="map">
           <ChartScatter aria-hidden />
-          <span>Map</span>
+          <span>
+            <UiText message="Map" />
+          </span>
         </TabsOption>
       </TabsList>
     </Tabs>

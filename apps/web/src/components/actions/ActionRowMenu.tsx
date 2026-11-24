@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText, useUiLanguage } from "@/components/language/UiLanguage";
 import { MoreHorizontal } from "lucide-react";
 import { toast } from "sonner";
 import type { ActionItem, ActionUpdateRequest } from "@asobeast/shared";
@@ -27,9 +28,10 @@ export function ActionRowMenu({
   disabled: boolean;
   onUpdate: (body: ActionUpdateRequest) => void;
 }) {
+  const { text: uiLabel } = useUiLanguage();
   const copyLink = async () => {
     await navigator.clipboard.writeText(`${window.location.origin}${href}`);
-    toast.success("Link copied");
+    toast.success(uiLabel("Link copied"));
   };
 
   return (
@@ -39,7 +41,7 @@ export function ActionRowMenu({
           variant="ghost"
           size="icon-sm"
           disabled={disabled}
-          aria-label={`More actions for ${headline}`}
+          aria-label={uiLabel("More actions for {0}", [headline])}
           data-command="more"
           className="size-11 @2xl/queue:size-7"
         >
@@ -49,7 +51,7 @@ export function ActionRowMenu({
       <DropdownMenuContent align="end">
         {item.status === "SNOOZED" ? (
           <DropdownMenuItem onSelect={() => onUpdate({ status: "OPEN" })}>
-            Wake now
+            <UiText message="Wake now" />
           </DropdownMenuItem>
         ) : (
           SNOOZE_PRESET_DAYS.map((days) => (
@@ -59,7 +61,9 @@ export function ActionRowMenu({
                 onUpdate({ status: "SNOOZED", snoozedUntil: snoozeUntil(days) })
               }
             >
-              Snooze {days} days
+              <UiText message="Snooze" trailing />
+              {days}
+              <UiText message="days" />
             </DropdownMenuItem>
           ))
         )}
@@ -68,7 +72,7 @@ export function ActionRowMenu({
         />
         <DropdownMenuSeparator />
         <DropdownMenuItem onSelect={() => void copyLink()}>
-          Copy link
+          <UiText message="Copy link" />
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

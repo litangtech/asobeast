@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText, useUiLanguage } from "@/components/language/UiLanguage";
 import { useId } from "react";
 import { useQuery } from "@tanstack/react-query";
 import {
@@ -72,13 +73,14 @@ export function ReviewThemesStrip({
   query: string;
   onSelect: (phrase: string) => void;
 }) {
+  const { text: uiLabel } = useUiLanguage();
   const headingId = useId();
   const themes = useQuery(reviewThemesOptions(id, reviewFilters(view)));
   const { data } = themes;
   if (failedRead(themes)) {
     return (
       <InlineQueryError
-        message="Could not load what people mention."
+        message={uiLabel("Could not load what people mention.")}
         read={themes}
       />
     );
@@ -93,11 +95,11 @@ export function ReviewThemesStrip({
           id={headingId}
           className="text-label text-muted-foreground uppercase"
         >
-          What people mention
+          <UiText message="What people mention" />
         </h2>
         <InfoTip
-          label="About what people mention"
-          title="What people mention"
+          label={uiLabel("About what people mention")}
+          title={uiLabel("What people mention")}
           summary={themesSummary({
             negativeScoreMax: data.negativeScoreMax,
             reviews: data.reviews,
@@ -110,7 +112,7 @@ export function ReviewThemesStrip({
             rel="noreferrer"
             className="font-medium text-foreground underline decoration-primary underline-offset-4 hover:decoration-2"
           >
-            Read how themes are found
+            <UiText message="Read how themes are found" />
           </a>
         </InfoTip>
       </div>

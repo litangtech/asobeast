@@ -1,3 +1,4 @@
+import { UiText } from "@/components/language/UiLanguage";
 import type { AppAuditResult } from "@asobeast/shared";
 import { factorSections } from "./factor-sections";
 import { FactorCard } from "./FactorCard";
@@ -18,7 +19,7 @@ export function AuditFactorGrid({
           className="flex flex-col gap-3"
         >
           <h2 id={`factors-${section.id}`} className="text-lg font-medium">
-            {section.label}
+            <UiText message={section.label} />
           </h2>
           <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
             {section.factors.map((factor) => (

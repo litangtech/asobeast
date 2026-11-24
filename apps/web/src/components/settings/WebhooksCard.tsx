@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText, useUiLanguage } from "@/components/language/UiLanguage";
 import {
   useMutation,
   useQueryClient,
@@ -27,6 +28,7 @@ import { useSharedFlight, useSingleFlight } from "@/lib/single-flight";
 import { WEBHOOK_CHANNEL_NAMES, webhookRowLabel } from "./webhook-channel-copy";
 
 function WebhookRow({ webhook }: { webhook: WebhookItem }) {
+  const { text: uiLabel } = useUiLanguage();
   const queryClient = useQueryClient();
   const channel = webhook.channel ?? webhookChannelOf(webhook.url);
   const label = webhookRowLabel(webhook.url, channel);
@@ -34,7 +36,7 @@ function WebhookRow({ webhook }: { webhook: WebhookItem }) {
   const toggle = useMutation({
     mutationFn: (active: boolean) => updateWebhook(webhook.id, { active }),
     onSuccess: () => invalidateWebhookMutation(queryClient),
-    onError: () => toast.error("Could not update webhook"),
+    onError: () => toast.error(uiLabel("Could not update webhook")),
   });
   const toggleOnce = useSingleFlight(toggle);
 
@@ -44,9 +46,9 @@ function WebhookRow({ webhook }: { webhook: WebhookItem }) {
     onSuccess: (saved) => {
       seedWebhook(queryClient, saved);
       invalidateWebhookMutation(queryClient);
-      toast.success("Webhook rules saved");
+      toast.success(uiLabel("Webhook rules saved"));
     },
-    onError: () => toast.error("Could not save the webhook events"),
+    onError: () => toast.error(uiLabel("Could not save the webhook events")),
   });
   const saveEvents = useSharedFlight(editEvents.mutateAsync);
 
@@ -54,14 +56,18 @@ function WebhookRow({ webhook }: { webhook: WebhookItem }) {
     mutationFn: () => testWebhook(webhook.id),
     onSuccess: (result) => {
       if (result.delivered) {
-        toast.success(`Delivered (status ${result.status ?? "—"})`);
+        toast.success(
+          uiLabel("Delivered (status {0})", [result.status ?? "—"]),
+        );
       } else {
         toast.error(
-          `Not delivered${result.status !== null ? ` (status ${result.status})` : ""}`,
+          uiLabel("Not delivered{0}", [
+            result.status !== null ? ` (status ${result.status})` : "",
+          ]),
         );
       }
     },
-    onError: () => toast.error("Could not reach the webhook"),
+    onError: () => toast.error(uiLabel("Could not reach the webhook")),
   });
 
   const testOnce = useSingleFlight(test);
@@ -70,9 +76,9 @@ function WebhookRow({ webhook }: { webhook: WebhookItem }) {
     mutationFn: () => deleteWebhook(webhook.id),
     onSuccess: () => {
       invalidateWebhookMutation(queryClient);
-      toast.success("Webhook removed");
+      toast.success(uiLabel("Webhook removed"));
     },
-    onError: () => toast.error("Could not remove webhook"),
+    onError: () => toast.error(uiLabel("Could not remove webhook")),
   });
   const removeOnce = useSharedFlight(remove.mutateAsync);
 
@@ -94,7 +100,7 @@ function WebhookRow({ webhook }: { webhook: WebhookItem }) {
           {webhook.hasSecret && (
             <Badge variant="secondary">
               <KeyRound />
-              Signed
+              <UiText message="Signed" />
             </Badge>
           )}
         </>
@@ -115,18 +121,21 @@ function WebhookRow({ webhook }: { webhook: WebhookItem }) {
 }
 
 export function WebhooksCard() {
+  const { text: uiLabel } = useUiLanguage();
   const { data } = useSuspenseQuery(webhooksOptions);
 
   return (
-    <AlertChannelCard title="Webhooks" action={<AddWebhookDialog />}>
+    <AlertChannelCard title={uiLabel("Webhooks")} action={<AddWebhookDialog />}>
       {data.length === 0 ? (
         <AlertChannelEmpty>
-          No webhooks yet. Add one to receive metadata and rank alerts in
-          Discord, Slack, Microsoft Teams, Telegram, Google Chat or your own
-          endpoint.
+          <UiText message="No webhooks yet. Add one to receive metadata and rank alerts in Discord, Slack, Microsoft Teams, Telegram, Google Chat or your own endpoint." />
         </AlertChannelEmpty>
       ) : (
-        <AlertChannelList label="Configured alert webhooks and their subscribed events.">
+        <AlertChannelList
+          label={uiLabel(
+            "Configured alert webhooks and their subscribed events.",
+          )}
+        >
           {data.map((webhook) => (
             <WebhookRow key={webhook.id} webhook={webhook} />
           ))}

@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText, useUiLanguage } from "@/components/language/UiLanguage";
 import { useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
@@ -33,6 +34,7 @@ export function TrackCombinations({
   id: string;
   homeCountry: string;
 }) {
+  const { text: uiLabel } = useUiLanguage();
   const queryClient = useQueryClient();
   const [pending, setPending] = useState<string[] | null>(null);
   const selected = phrasesToTrack(
@@ -50,7 +52,7 @@ export function TrackCombinations({
       table.resetRowSelection();
       setPending(null);
       if (outcome.ok) {
-        toast.success(`Tracking ${keywordCount(outcome.tracked)}`);
+        toast.success(uiLabel("Tracking {0}", [keywordCount(outcome.tracked)]));
         return;
       }
       toast.error(errorMessage(outcome.error), {
@@ -71,14 +73,16 @@ export function TrackCombinations({
         disabled={selected.length === 0 || track.isPending}
         onClick={() => setPending(selected)}
       >
-        Track selected ({selected.length})
+        <UiText message="Track selected (" />
+        {selected.length})
       </Button>
       <Button
         size="sm"
         disabled={shown.length === 0 || track.isPending}
         onClick={() => setPending(shown)}
       >
-        Track all shown ({shown.length})
+        <UiText message="Track all shown (" />
+        {shown.length})
       </Button>
       <TrackCombinationsDialog
         count={pending?.length ?? 0}

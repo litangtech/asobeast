@@ -1,3 +1,4 @@
+import { UiText } from "@/components/language/UiLanguage";
 import Link from "next/link";
 import { BellOff, Filter } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -81,7 +82,9 @@ export function AlertFeedEmpty({
       body="The daily run records what it detects here, whether or not you have set up alerts. Come back after the next run, or set up delivery in Settings."
       action={
         <Button asChild variant="outline">
-          <Link href="/settings">Open Settings</Link>
+          <Link href="/settings">
+            <UiText message="Open Settings" />
+          </Link>
         </Button>
       }
     />

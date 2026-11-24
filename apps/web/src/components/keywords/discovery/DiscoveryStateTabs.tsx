@@ -1,5 +1,6 @@
 "use client";
 
+import { useUiLanguage } from "@/components/language/UiLanguage";
 import { useQueryState } from "nuqs";
 import {
   DISCOVERY_STATES,
@@ -27,6 +28,7 @@ export function DiscoveryStateTabs({
 }: {
   counts: KeywordDiscoveryCounts;
 }) {
+  const { text: uiLabel } = useUiLanguage();
   const [state, setState] = useDiscoveryState();
   return (
     <Tabs
@@ -36,7 +38,7 @@ export function DiscoveryStateTabs({
       }
       className="max-w-full min-w-0"
     >
-      <TabsList aria-label="Discovered keyword states" scrollable>
+      <TabsList aria-label={uiLabel("Discovered keyword states")} scrollable>
         {DISCOVERY_STATES.map((value) => (
           <TabsOption key={value} value={value}>
             {`${STATE_LABELS[value]} ${counts[value]}`}

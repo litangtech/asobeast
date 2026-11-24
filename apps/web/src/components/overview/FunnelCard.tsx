@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText, useUiLanguage } from "@/components/language/UiLanguage";
 import { Suspense } from "react";
 import Link from "next/link";
 import { useSuspenseQuery } from "@tanstack/react-query";
@@ -42,10 +43,14 @@ const CONNECT_LINK =
   "text-body font-medium text-foreground underline decoration-primary underline-offset-4 hover:decoration-2";
 
 function NotReporting({ store, reason }: { store: Store; reason: string }) {
+  const { text: uiLabel } = useUiLanguage();
   const copy = FUNNEL_COPY[store];
   return (
     <EmptyState
-      title={`${copy.console} reports nothing for this app yet: ${reason}.`}
+      title={uiLabel("{0} reports nothing for this app yet: {1}.", [
+        copy.console,
+        reason,
+      ])}
       body={copy.notReporting}
     />
   );
@@ -61,7 +66,7 @@ function ConnectionRefused({ store }: { store: Store }) {
       action={
         isOwner ? (
           <Link href={STORE_CONNECTIONS_PATH} className={CONNECT_LINK}>
-            Verify in Integrations
+            <UiText message="Verify in Integrations" />
           </Link>
         ) : null
       }
@@ -94,7 +99,7 @@ function NotConnected({ id, store }: { id: string; store: Store }) {
       action={
         isOwner ? (
           <Link href={STORE_CONNECTIONS_PATH} className={CONNECT_LINK}>
-            Connect in Integrations
+            <UiText message="Connect in Integrations" />
           </Link>
         ) : null
       }
@@ -173,7 +178,9 @@ export function FunnelCard({ id, store }: { id: string; store: Store }) {
     <Card>
       <CardHeader>
         <CardDescription>{FUNNEL_COPY[store].console}</CardDescription>
-        <CardTitle>{`Store funnel${market}`}</CardTitle>
+        <CardTitle>
+          <UiText message="Store funnel{0}" values={[market]} />
+        </CardTitle>
         <CardAction>
           <FunnelHelp store={store} />
         </CardAction>

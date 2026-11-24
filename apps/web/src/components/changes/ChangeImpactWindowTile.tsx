@@ -19,7 +19,9 @@ import {
 function Fact({ label, children }: { label: string; children: ReactNode }) {
   return (
     <div className="flex flex-col gap-0.5">
-      <dt className="text-label text-muted-foreground uppercase">{label}</dt>
+      <dt className="text-label text-muted-foreground uppercase">
+        <UiText message={label} />
+      </dt>
       {children}
     </div>
   );
@@ -53,7 +55,7 @@ function MeasuredFacts({ impact }: { impact: ChangeImpactWindow }) {
         <dd>
           {impact.medianPositionChange === null ? (
             <span className="text-muted-foreground">
-              No keyword ranked on both days
+              <UiText message="No keyword ranked on both days" />
             </span>
           ) : (
             <DeltaChip value={impact.medianPositionChange} period="positions" />
@@ -93,7 +95,7 @@ export function FunnelFacts({ impact, store }: WindowProps) {
             </dd>
             <dd className="flex flex-wrap items-center gap-2">
               <span>
-                <UiText message={"Conversion"} />
+                <UiText message="Conversion" />
               </span>
               <span className="numeric font-mono">{ranges.conversion}</span>
             </dd>

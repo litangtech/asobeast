@@ -1,5 +1,6 @@
 "use client";
 
+import { useUiLanguage } from "@/components/language/UiLanguage";
 import type { SerpEntryItem, Store } from "@asobeast/shared";
 import { TrackButton } from "@/components/competitors/TrackButton";
 import { StoreLinkButton } from "@/components/StoreLinkButton";
@@ -21,6 +22,7 @@ export function SerpRowActions({
   entry: SerpEntryItem;
   role: SerpRole;
 }) {
+  const { text: uiLabel } = useUiLanguage();
   const trackable = role === "other";
   const focusKey = serpTrackFocusKey(entry.storeAppId);
   const group = useFocusGroupClaim(focusKey, trackable);
@@ -38,7 +40,7 @@ export function SerpRowActions({
           id={appId}
           storeAppId={entry.storeAppId}
           title={entry.title}
-          label={`Track ${entry.title} at #${entry.position}`}
+          label={uiLabel("Track {0} at #{1}", [entry.title, entry.position])}
           focusKey={focusKey}
           className="max-sm:[&>span]:sr-only"
         />

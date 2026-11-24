@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText, useUiLanguage } from "@/components/language/UiLanguage";
 import { useEffect, useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Loader2, ScanSearch } from "lucide-react";
@@ -15,6 +16,7 @@ const FOLLOW_INTERVAL_MS = 5_000;
 const FOLLOW_LIMIT_MS = 90_000;
 
 export function FindLocalizationsButton({ appId }: { appId: string }) {
+  const { text: uiLabel } = useUiLanguage();
   const queryClient = useQueryClient();
   const [following, setFollowing] = useState(false);
 
@@ -23,7 +25,9 @@ export function FindLocalizationsButton({ appId }: { appId: string }) {
     onSuccess: ({ queued }) => {
       if (queued === 0) {
         toast.info(
-          "Every language your markets read is already listed or was checked today.",
+          uiLabel(
+            "Every language your markets read is already listed or was checked today.",
+          ),
         );
         return;
       }
@@ -40,7 +44,7 @@ export function FindLocalizationsButton({ appId }: { appId: string }) {
       toast.error(
         error instanceof ApiError
           ? error.envelope.message
-          : "Could not look for localizations",
+          : uiLabel("Could not look for localizations"),
       ),
   });
   const detectOnce = useSingleFlight(detect);
@@ -70,7 +74,7 @@ export function FindLocalizationsButton({ appId }: { appId: string }) {
       onClick={() => detectOnce()}
     >
       {detect.isPending ? <Loader2 className="animate-spin" /> : <ScanSearch />}
-      Find localizations
+      <UiText message="Find localizations" />
     </Button>
   );
 }

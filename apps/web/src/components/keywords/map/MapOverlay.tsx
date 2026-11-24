@@ -1,6 +1,6 @@
 "use client";
 
-import { UiText } from "@/components/language/UiLanguage";
+import { UiText, useUiLanguage } from "@/components/language/UiLanguage";
 import { useLayoutEffect, useRef, type RefObject } from "react";
 import { ArrowDownToLine } from "lucide-react";
 import { ZONE_LABELS } from "@/lib/keyword-zones";
@@ -18,7 +18,9 @@ const capitalized = (text: string): string =>
 function OverlayRow({ label, value }: { label: string; value: string }) {
   return (
     <div className="flex items-center justify-between gap-4">
-      <dt className="text-muted-foreground">{label}</dt>
+      <dt className="text-muted-foreground">
+        <UiText message={label} />
+      </dt>
       <dd className="numeric font-mono font-medium text-foreground">{value}</dd>
     </div>
   );
@@ -41,6 +43,7 @@ export function MapOverlay({
   multiMarket: boolean;
   surfaceRef: RefObject<HTMLElement | null>;
 }) {
+  const { text: uiLabel } = useUiLanguage();
   const overlayRef = useRef<HTMLDivElement>(null);
   useLayoutEffect(() => {
     const node = overlayRef.current;
@@ -70,30 +73,41 @@ export function MapOverlay({
       </p>
       <dl className="grid gap-1">
         <OverlayRow
-          label="Position"
+          label={uiLabel("Position")}
           value={
             point.position === null
               ? capitalized(rankWords(point))
               : String(point.position)
           }
         />
-        <OverlayRow label="Popularity" value={String(point.popularity)} />
-        <OverlayRow label="Difficulty" value={String(point.difficulty)} />
+        <OverlayRow
+          label={uiLabel("Popularity")}
+          value={String(point.popularity)}
+        />
+        <OverlayRow
+          label={uiLabel("Difficulty")}
+          value={String(point.difficulty)}
+        />
         {point.opportunity === null ? null : (
-          <OverlayRow label="Opportunity" value={String(point.opportunity)} />
+          <OverlayRow
+            label={uiLabel("Opportunity")}
+            value={String(point.opportunity)}
+          />
         )}
       </dl>
       {point.floor ? (
         <p className="flex items-center gap-1 text-muted-foreground">
           <ArrowDownToLine aria-hidden className="size-3" />
-          <span>Floor answer</span>
+          <span>
+            <UiText message="Floor answer" />
+          </span>
         </p>
       ) : null}
       <p className="flex flex-wrap gap-x-2 text-muted-foreground">
         <span>{ZONE_LABELS[point.zone]}</span>
         {point.active ? null : (
           <span>
-            <UiText message={"Paused"} />
+            <UiText message="Paused" />
           </span>
         )}
       </p>

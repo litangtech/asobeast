@@ -1,3 +1,4 @@
+import { UiText } from "@/components/language/UiLanguage";
 import { TriangleAlert } from "lucide-react";
 import type { AppDetail } from "@asobeast/shared";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
@@ -17,17 +18,25 @@ export function DelistedNotice({
   return (
     <Alert variant="warning" role="note">
       <TriangleAlert aria-hidden="true" />
-      <AlertTitle>{`No longer listed on ${store}`}</AlertTitle>
+      <AlertTitle>
+        <UiText message="No longer listed on {0}" values={[store]} />
+      </AlertTitle>
       <AlertDescription>
         <p>
-          {`Since ${formatDate(since)}, ${store} answers that it has no app ${detail.storeAppId} in ${formatCountry(detail.country)}.`}{" "}
-          The stored history stays, and every daily run checks again, so this
-          notice clears on the first capture that finds the app.
+          <UiText
+            message="Since {0}, {1} answers that it has no app {2} in {3}."
+            values={[
+              formatDate(since),
+              store,
+              detail.storeAppId,
+              formatCountry(detail.country),
+            ]}
+          />{" "}
+          <UiText message="The stored history stays, and every daily run checks again, so this notice clears on the first capture that finds the app." />
         </p>
         <p>
-          Open the store page to check. If the app moved to a new store id,
-          import it again from its new link.{" "}
-          {`If it is gone for good, ${removal}`}
+          <UiText message="Open the store page to check. If the app moved to a new store id, import it again from its new link." />{" "}
+          <UiText message="If it is gone for good, {0}" values={[removal]} />
         </p>
       </AlertDescription>
     </Alert>

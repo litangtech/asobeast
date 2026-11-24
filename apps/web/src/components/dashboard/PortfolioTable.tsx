@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText } from "@/components/language/UiLanguage";
 import { flexRender, useTable } from "@tanstack/react-table";
 import { useQueryStates } from "nuqs";
 import { ColumnMenu } from "@/components/data-table/ColumnMenu";
@@ -53,7 +54,9 @@ export function PortfolioTable({ rows }: { rows: PortfolioTableRow[] }) {
         <ColumnMenu columns={table.getAllLeafColumns()} />
       </div>
       <Table containerClassName="rounded-xl border">
-        <TableCaption className="sr-only">Apps in this workspace</TableCaption>
+        <TableCaption className="sr-only">
+          <UiText message="Apps in this workspace" />
+        </TableCaption>
         <TableHeader>
           {table.getHeaderGroups().map((headerGroup) => (
             <TableRow key={headerGroup.id}>

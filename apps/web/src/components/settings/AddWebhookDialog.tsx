@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText, useUiLanguage } from "@/components/language/UiLanguage";
 import { useState } from "react";
 import type { FormEvent, ReactNode } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -27,6 +28,7 @@ const HINT_ID = "webhook-channel-hint";
 const INVALID_URL = "Enter a valid http(s) URL";
 
 export function AddWebhookDialog({ trigger }: { trigger?: ReactNode }) {
+  const { text: uiLabel } = useUiLanguage();
   const queryClient = useQueryClient();
   const [open, setOpen] = useState(false);
   const [url, setUrl] = useState("");
@@ -51,7 +53,7 @@ export function AddWebhookDialog({ trigger }: { trigger?: ReactNode }) {
       }),
     onSuccess: () => {
       invalidateWebhookMutation(queryClient);
-      toast.success("Webhook added");
+      toast.success(uiLabel("Webhook added"));
       onOpenChange(false);
     },
     onError: (err) => {
@@ -117,15 +119,19 @@ export function AddWebhookDialog({ trigger }: { trigger?: ReactNode }) {
     <AlertChannelDialog
       open={open}
       onOpenChange={onOpenChange}
-      label="Add webhook"
-      description="AsoBeast POSTs a JSON payload to this URL when a subscribed event fires. Add a secret to receive an HMAC signature header."
+      label={uiLabel("Add webhook")}
+      description={uiLabel(
+        "AsoBeast POSTs a JSON payload to this URL when a subscribed event fires. Add a secret to receive an HMAC signature header.",
+      )}
       error={error}
       pending={mutation.isPending}
       onSubmit={submit}
       trigger={trigger}
     >
       <div className="flex flex-col gap-2">
-        <Label htmlFor="webhook-url">Endpoint URL</Label>
+        <Label htmlFor="webhook-url">
+          <UiText message="Endpoint URL" />
+        </Label>
         <Input
           id="webhook-url"
           value={url}
@@ -155,13 +161,15 @@ export function AddWebhookDialog({ trigger }: { trigger?: ReactNode }) {
       <ConfirmDropsField checked={confirmDrops} onChange={setConfirmChoice} />
 
       <div className="flex flex-col gap-2">
-        <Label htmlFor="webhook-secret">Secret (optional)</Label>
+        <Label htmlFor="webhook-secret">
+          <UiText message="Secret (optional)" />
+        </Label>
         <Input
           id="webhook-secret"
           type="password"
           value={secret}
           onChange={(event) => setSecret(event.target.value)}
-          placeholder="At least 8 characters"
+          placeholder={uiLabel("At least 8 characters")}
         />
       </div>
     </AlertChannelDialog>

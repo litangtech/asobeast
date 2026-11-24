@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText, useUiLanguage } from "@/components/language/UiLanguage";
 import { Suspense } from "react";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { useQueryState } from "nuqs";
@@ -19,18 +20,18 @@ function ComparisonBody({ id, onlyGaps }: { id: string; onlyGaps: boolean }) {
   if (data.competitors.length === 0) {
     return (
       <div className="rounded-xl border border-dashed p-8 text-center text-sm text-muted-foreground">
-        Add a competitor above to discover keyword gaps — phrases they rank for
-        and you do not. One search serves every app, so this costs no extra
-        scraping.
+        <UiText message="Add a competitor above to discover keyword gaps — phrases they rank for and you do not. One search serves every app, so this costs no extra scraping." />
       </div>
     );
   }
   if (data.rows.length === 0) {
     return (
       <div className="rounded-xl border border-dashed p-8 text-center text-sm text-muted-foreground">
-        {onlyGaps
-          ? "No gaps — you rank everywhere your competitors do."
-          : "No comparison data yet. Track keywords and run a daily check to populate positions."}
+        {onlyGaps ? (
+          <UiText message="No gaps — you rank everywhere your competitors do." />
+        ) : (
+          <UiText message="No comparison data yet. Track keywords and run a daily check to populate positions." />
+        )}
       </div>
     );
   }
@@ -45,13 +46,14 @@ function ComparisonBody({ id, onlyGaps }: { id: string; onlyGaps: boolean }) {
 }
 
 export function ComparisonMatrix({ id }: { id: string }) {
+  const { text: uiLabel } = useUiLanguage();
   const [onlyGaps, setOnlyGaps] = useQueryState("onlyGaps", onlyGapsParser);
   return (
     <>
       <CollapsibleCard
         section={COMPETITOR_SECTION.matrix}
         eyebrow="Comparison matrix"
-        title="Your position against every competitor"
+        title={uiLabel("Your position against every competitor")}
         actions={
           <div className="flex items-center gap-2">
             <Switch
@@ -63,7 +65,7 @@ export function ComparisonMatrix({ id }: { id: string }) {
               htmlFor="only-gaps"
               className="text-sm text-muted-foreground"
             >
-              only gaps
+              <UiText message="only gaps" />
             </Label>
           </div>
         }

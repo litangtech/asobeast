@@ -1,5 +1,6 @@
 "use client";
 
+import { UiCountry } from "@/components/language/UiFormat";
 import { UiText } from "@/components/language/UiLanguage";
 import { useId, useState, type ComponentProps } from "react";
 import { ChartLine, History } from "lucide-react";
@@ -17,7 +18,7 @@ import {
   PopoverTitle,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { formatCountry, storeLabel } from "@/lib/format";
+import { storeLabel } from "@/lib/format";
 import { lostPosition } from "@/lib/keyword-checks";
 import type { RangePreset } from "@/lib/ranges";
 import { positionHoldFacts } from "./position-hold";
@@ -55,7 +56,9 @@ function HoldFacts({ keyword }: { keyword: TrackedKeywordItem }) {
     <dl className="grid grid-cols-[repeat(auto-fit,minmax(6rem,1fr))] gap-2">
       {facts.map((fact) => (
         <div key={fact.label} className="rounded-md border px-2 py-1">
-          <dt className="text-caption text-muted-foreground">{fact.label}</dt>
+          <dt className="text-caption text-muted-foreground">
+            <UiText message={fact.label} />
+          </dt>
           <dd className="text-body font-medium">{fact.value}</dd>
         </div>
       ))}
@@ -88,7 +91,7 @@ function PositionHistoryContent({
             </span>{" "}
             ·{" "}
             <span id={ids.market}>
-              {storeLabel(store)} · {formatCountry(keyword.country)}
+              {storeLabel(store)} · <UiCountry code={keyword.country} />
             </span>
           </PopoverDescription>
         </PopoverHeader>

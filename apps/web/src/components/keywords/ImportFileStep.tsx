@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText } from "@/components/language/UiLanguage";
 import { Download } from "lucide-react";
 import { KEYWORD_IMPORT_LIMIT } from "@asobeast/shared";
 import { Button } from "@/components/ui/button";
@@ -29,7 +30,9 @@ export function ImportFileStep({
 }) {
   return (
     <div className="flex flex-col gap-2">
-      <Label htmlFor="keyword-import-file">Keyword file</Label>
+      <Label htmlFor="keyword-import-file">
+        <UiText message="Keyword file" />
+      </Label>
       <div className="flex flex-wrap items-center gap-2">
         <Input
           id="keyword-import-file"
@@ -45,13 +48,18 @@ export function ImportFileStep({
           onClick={() => downloadCsv("keyword-import-template.csv", TEMPLATE)}
         >
           <Download aria-hidden />
-          Download template
+          <UiText message="Download template" />
         </Button>
       </div>
       <p className="text-xs text-muted-foreground">
-        {fileName
-          ? `Reading ${fileName}. ${PARTS_HINT}`
-          : `${PARTS_HINT} UTF-8 or UTF-16, separated by commas, semicolons, tabs or pipes.`}
+        {fileName ? (
+          <UiText message="Reading {0}. {1}" values={[fileName, PARTS_HINT]} />
+        ) : (
+          <UiText
+            message="{0} UTF-8 or UTF-16, separated by commas, semicolons, tabs or pipes."
+            values={[PARTS_HINT]}
+          />
+        )}
       </p>
     </div>
   );

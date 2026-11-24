@@ -1,5 +1,6 @@
 "use client";
 
+import { useUiLanguage } from "@/components/language/UiLanguage";
 import {
   keepPreviousData,
   useQuery,
@@ -109,6 +110,7 @@ function KeywordDynamicsBody({
   onClear: () => void;
   onWiden: () => void;
 }) {
+  const { text: uiLabel } = useUiLanguage();
   const [, setKeywords] = useQueryState(
     "keywords",
     keywordChartSelectionParser,
@@ -133,7 +135,7 @@ function KeywordDynamicsBody({
   if (failedRead(rankingsRead)) {
     return (
       <InlineQueryError
-        message="Could not load the rank positions."
+        message={uiLabel("Could not load the rank positions.")}
         read={rankingsRead}
       />
     );
@@ -240,17 +242,18 @@ function DynamicsReadErrors({
   rankingsRead: UseQueryResult<RankingSeriesContract>;
   changesRead: UseQueryResult<ChangeTimeline>;
 }) {
+  const { text: uiLabel } = useUiLanguage();
   return (
     <>
       {rankingsRead.isError ? (
         <InlineQueryError
-          message="Could not refresh the rank positions."
+          message={uiLabel("Could not refresh the rank positions.")}
           read={rankingsRead}
         />
       ) : null}
       {failedRead(changesRead) ? (
         <InlineQueryError
-          message="Could not load the listing changes."
+          message={uiLabel("Could not load the listing changes.")}
           read={changesRead}
         />
       ) : null}

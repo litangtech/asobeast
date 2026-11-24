@@ -1,5 +1,6 @@
 "use client";
 
+import { useUiLanguage } from "@/components/language/UiLanguage";
 import type { DefaultLegendContentProps } from "recharts";
 import { seriesDash } from "./theme";
 
@@ -13,11 +14,12 @@ export function SeriesLegend({
   labels: SeriesLabels;
   order: string[];
 }) {
+  const { text: uiLabel } = useUiLanguage();
   if (!payload?.length) return null;
 
   return (
     <ul
-      aria-label="Charted series"
+      aria-label={uiLabel("Charted series")}
       className="flex flex-wrap items-center justify-center gap-x-4 gap-y-1 pt-3"
     >
       {payload

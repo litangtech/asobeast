@@ -1,3 +1,4 @@
+import { UiText } from "@/components/language/UiLanguage";
 import type { ReactNode } from "react";
 import { notFound } from "next/navigation";
 import { AdminAccessNotice } from "@/components/admin/AdminAccessNotice";
@@ -13,10 +14,11 @@ export default async function AdminLayout({
   return (
     <div className="page-wide flex flex-col gap-6">
       <div className="flex flex-col gap-1">
-        <h1 className="text-display tracking-tight text-balance">Admin</h1>
+        <h1 className="text-display tracking-tight text-balance">
+          <UiText message="Admin" />
+        </h1>
         <p className="text-body text-muted-foreground">
-          The whole instance, across every workspace. Only the platform operator
-          can open this page.
+          <UiText message="The whole instance, across every workspace. Only the platform operator can open this page." />
         </p>
       </div>
       {access === "granted" ? (

@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText, useUiLanguage } from "@/components/language/UiLanguage";
 import { useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Loader2, Plus } from "lucide-react";
@@ -42,6 +43,7 @@ export function KeywordPicker({
   country: string;
   tracked: TrackedKeywordItem[];
 }) {
+  const { text: uiLabel } = useUiLanguage();
   const queryClient = useQueryClient();
   const [strategy, setStrategy] = useState<PickerStrategy>("metadata");
   const [selected, setSelected] = useState(NOTHING_SELECTED);
@@ -54,14 +56,16 @@ export function KeywordPicker({
       invalidateKeywordMutation(queryClient, appId);
       setSelected(NOTHING_SELECTED);
       toast.success(
-        `Tracking ${pluralize(texts.length, "keyword")}. Positions arrive within minutes.`,
+        uiLabel("Tracking {0}. Positions arrive within minutes.", [
+          pluralize(texts.length, "keyword"),
+        ]),
       );
     },
     onError: (error) =>
       toast.error(
         error instanceof ApiError
           ? error.envelope.message
-          : "Could not track the selected keywords",
+          : uiLabel("Could not track the selected keywords"),
       ),
   });
   const trackOnce = useSingleFlight(track);
@@ -113,7 +117,10 @@ export function KeywordPicker({
         </Button>
         {remaining > 0 ? (
           <span className="text-caption text-muted-foreground">
-            {`${remaining} more to reach ${SETUP_KEYWORD_TARGET}`}
+            <UiText
+              message="{0} more to reach {1}"
+              values={[remaining, SETUP_KEYWORD_TARGET]}
+            />
           </span>
         ) : null}
       </div>

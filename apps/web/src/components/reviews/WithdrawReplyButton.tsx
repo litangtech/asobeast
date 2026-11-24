@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText, useUiLanguage } from "@/components/language/UiLanguage";
 import type { RefObject } from "react";
 import { Button } from "@/components/ui/button";
 import { ReplyConfirmDialog } from "./ReplyConfirmDialog";
@@ -13,6 +14,7 @@ export function WithdrawReplyButton({
   textRef: RefObject<HTMLTextAreaElement | null>;
   onWithdraw: () => void;
 }) {
+  const { text: uiLabel } = useUiLanguage();
   return (
     <ReplyConfirmDialog
       trigger={
@@ -24,12 +26,14 @@ export function WithdrawReplyButton({
             if (busy) event.preventDefault();
           }}
         >
-          Withdraw from App Store
+          <UiText message="Withdraw from App Store" />
         </Button>
       }
-      title="Withdraw this response?"
-      description="Apple removes it within a day. The text stays here."
-      cancelLabel="Keep it"
+      title={uiLabel("Withdraw this response?")}
+      description={uiLabel(
+        "Apple removes it within a day. The text stays here.",
+      )}
+      cancelLabel={uiLabel("Keep it")}
       actionLabel="Withdraw"
       destructive
       textRef={textRef}

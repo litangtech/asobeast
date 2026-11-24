@@ -1,5 +1,6 @@
 "use client";
 
+import { useUiLanguage } from "@/components/language/UiLanguage";
 import type { ComponentProps } from "react";
 import type { inferParserType, SetValues } from "nuqs";
 import { ColumnMenu } from "@/components/data-table/ColumnMenu";
@@ -43,6 +44,7 @@ export function ComparisonFilterBar({
   columns: ComponentProps<typeof ColumnMenu>["columns"];
   onExport: () => void;
 }) {
+  const { text: uiLabel } = useUiLanguage();
   const multiMarket = markets.length > 1;
   const chips = [
     filters.q
@@ -72,19 +74,19 @@ export function ComparisonFilterBar({
     <div className="flex flex-col gap-2">
       <div className="flex flex-wrap items-center gap-2">
         <SearchInput
-          label="Search keywords"
+          label={uiLabel("Search keywords")}
           value={filters.q}
           onSearch={(q, options) => void setFilters({ q }, options)}
         />
         <SelectFilter
-          title="Result"
+          title={uiLabel("Result")}
           value={filters.vs}
           options={RESULT_OPTIONS}
           onChange={(vs) => void setFilters({ vs })}
         />
         {multiMarket ? (
           <SelectFilter
-            title="Market"
+            title={uiLabel("Market")}
             value={filters.country || ALL_MARKETS}
             options={marketOptions(markets)}
             onChange={(country) =>

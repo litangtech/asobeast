@@ -1,3 +1,4 @@
+import { UiText } from "@/components/language/UiLanguage";
 import type { Release } from "@/lib/whats-new/release-notes";
 import { ReleaseEntry } from "./ReleaseEntry";
 
@@ -8,7 +9,9 @@ export function ReleaseTimeline({
 }) {
   if (releases.length === 0) {
     return (
-      <p className="text-body text-muted-foreground">No release notes yet.</p>
+      <p className="text-body text-muted-foreground">
+        <UiText message="No release notes yet." />
+      </p>
     );
   }
 

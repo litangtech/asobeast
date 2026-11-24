@@ -1,5 +1,6 @@
 "use client";
 
+import { useUiLanguage } from "@/components/language/UiLanguage";
 import { ErrorState } from "@/components/layout/ErrorState";
 
 export default function ChangesError({
@@ -9,11 +10,12 @@ export default function ChangesError({
   error: Error & { digest?: string };
   retry: () => void;
 }) {
+  const { text: uiLabel } = useUiLanguage();
   return (
     <ErrorState
       error={error}
       retry={retry}
-      title="Changes could not be loaded"
+      title={uiLabel("Changes could not be loaded")}
     />
   );
 }

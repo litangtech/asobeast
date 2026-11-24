@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText, useUiLanguage } from "@/components/language/UiLanguage";
 import { useMemo } from "react";
 import { flexRender, useTable } from "@tanstack/react-table";
 import { useQueryStates } from "nuqs";
@@ -50,11 +51,14 @@ function ScreenshotTextNote({ rows }: { rows: KeywordCoverageRow[] }) {
   );
   return (
     <p className="text-body text-muted-foreground">
-      {`Screenshot text is a weak signal that Apple has not confirmed. It never changes whether a keyword counts as covered.${
-        withUnreadListing
-          ? " A dashed circle means the screenshots of that keyword's listing have not been read yet."
-          : ""
-      }`}
+      <UiText
+        message="Screenshot text is a weak signal that Apple has not confirmed. It never changes whether a keyword counts as covered.{0}"
+        values={[
+          withUnreadListing
+            ? " A dashed circle means the screenshots of that keyword's listing have not been read yet."
+            : "",
+        ]}
+      />
     </p>
   );
 }
@@ -66,6 +70,7 @@ export function CoverageTable({
   rows: KeywordCoverageRow[];
   screenshotText: ScreenshotTextState | null;
 }) {
+  const { text: uiLabel } = useUiLanguage();
   const [params, setParams] = useQueryStates(COVERAGE_PARAMS);
   const fields = useMemo(() => {
     const present = new Set(
@@ -128,7 +133,7 @@ export function CoverageTable({
     <div className="flex flex-col gap-3">
       <div className="flex flex-wrap items-center gap-3">
         <SearchInput
-          label="Search keywords"
+          label={uiLabel("Search keywords")}
           value={params.q}
           onSearch={(q, options) => void setParams({ q }, options)}
         />
@@ -141,7 +146,7 @@ export function CoverageTable({
             }
           />
           <Label htmlFor="uncovered-only" className="text-sm">
-            Uncovered only
+            <UiText message="Uncovered only" />
           </Label>
         </div>
         <RowCount shown={shown.length} total={rows.length} noun="keyword" />
@@ -149,7 +154,13 @@ export function CoverageTable({
       <FilterChips chips={chips} onClearAll={clearFilters} />
       <Table containerClassName="rounded-xl border bg-card">
         <TableCaption className="sr-only">
-          {`Keyword coverage across ${fields.map((field) => METADATA_FIELD_LABELS[field]).join(", ")}${withScreenshotText ? ", screenshot text" : ""}, with uncovered keywords highlighted.`}
+          <UiText
+            message="Keyword coverage across {0}{1}, with uncovered keywords highlighted."
+            values={[
+              fields.map((field) => METADATA_FIELD_LABELS[field]).join(", "),
+              withScreenshotText ? ", screenshot text" : "",
+            ]}
+          />
         </TableCaption>
         <TableHeader>
           {table.getHeaderGroups().map((headerGroup) => (
@@ -176,7 +187,7 @@ export function CoverageTable({
             <TableRow>
               <TableCell colSpan={table.getVisibleLeafColumns().length}>
                 <FilteredEmpty
-                  title="No keywords match these filters"
+                  title={uiLabel("No keywords match these filters")}
                   onClear={clearFilters}
                 />
               </TableCell>

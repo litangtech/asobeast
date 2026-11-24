@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText, useUiLanguage } from "@/components/language/UiLanguage";
 import { Suspense } from "react";
 import {
   useMutation,
@@ -77,6 +78,7 @@ function VersionSelect({
   version: string;
   onChange: (next: string) => void;
 }) {
+  const { text: uiLabel } = useUiLanguage();
   const { data } = useSuspenseQuery(reviewsOptions(id, {}));
 
   return (
@@ -84,11 +86,16 @@ function VersionSelect({
       value={version || ALL}
       onValueChange={(next) => onChange(next === ALL ? "" : next)}
     >
-      <SelectTrigger className="w-[140px]" aria-label="Filter by version">
-        <SelectValue placeholder="All versions" />
+      <SelectTrigger
+        className="w-[140px]"
+        aria-label={uiLabel("Filter by version")}
+      >
+        <SelectValue placeholder={uiLabel("All versions")} />
       </SelectTrigger>
       <SelectContent>
-        <SelectItem value={ALL}>All versions</SelectItem>
+        <SelectItem value={ALL}>
+          <UiText message="All versions" />
+        </SelectItem>
         {data.versions.map((item) => (
           <SelectItem key={item} value={item}>
             v{item}
@@ -108,6 +115,7 @@ function ReplyStateSelect({
   view: ReviewView;
   onChange: (next: ReviewReplyState | null) => void;
 }) {
+  const { text: uiLabel } = useUiLanguage();
   const { data } = useQuery(reviewsOptions(id, countsFilters(view)));
 
   return (
@@ -117,14 +125,19 @@ function ReplyStateSelect({
         onChange(literalOf(REVIEW_REPLY_STATES, next) ?? null)
       }
     >
-      <SelectTrigger className="w-[170px]" aria-label="Filter by reply state">
-        <SelectValue placeholder="Any reply state" />
+      <SelectTrigger
+        className="w-[170px]"
+        aria-label={uiLabel("Filter by reply state")}
+      >
+        <SelectValue placeholder={uiLabel("Any reply state")} />
       </SelectTrigger>
       <SelectContent>
-        <SelectItem value={ALL}>Any reply state</SelectItem>
+        <SelectItem value={ALL}>
+          <UiText message="Any reply state" />
+        </SelectItem>
         {shownReplyStates(data?.counts, view.replyState).map((option) => (
           <SelectItem key={option.value} value={option.value}>
-            {option.label}
+            <UiText message={option.label} />
           </SelectItem>
         ))}
       </SelectContent>
@@ -139,6 +152,7 @@ function SinceSelect({
   since: RatingsRange | null;
   onChange: (next: RatingsRange | null) => void;
 }) {
+  const { text: uiLabel } = useUiLanguage();
   return (
     <Select
       value={since ?? ALL}
@@ -146,11 +160,16 @@ function SinceSelect({
         onChange(literalOf(RATINGS_RANGES, next) ?? null)
       }
     >
-      <SelectTrigger className="w-[150px]" aria-label="Filter by date">
-        <SelectValue placeholder="Any time" />
+      <SelectTrigger
+        className="w-[150px]"
+        aria-label={uiLabel("Filter by date")}
+      >
+        <SelectValue placeholder={uiLabel("Any time")} />
       </SelectTrigger>
       <SelectContent>
-        <SelectItem value={ALL}>Any time</SelectItem>
+        <SelectItem value={ALL}>
+          <UiText message="Any time" />
+        </SelectItem>
         {RATINGS_RANGES.map((preset) => (
           <SelectItem key={preset} value={preset}>
             {rangeLabel(preset)}
@@ -170,6 +189,7 @@ function ExportReviewsButton({
   view: ReviewView;
   query: string;
 }) {
+  const { text: uiLabel } = useUiLanguage();
   const queryClient = useQueryClient();
   const filters = reviewFilters(view);
   const { data } = useQuery(reviewsOptions(id, filters));
@@ -180,7 +200,7 @@ function ExportReviewsButton({
         matchesReviewQuery(review, query),
       );
       if (rows.length === 0) {
-        toast.info("Nothing to export: no review matches this search");
+        toast.info(uiLabel("Nothing to export: no review matches this search"));
         return;
       }
       exportReviews(id, rows);
@@ -192,7 +212,7 @@ function ExportReviewsButton({
       if (notice) toast.info(notice);
     },
     onError: () => {
-      toast.error("Could not export reviews");
+      toast.error(uiLabel("Could not export reviews"));
     },
   });
   const exportOnce = useSingleFlight(exporting);
@@ -203,7 +223,10 @@ function ExportReviewsButton({
       className="ml-auto"
       disabled={(data?.total ?? 0) === 0 || exporting.isPending}
       onClick={() => exportOnce()}
-      title={`Exports the ${EXPORT_ORDER[view.sort]} ${REVIEWS_EXPORT_LIMIT} reviews that match the filters`}
+      title={uiLabel("Exports the {0} {1} reviews that match the filters", [
+        EXPORT_ORDER[view.sort],
+        REVIEWS_EXPORT_LIMIT,
+      ])}
     />
   );
 }
@@ -219,12 +242,13 @@ export function ReviewsToolbar({
   onSort,
   onQuery,
 }: ReviewsToolbarProps) {
+  const { text: uiLabel } = useUiLanguage();
   return (
     <div className="flex flex-wrap items-center gap-2">
       <div
         className="flex flex-wrap gap-1.5"
         role="group"
-        aria-label="Filter by star rating"
+        aria-label={uiLabel("Filter by star rating")}
       >
         {STAR_FILTERS.map((star) => (
           <Button
@@ -250,18 +274,25 @@ export function ReviewsToolbar({
           onSort(literalOf(REVIEW_SORTS, next) ?? "newest")
         }
       >
-        <SelectTrigger className="w-[140px]" aria-label="Sort reviews">
+        <SelectTrigger
+          className="w-[140px]"
+          aria-label={uiLabel("Sort reviews")}
+        >
           <SelectValue />
         </SelectTrigger>
         <SelectContent>
           {SORT_OPTIONS.map((option) => (
             <SelectItem key={option.value} value={option.value}>
-              {option.label}
+              <UiText message={option.label} />
             </SelectItem>
           ))}
         </SelectContent>
       </Select>
-      <SearchInput label="Search reviews" value={query} onSearch={onQuery} />
+      <SearchInput
+        label={uiLabel("Search reviews")}
+        value={query}
+        onSearch={onQuery}
+      />
       <ReplyGuidelinesDialog id={id} />
       <ExportReviewsButton id={id} view={view} query={query} />
     </div>

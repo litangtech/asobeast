@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText } from "@/components/language/UiLanguage";
 import { Check, RotateCcw } from "lucide-react";
 import type { ActionItem } from "@asobeast/shared";
 import { Button } from "@/components/ui/button";
@@ -24,7 +25,7 @@ export function ActionStateControls({ item }: { item: ActionItem }) {
         onClick={() => update({ status: "OPEN" })}
       >
         <RotateCcw aria-hidden className="size-4" />
-        Reopen
+        <UiText message="Reopen" />
       </Button>
     );
   }
@@ -37,7 +38,7 @@ export function ActionStateControls({ item }: { item: ActionItem }) {
         onClick={() => update({ status: "DONE" })}
       >
         <Check aria-hidden className="size-4" />
-        Done
+        <UiText message="Done" />
       </Button>
       <ActionSnoozeMenu
         status={item.status}

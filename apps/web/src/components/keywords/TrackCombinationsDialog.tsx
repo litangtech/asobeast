@@ -39,10 +39,15 @@ export function TrackCombinationsDialog({
       <DialogContent>
         <DialogHeader>
           <DialogTitle>
-            Track {keywordCount(count)} in {storefront}?
+            <UiText message="Track" trailing />
+            {keywordCount(count)} in {storefront}?
           </DialogTitle>
           <DialogDescription>
-            Each tracked keyword adds one store search a day in {storefront}.
+            <UiText
+              message="Each tracked keyword adds one store search a day in"
+              trailing
+            />
+            {storefront}.
             {isOperator ? (
               <>
                 {" "}
@@ -50,7 +55,7 @@ export function TrackCombinationsDialog({
                   href="/settings#daily-capacity"
                   className="font-medium text-foreground underline underline-offset-4"
                 >
-                  Review the daily request budget
+                  <UiText message="Review the daily request budget" />
                 </Link>
               </>
             ) : null}
@@ -62,10 +67,10 @@ export function TrackCombinationsDialog({
             disabled={pending}
             onClick={() => onOpenChange(false)}
           >
-            <UiText message={"Cancel"} />
+            <UiText message="Cancel" />
           </Button>
           <Button disabled={pending} onClick={onConfirm}>
-            <UiText message={"Track"} />
+            <UiText message="Track" />
           </Button>
         </DialogFooter>
       </DialogContent>
