@@ -1,0 +1,32 @@
+name: Build API deployment image
+on:
+  push:
+    branches:
+      - "codex/web-deploy-*"
+    paths:
+      - "apps/api/**"
+      - "packages/**"
+      - "pnpm-lock.yaml"
+      - ".github/workflows/api-deploy-image.yml"
+permissions:
+  contents: read
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+      - name: Build and export the API image
+        run: |
+          set -euo pipefail
+          image="asobeast-api-deploy:${GITHUB_SHA:0:12}"
+          docker build --file apps/api/Dockerfile --tag "$image" .
+          docker image save "$image" | zstd -T2 -o asobeast-api.tar.zst
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
+        with:
+          name: asobeast-api-${{ github.sha }}
+          path: asobeast-api.tar.zst
+          if-no-files-found: error
+          retention-days: 7
