@@ -125,7 +125,10 @@ export function KeywordFacets({
       />
       <FacetFilter
         title={uiLabel("Bucket")}
-        options={BUCKET_OPTIONS}
+        options={BUCKET_OPTIONS.map((option) => ({
+          ...option,
+          label: uiLabel(option.label),
+        }))}
         selected={filters.bucket}
         counts={facetCounts(table, "bucket", (row) => row.original.bucket)}
         onChange={(bucket) => void setFilters({ bucket })}

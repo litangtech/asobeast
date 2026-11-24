@@ -35,9 +35,9 @@ export function KeywordsFilterBar({
   today: string;
   viewOptions: readonly ViewOption[];
 }) {
-  const { text: uiLabel } = useUiLanguage();
+  const { language, text: uiLabel } = useUiLanguage();
   const shown = table.getRowModel().rows;
-  const chips = keywordFilterChips(filters);
+  const chips = keywordFilterChips(filters, language);
   const inlineFacets = useRef<HTMLDivElement>(null);
 
   return (

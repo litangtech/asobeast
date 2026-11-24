@@ -2,6 +2,7 @@ import type { ColumnFiltersState, FilterFn } from "@tanstack/react-table";
 import type { inferParserType } from "nuqs";
 import type { TrackedKeywordItem } from "@asobeast/shared";
 import { BUCKET_LABELS } from "@/components/BucketBadge";
+import { uiText, type UiLanguage } from "@/lib/ui-language";
 import { gradeLabel } from "@/lib/grade";
 import {
   ZONE_LABELS,
@@ -57,14 +58,22 @@ function listChip<T>(
   title: string,
   values: readonly T[],
   label: (value: T) => string,
+  language: UiLanguage = "en",
 ): KeywordFilterChip | null {
   return values.length > 0
-    ? { key, label: `${title}: ${values.map(label).join(", ")}` }
+    ? {
+        key,
+        label: uiText(language, "{0}: {1}", [
+          uiText(language, title),
+          values.map(label).join(language === "zh-CN" ? "、" : ", "),
+        ]),
+      }
     : null;
 }
 
 export function keywordFilterChips(
   filters: KeywordFilters,
+  language: UiLanguage = "en",
 ): KeywordFilterChip[] {
   const chips = [
     filters.q ? { key: "q" as const, label: searchChipLabel(filters.q) } : null,
@@ -78,7 +87,8 @@ export function keywordFilterChips(
       "bucket",
       "Bucket",
       filters.bucket,
-      (value) => BUCKET_LABELS[value],
+      (value) => uiText(language, BUCKET_LABELS[value]),
+      language,
     ),
     filters.status !== "all"
       ? {

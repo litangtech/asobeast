@@ -95,24 +95,32 @@ export const WORKSPACE_1: Readonly<Record<string, string>> = {
   "Copy failed — select the text and copy it manually.":
     "复制失败—— 选择文本并手动复制。",
   "Copy {0}": "复制{0}",
-  Agent: "探员",
-  "Hosted endpoint": "主机端点",
+  Agent: "AI 客户端",
+  "Hosted endpoint": "远程端点",
   "Local server": "本地服务器",
   "Your client connects straight to this instance. Nothing to install.":
-    "你的客户端直接连接到此实例。没有安装。",
+    "客户端可直接连接当前实例，无需额外安装。",
   "For a checkout of the repository. Hosted users need nothing here.":
-    "用于查看商店。主机用户在这里不需要任何东西。",
+    "适用于从本地源码运行的用户。使用远程端点时可跳过。",
   "Connect an agent": "连接代理",
-  "Connect AsoBeast": "连接“ 亚伯特”",
+  "Connect AsoBeast": "连接 AsoBeast",
   "Name a token for this agent. We mint it read-only unless you allow changes, and show you the ready-to-paste connect snippets.":
-    "给此代理器命名一个标记。除非你允许更改，否则我们只读取它，并显示你可以打开到粘贴的连接片段。",
-  "Token name": "调用名",
-  "Claude Desktop": "克劳德桌面",
+    "为此代理的令牌取个名称。默认生成只读令牌，允许更改后才会生成可写令牌。生成后可复制连接配置。",
+  "Token name": "令牌名称",
+  "Claude Desktop": "Claude Desktop",
   "Allow this agent to make changes": "允许此代理进行更改",
-  "Mint token": "薄荷牌",
+  "Mint token": "生成令牌",
+  "Give the token a name.": "请输入令牌名称。",
+  "Could not create the token.": "无法生成令牌。",
+  "Adds tools that track and untrack keywords, add and remove competitors, and change the status of actions. A token that can make changes can change anything through the API too, so keep it private.":
+    "允许跟踪或取消跟踪关键词、添加或移除竞品，以及更新行动状态。该令牌也可以通过 API 执行写入操作，请妥善保管。",
+  "The token can make changes and is shown once. Copy what you need before closing, and keep it private.":
+    "此令牌拥有写入权限，仅显示一次。请在关闭前复制所需配置，并妥善保管令牌。",
+  "The token is read-only and is shown once. Copy what you need before closing.":
+    "此令牌为只读，仅显示一次。请在关闭前复制所需配置。",
   "MCP server": "MCP 服务器",
   "Point any MCP client at this instance to ask about your apps, keywords, rankings and audits in plain language. Tools are read-only unless you allow an agent to make changes when you connect it, and every connection is authenticated with a personal API token.":
-    "在此情况下，请指定任何 MCP 客户端询问你的应用、关键词、排序和审计用普通语言。工具是只读的，除非你在连接时允许代理进行更改，并且每个连接都使用个人 API 符号验证。",
+    "连接 MCP 客户端后，可以用自然语言查询应用、关键词、排名和审计结果。每个连接都使用个人 API 令牌验证身份。默认只读，连接时可以授予写入权限。",
   "Read the setup guide": "读取设置指南",
   Endpoint: "终点",
   "Service account key": "服务账户密钥",

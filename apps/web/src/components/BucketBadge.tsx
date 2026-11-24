@@ -1,4 +1,5 @@
 import type { KeywordBucket } from "@asobeast/shared";
+import { UiText } from "@/components/language/UiLanguage";
 import { Badge } from "@/components/ui/badge";
 
 const VARIANT: Record<
@@ -22,5 +23,9 @@ export function BucketBadge({ bucket }: { bucket: KeywordBucket | null }) {
   if (!bucket) {
     return <span className="text-muted-foreground">—</span>;
   }
-  return <Badge variant={VARIANT[bucket]}>{BUCKET_LABELS[bucket]}</Badge>;
+  return (
+    <Badge variant={VARIANT[bucket]}>
+      <UiText message={BUCKET_LABELS[bucket]} />
+    </Badge>
+  );
 }

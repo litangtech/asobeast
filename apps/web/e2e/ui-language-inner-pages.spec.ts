@@ -67,3 +67,43 @@ for (const route of routes) {
     }
   });
 }
+
+test("shows the keyword grouping filter and selection in Chinese", async ({
+  page,
+}) => {
+  await page.context().addCookies([
+    {
+      name: "asobeast_language",
+      value: "zh-CN",
+      url: "http://localhost:3000",
+    },
+  ]);
+  await page.goto("/apps/app-1/keywords");
+  const grouping = page.getByRole("button", { name: /关键词分组/ });
+  await expect(grouping).toBeVisible();
+  await grouping.click();
+  await expect(page.getByRole("option", { name: /挑战词/ })).toBeVisible();
+  await page.getByRole("option", { name: /长尾词/ }).click();
+  await expect(
+    page.getByText("关键词分组：长尾词", { exact: true }),
+  ).toBeVisible();
+  await expect(page).toHaveURL(/[?&]bucket=longtail(?:&|$)/);
+});
+
+test("describes generating a read-only MCP token in Chinese", async ({
+  page,
+}) => {
+  await page.context().addCookies([
+    {
+      name: "asobeast_language",
+      value: "zh-CN",
+      url: "http://localhost:3000",
+    },
+  ]);
+  await page.goto("/integrations");
+  await page.getByRole("button", { name: "连接代理", exact: true }).click();
+  const dialog = page.getByRole("dialog");
+  await expect(dialog.getByRole("button", { name: "生成令牌" })).toBeVisible();
+  await expect(dialog.getByLabel("令牌名称")).toBeVisible();
+  await expect(dialog).toContainText("默认生成只读令牌");
+});

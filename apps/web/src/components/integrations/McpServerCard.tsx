@@ -239,7 +239,7 @@ function ConnectDialog() {
                 <UiText message="Connect AsoBeast" />
               </DialogTitle>
               <DialogDescription>
-                {mcpTokenNotice(created.scope)}
+                <UiText message={mcpTokenNotice(created.scope)} />
               </DialogDescription>
             </DialogHeader>
             <DialogBody>
@@ -292,12 +292,14 @@ function ConnectDialog() {
                     id="mcp-allow-changes-hint"
                     className="text-xs text-muted-foreground"
                   >
-                    {MCP_CHANGES_HINT}
+                    <UiText message={MCP_CHANGES_HINT} />
                   </p>
                 </div>
               </div>
               {error ? (
-                <p className="text-sm text-destructive">{error}</p>
+                <p className="text-sm text-destructive">
+                  <UiText message={error} />
+                </p>
               ) : null}
             </DialogBody>
             <DialogFooter>
